@@ -1,6 +1,6 @@
 # Hyperf jet client for PHP5.3
 
-## Usage
+## Installation
 
 ### Require
 
@@ -8,19 +8,31 @@
 require 'path/jet-client/bootstrap.php';
 ~~~
 
-or composer install
+### Composer
 
 ~~~php
 composer require huangdijia/jet-client
 ~~~
 
-### Register consul
+## Usage
+
+### Simple
+
+~~~php
+$client = Jet::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));
+var_dump($client->add(1, 20));
+~~~
+
+### Consul
 
 ~~~php
 Jet::addConsul('http://127.0.0.1:8500', 1);
+
+$client = Jet::create('CalculatorService');
+var_dump($client->add(1, 20));
 ~~~
 
-### Define a service class
+### Custom client
 
 ~~~php
 /**
@@ -36,18 +48,4 @@ class CalculatorService extends AbstractJetClient
 
 $service = new CalculatorService;
 var_dump($service->add(3, 10));
-~~~
-
-### Direct call
-
-~~~php
-$client = Jet::create('CalculatorService');
-var_dump($client->add(1, 20));
-~~~
-
-### Use transporter
-
-~~~php
-$client = Jet::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));
-var_dump($client->add(1, 20));
 ~~~
