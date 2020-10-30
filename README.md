@@ -1,0 +1,40 @@
+# Jet Client For PHP5.3
+
+## Usage
+
+### Require
+
+~~~php
+require 'path/jet-client/bootstrap.php';
+~~~
+
+### Register consul
+
+~~~php
+Jet::addConsul('http://127.0.0.1:8500', 1);
+~~~
+
+### Define a service class
+
+~~~php
+/**
+ * @method mixed add($a, $b)
+ */
+class CalculatorService extends AbstractJetRpcClient
+{
+    public function __construct()
+    {
+        parent::__construct(Jet::create('CalculatorService'));
+    }
+}
+
+$service = new CalculatorService;
+var_dump($service->add(3, 10));
+~~~
+
+### Direct call
+
+~~~php
+$client = Jet::create('CalculatorService');
+var_dump($client->add(1, 20));
+~~~
