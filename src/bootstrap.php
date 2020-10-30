@@ -3,6 +3,7 @@
 $baseDir = __DIR__;
 
 $classmap = array(
+    'JetConsulporterInterface'   => $baseDir . '/Contract/JetConsulporterInterface.php',
     'JetDataFormatterInterface'  => $baseDir . '/Contract/JetDataFormatterInterface.php',
     'JetPackerInterface'         => $baseDir . '/Contract/JetPackerInterface.php',
     'JetPathGeneratorInterface'  => $baseDir . '/Contract/JetPathGeneratorInterface.php',
@@ -35,6 +36,7 @@ $classmap = array(
     'JetDataFormatter'           => $baseDir . '/DataFormatter/JetDataFormatter.php',
 
     'JetPathGenerator'           => $baseDir . '/PathGenerator/JetPathGenerator.php',
+    'JetConsulporter'            => $baseDir . '/Consulporter/JetConsulporter.php',
 );
 
 spl_autoload_register(function ($class) use ($classmap) {
