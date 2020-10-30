@@ -8,6 +8,12 @@
 require 'path/jet-client/bootstrap.php';
 ~~~
 
+or composer install
+
+~~~php
+composer require huangdijia/jet-client
+~~~
+
 ### Register consul
 
 ~~~php
