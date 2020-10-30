@@ -138,11 +138,9 @@ class Jet
 
         JetUtil::throwIf(count($nodes) <= 0, new RuntimeException('Service nodes not found!'));
 
+        $transporter     = null;
         $serviceBalancer = new JetRoundRobinLoadBalancer();
         $serviceBalancer->setNodes($nodes);
-
-        $node        = $serviceBalancer->select();
-        $transporter = null;
 
         if ($protocol && $metadatas = self::getProtocol($protocol)) {
             if (isset($metadatas[self::TRANSPORTER]) && $metadatas[self::TRANSPORTER] instanceof AbstractJetTransporter) {
@@ -151,6 +149,8 @@ class Jet
         }
 
         if (is_null($transporter)) {
+            $node = $serviceBalancer->select();
+
             if ($node->options['type'] == 'tcp') {
                 $transporter = new JetStreamSocketTransporter($node->host, $node->port);
             } else {
