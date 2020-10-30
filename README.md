@@ -1,4 +1,4 @@
-# Jet Client For PHP5.3
+# Hyperf jet client for PHP5.3
 
 ## Usage
 
