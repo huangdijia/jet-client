@@ -20,7 +20,7 @@ Jet::addConsul('http://127.0.0.1:8500', 1);
 /**
  * @method mixed add($a, $b)
  */
-class CalculatorService extends AbstractJetRpcClient
+class CalculatorService extends AbstractJetClient
 {
     public function __construct()
     {

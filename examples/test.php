@@ -5,7 +5,7 @@ require_once __DIR__ . '/../src/bootstrap.php';
  * @method mixed add($a, $b)
  * @package 
  */
-class CalculatorService extends AbstractJetRpcClient
+class CalculatorService extends AbstractJetClient
 {
     public function __construct()
     {

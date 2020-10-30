@@ -2,7 +2,10 @@
 
 class Jet
 {
-    protected static $consuls = array();
+    const TRANSPORTER = 't';
+
+    protected static $consuls   = array();
+    protected static $protocols = array();
 
     /**
      *
@@ -13,6 +16,38 @@ class Jet
     public static function addConsul($uri, $timeout = 1)
     {
         self::$consuls[] = array('uri' => $uri, 'timeout' => $timeout);
+    }
+
+    /**
+     * @param string $protocol
+     * @param array $metadatas
+     * @return void
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public static function registerProtocol($protocol, $metadatas = array())
+    {
+        JetUtil::throwIf(self::isProtocolRegistered($protocol), new RuntimeException("{$protocol} has registered"));
+
+        self::$protocols[$protocol] = $metadatas;
+    }
+
+    /**
+     * @param string $protocol
+     * @return bool
+     */
+    public static function isProtocolRegistered($protocol)
+    {
+        return isset(self::$protocols[$protocol]);
+    }
+
+    /**
+     * @param mixed $protocol
+     * @return array|null
+     */
+    public static function getProtocol($protocol)
+    {
+        return isset(self::$protocols[$protocol]) ? self::$protocols[$protocol] : null;
     }
 
     /**
@@ -32,28 +67,31 @@ class Jet
     }
 
     /**
-     * Create a transporter
-     * @param string $service
+     * @param mixed $service
      * @param string|null $protocol
-     * @return AbstractJetTransporter
+     * @return array
+     * @throws InvalidArgumentException
+     * @throws Exception
      */
-    public static function createTransporter($service, $protocol = null)
+    public static function getServiceNodes($service, $protocol = null)
     {
         $consulNodes = self::$consuls;
+
         JetUtil::throwIf(count($consulNodes) <= 0, new RuntimeException('Consul nodes not found!'));
 
-        $consulLoadBalancer = new JetRoundRobinLoadBalancer();
-        $consulLoadBalancer->setNodes(JetUtil::value(function () use ($consulNodes) {
-            $nodes = array();
+        $consulLoadBalancer = JetUtil::tap(new JetRoundRobinLoadBalancer(), function ($balancer) use ($consulNodes) {
+            $balancer->setNodes(JetUtil::value(function () use ($consulNodes) {
+                $nodes = array();
 
-            foreach ($consulNodes as $node) {
-                $nodes[] = new JetLoadBalancerNode('', '', 1, $node);
-            }
+                foreach ($consulNodes as $node) {
+                    $nodes[] = new JetLoadBalancerNode('', '', 1, $node);
+                }
 
-            return $nodes;
-        }));
+                return $nodes;
+            }));
+        });
 
-        $nodes = JetUtil::retry(count($consulNodes), function () use ($consulLoadBalancer, $service, $protocol) {
+        return JetUtil::retry(count($consulNodes), function () use ($consulLoadBalancer, $service, $protocol) {
             $consulNode   = $consulLoadBalancer->select();
             $consulHealth = new JetConsulHealth($consulNode->options);
 
@@ -86,18 +124,38 @@ class Jet
                 return $passings;
             });
         });
+    }
+
+    /**
+     * Create a transporter
+     * @param string $service
+     * @param string|null $protocol
+     * @return AbstractJetTransporter
+     */
+    public static function createTransporter($service, $protocol = null)
+    {
+        $nodes = self::getServiceNodes($service, $protocol);
 
         JetUtil::throwIf(count($nodes) <= 0, new RuntimeException('Service nodes not found!'));
 
         $serviceBalancer = new JetRoundRobinLoadBalancer();
         $serviceBalancer->setNodes($nodes);
 
-        $node = $serviceBalancer->select();
+        $node        = $serviceBalancer->select();
+        $transporter = null;
 
-        if ($node->options['type'] == 'tcp') {
-            $transporter = new JetStreamSocketTransporter($node->host, $node->port);
-        } else {
-            $transporter = new JetCurlHttpTransporter($node->host, $node->port);
+        if ($protocol && $metadatas = self::getProtocol($protocol)) {
+            if (isset($metadatas[self::TRANSPORTER]) && $metadatas[self::TRANSPORTER] instanceof AbstractJetTransporter) {
+                $transporter = $metadatas[self::TRANSPORTER];
+            }
+        }
+
+        if (is_null($transporter)) {
+            if ($node->options['type'] == 'tcp') {
+                $transporter = new JetStreamSocketTransporter($node->host, $node->port);
+            } else {
+                $transporter = new JetCurlHttpTransporter($node->host, $node->port);
+            }
         }
 
         if (count($nodes) > 1) {

@@ -1,6 +1,6 @@
 <?php
 
-abstract class AbstractJetRpcClient
+abstract class AbstractJetClient
 {
     protected $client;
 
