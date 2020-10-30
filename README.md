@@ -44,3 +44,10 @@ var_dump($service->add(3, 10));
 $client = Jet::create('CalculatorService');
 var_dump($client->add(1, 20));
 ~~~
+
+### Use transporter
+
+~~~php
+$client = Jet::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));
+var_dump($client->add(1, 20));
+~~~
