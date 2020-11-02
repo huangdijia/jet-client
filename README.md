@@ -18,9 +18,9 @@ require 'path/jet-client/bootstrap.php';
 composer require huangdijia/jet-client
 ~~~
 
-## Usage
+## Quickstart
 
-### Register
+### Register service
 
 ~~~php
 JetServiceManager::register('CalculatorService', array(
@@ -31,14 +31,16 @@ JetServiceManager::register('CalculatorService', array(
 ));
 ~~~
 
-### Create client
+## Call RPC method
+
+### Call by ClientFactory
 
 ~~~php
 $client = JetClientFactory::create('CalculatorService');
 var_dump($client->add(1, 20));
 ~~~
 
-### Custom client
+### Call by custom client
 
 ~~~php
 /**
