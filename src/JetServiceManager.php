@@ -14,7 +14,7 @@ class JetServiceManager
      * @param mixed $protocol
      * @return array
      */
-    public static function getService($service, $protocol)
+    public static function get($service, $protocol)
     {
         return self::isRegistered($service, $protocol) ? static::$services[static::buildKey($service, $protocol)] : array();
     }
