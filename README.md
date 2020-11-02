@@ -1,4 +1,4 @@
-# Hyperf jet client for PHP5.3
+# Hyperf jet client for PHP5.3+
 
 ## Installation
 

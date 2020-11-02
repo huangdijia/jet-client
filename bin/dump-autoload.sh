@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BOOTSTRAP=`dirname $(realpath $0)`/src/bootstrap.php
+BOOTSTRAP=`dirname $(realpath $0)`/../src/bootstrap.php
 
 cat <<EOT > ${BOOTSTRAP}
 <?php
