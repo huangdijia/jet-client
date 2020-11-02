@@ -46,12 +46,6 @@ class JetConsulporter implements JetConsulporterInterface
         $serviceBalancer = new JetRoundRobinLoadBalancer();
         $serviceBalancer->setNodes($nodes);
 
-        if ($protocol && $metadatas = Jet::getProtocol($protocol)) {
-            if (isset($metadatas[Jet::TRANSPORTER]) && $metadatas[Jet::TRANSPORTER] instanceof AbstractJetTransporter) {
-                $transporter = $metadatas[Jet::TRANSPORTER];
-            }
-        }
-
         if (is_null($transporter)) {
             $node = $serviceBalancer->select();
 
@@ -83,7 +77,7 @@ class JetConsulporter implements JetConsulporterInterface
         if (!$loadBalancer) {
             $nodes = array(
                 new JetLoadBalancerNode('', '', 1, array(
-                    'uri'     => sprintf('http://%s:%s'),
+                    'uri'     => sprintf('http://%s:%s', $this->host, $this->port),
                     'timeout' => $this->timeout,
                 )),
             );
@@ -92,7 +86,15 @@ class JetConsulporter implements JetConsulporterInterface
         }
 
         return JetUtil::retry(count($loadBalancer->getNodes()), function () use ($loadBalancer, $service, $protocol) {
-            $consulNode   = $loadBalancer->select();
+            $consulNode = $loadBalancer->select();
+
+            if (!isset($consulNode->options['uri'])) {
+                $consulNode->options['uri'] = sprintf('http://%s:%s', $consulNode->host, $consulNode->port);
+            }
+            if (!isset($consulNode->options['timeout'])) {
+                $consulNode->options['timeout'] = 1;
+            }
+
             $consulHealth = new JetConsulHealth($consulNode->options);
 
             return JetUtil::with($consulHealth->service($service), function ($nodes) use ($protocol) {

@@ -16,19 +16,21 @@ composer require huangdijia/jet-client
 
 ## Usage
 
-### Create client by transportor
+### Register
 
 ~~~php
-$client = Jet::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));
-var_dump($client->add(1, 20));
+JetServiceManager::register('CalculatorService', array(
+    // register by transporter
+    JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
+    // or register by consulporter
+    JetServiceManager::CONSULPORTER => new JetConsulporter('127.0.0.1', 8500),
+));
 ~~~
 
-### Create client by consul
+### Create client
 
 ~~~php
-Jet::addConsul('http://127.0.0.1:8500', 1);
-
-$client = Jet::create('CalculatorService');
+$client = JetClientFactory::create('CalculatorService');
 var_dump($client->add(1, 20));
 ~~~
 

@@ -14,32 +14,32 @@ class JetClient
     /**
      * @var JetDataFormatterInterface
      */
-    protected $dataFormater;
+    protected $dataFormatter;
     /**
      * @var JetPathGeneratorInterface
      */
     protected $pathGenerator;
 
-    public function __construct($service, $transporter, $packer = null, $dataFormater = null, $pathGenerator = null)
+    public function __construct($service, $transporter, $packer = null, $dataFormatter = null, $pathGenerator = null)
     {
         if (is_null($packer)) {
             $packer = new JetJsonEofPacker();
         }
-        if (is_null($dataFormater)) {
-            $dataFormater = new JetDataFormatter();
+        if (is_null($dataFormatter)) {
+            $dataFormatter = new JetDataFormatter();
         }
         if (is_null($pathGenerator)) {
             $pathGenerator = new JetPathGenerator();
         }
 
         JetUtil::throwIf(!($packer instanceof JetPackerInterface), new InvalidArgumentException('Invaild $packer'));
-        JetUtil::throwIf(!($dataFormater instanceof JetDataFormatterInterface), new InvalidArgumentException('Invaild $dataFormater'));
+        JetUtil::throwIf(!($dataFormatter instanceof JetDataFormatterInterface), new InvalidArgumentException('Invaild $dataFormatter'));
         JetUtil::throwIf(!($pathGenerator instanceof JetPathGeneratorInterface), new InvalidArgumentException('Invaild $pathGenerator'));
 
         $this->service       = $service;
         $this->transporter   = $transporter;
         $this->packer        = $packer;
-        $this->dataFormater  = $dataFormater;
+        $this->dataFormatter = $dataFormatter;
         $this->pathGenerator = $pathGenerator;
 
     }
@@ -48,7 +48,7 @@ class JetClient
     {
         $tries       = 1;
         $path        = $this->pathGenerator->generate($this->service, $name);
-        $data        = $this->dataFormater->formatRequest(array($path, $arguments, uniqid()));
+        $data        = $this->dataFormatter->formatRequest(array($path, $arguments, uniqid()));
         $transporter = $this->transporter;
         $packer      = $this->packer;
 
