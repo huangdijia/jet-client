@@ -21,6 +21,7 @@ $classMap = array(
     'JetClient' => $baseDir . '/JetClient.php',
     'bootstrap' => $baseDir . '/bootstrap.php',
     'JetPathGenerator' => $baseDir . '/PathGenerator/JetPathGenerator.php',
+    'JetConsulCatalog' => $baseDir . '/Consul/JetConsulCatalog.php',
     'JetConsulClient' => $baseDir . '/Consul/JetConsulClient.php',
     'JetConsulHealth' => $baseDir . '/Consul/JetConsulHealth.php',
     'JetClientFactory' => $baseDir . '/JetClientFactory.php',

@@ -1,11 +1,16 @@
 <?php
 require_once __DIR__ . '/../src/bootstrap.php';
 
-$consul = new JetConsulServiceCenter('127.0.0.1', 8500);
+$configs = include __DIR__ . '/config.php';
+$consul  = new JetConsulServiceCenter(
+    $configs['consul']['host'],
+    $configs['consul']['port'],
+    $configs['consul']['timeout']
+);
 
 JetServiceManager::register('CalculatorService', array(
     // JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
-    JetServiceManager::TRANSPORTER => $consul->getTransporter('CalculatorService'),
+    JetServiceManager::TRANSPORTER    => $consul->getTransporter('CalculatorService'),
     JetServiceManager::SERVICE_CENTER => $consul,
 ));
 JetServiceManager::register('TcpService', array(

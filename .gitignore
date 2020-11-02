@@ -1,3 +1,4 @@
 /vendor/
+/examples/config.php
 composer.lock
 *.bak
