@@ -8,7 +8,7 @@ $port    = JetUtil::arrayGet($configs, 'consul.port', 8500);
 $catalog = new JetConsulCatalog(array(
     'uri' => sprintf('http://%s:%s', $host, $port),
 ));
-$services = $catalog->services();
+$services = $catalog->services()->json();
 var_dump($services);
 
 $consulServiceCenter = new JetConsulServiceCenter($host, $port);

@@ -23,6 +23,7 @@ $classMap = array(
     'JetPathGenerator' => $baseDir . '/PathGenerator/JetPathGenerator.php',
     'JetConsulCatalog' => $baseDir . '/Consul/JetConsulCatalog.php',
     'JetConsulClient' => $baseDir . '/Consul/JetConsulClient.php',
+    'JetConsulResponse' => $baseDir . '/Consul/JetConsulResponse.php',
     'JetConsulHealth' => $baseDir . '/Consul/JetConsulHealth.php',
     'JetClientFactory' => $baseDir . '/JetClientFactory.php',
     'JetUtil' => $baseDir . '/JetUtil.php',

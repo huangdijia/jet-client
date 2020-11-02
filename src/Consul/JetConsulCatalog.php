@@ -3,13 +3,13 @@
 class JetConsulCatalog extends JetConsulClient
 {
     /**
-     * @return array 
+     * @return JetConsulResponse 
      * @throws InvalidArgumentException 
      * @throws Exception 
      */
     public function services()
     {
-        $params = array();
+        $params = $this->resolveOptions(array(), array('dc'));
 
         return $this->request('GET', '/v1/catalog/services', $params);
     }

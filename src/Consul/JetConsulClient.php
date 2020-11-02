@@ -17,11 +17,24 @@ class JetConsulClient
     }
 
     /**
+     * @param array $options
+     * @param array $availableOptions
+     * @return array
+     */
+    protected function resolveOptions($options, $availableOptions)
+    {
+        // Add key of ACL token to $availableOptions
+        $availableOptions[] = 'token';
+
+        return array_intersect_key($options, array_flip($availableOptions));
+    }
+
+    /**
      * Request
      * @param string $method
      * @param string $uri
      * @param array $data
-     * @return array
+     * @return JetConsulResponse
      */
     public function request($method = 'GET', $uri = '', $data = array())
     {
@@ -29,8 +42,10 @@ class JetConsulClient
         $ch  = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
         if (preg_match('/^https:\/\//', $url)) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -47,14 +62,16 @@ class JetConsulClient
                 break;
         }
 
-        $response = curl_exec($ch);
+        // $response = curl_exec($ch);
 
-        JetUtil::throwIf(curl_errno($ch), new RuntimeException(curl_error($ch)));
+        // JetUtil::throwIf(curl_errno($ch), new RuntimeException(curl_error($ch)));
 
-        curl_close($ch);
+        // curl_close($ch);
 
-        return JetUtil::tap(json_decode($response, true), function ($decoded) {
-            JetUtil::throwIf(!is_array($decoded), new RuntimeException('Parse response failed'));
-        });
+        // return JetUtil::tap(json_decode($response, true), function ($decoded) {
+        //     JetUtil::throwIf(!is_array($decoded), new RuntimeException('Parse response failed'));
+        // });
+
+        return JetConsulResponse::make($ch);
     }
 }

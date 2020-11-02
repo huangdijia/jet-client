@@ -62,7 +62,7 @@ class JetConsulServiceCenter implements JetServiceCenterInterface
 
             $consulCatalog = new JetConsulCatalog($node->options);
 
-            return JetUtil::with($consulCatalog->services(), function ($services) {
+            return JetUtil::with($consulCatalog->services()->throwIf()->json(), function ($services) {
                 return array_keys($services);
             });
         });
@@ -84,7 +84,8 @@ class JetConsulServiceCenter implements JetServiceCenterInterface
 
             $consulHealth = new JetConsulHealth($consulNode->options);
 
-            return JetUtil::with($consulHealth->service($service), function ($serviceNodes) use ($protocol) {
+            return JetUtil::with($consulHealth->service($service)->throwIf()->json(), function ($serviceNodes) use ($protocol) {
+                /** @var array $serviceNodes */
                 $nodes = array();
 
                 foreach ($serviceNodes as $node) {
