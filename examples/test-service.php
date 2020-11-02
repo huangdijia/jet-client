@@ -2,20 +2,19 @@
 require_once __DIR__ . '/../src/bootstrap.php';
 
 $configs = include __DIR__ . '/config.php';
-$consul  = new JetConsulServiceCenter(
-    $configs['consul']['host'],
-    $configs['consul']['port'],
-    $configs['consul']['timeout']
-);
+$host    = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
+$port    = JetUtil::arrayGet($configs, 'consul.port', 8500);
+
+$serviceCenter = new JetConsulServiceCenter($host, $port);
 
 JetServiceManager::register('CalculatorService', array(
     // JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
-    JetServiceManager::TRANSPORTER    => $consul->getTransporter('CalculatorService'),
-    JetServiceManager::SERVICE_CENTER => $consul,
+    JetServiceManager::TRANSPORTER    => $serviceCenter->getTransporter('CalculatorService'),
+    JetServiceManager::SERVICE_CENTER => $serviceCenter,
 ));
 JetServiceManager::register('TcpService', array(
     // JetServiceManager::TRANSPORTER => new JetStreamSocketTransporter('127.0.0.1', 9503),
-    JetServiceManager::TRANSPORTER => $consul->getTransporter('TcpService'),
+    JetServiceManager::TRANSPORTER => $serviceCenter->getTransporter('TcpService'),
 ));
 
 /**
@@ -31,10 +30,10 @@ class CalculatorService extends AbstractJetClient
 }
 
 $service = new CalculatorService;
-var_dump($service->add(3, 10));
+var_dump($service->add(rand(0, 100), rand(0, 100)));
 
 $client = JetClientFactory::create('TcpService');
-var_dump($client->add(1, 20));
+var_dump($client->add(rand(0, 100), rand(0, 100)));
 
 $client = JetClientFactory::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));
-var_dump($client->add(5, 20));
+var_dump($client->add(rand(0, 100), rand(0, 100)));

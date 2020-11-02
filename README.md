@@ -29,6 +29,16 @@ JetServiceManager::register('CalculatorService', array(
     // or register by service center
     JetServiceManager::SERVICE_CENTER => new JetConsulServiceCenter('127.0.0.1', 8500),
 ));
+
+// or
+$consulServiceCenter = new JetConsulServiceCenter($host, $port);
+$services            = $consulServiceCenter->getServices();
+
+foreach ($services as $service) {
+    JetServiceManager::register($service, array(
+        JetServiceManager::SERVICE_CENTER => $consulServiceCenter,
+    ));
+}
 ~~~
 
 ## Call RPC method

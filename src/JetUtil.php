@@ -75,9 +75,9 @@ class JetUtil
     }
 
     /**
-     * @param string $value 
-     * @param string $delimiter 
-     * @return mixed 
+     * @param string $value
+     * @param string $delimiter
+     * @return mixed
      */
     public static function snake($value, $delimiter = '_')
     {
@@ -90,8 +90,8 @@ class JetUtil
     }
 
     /**
-     * @param string $value 
-     * @return string 
+     * @param string $value
+     * @return string
      */
     public static function lower($value)
     {
@@ -99,11 +99,67 @@ class JetUtil
     }
 
     /**
-     * @param mixed $value 
-     * @return mixed 
+     * @param mixed $value
+     * @return mixed
      */
     public static function value($value)
     {
         return $value instanceof Closure ? $value() : $value;
+    }
+
+    /**
+     * Get an item from an array using "dot" notation.
+     *
+     * @param array|\ArrayAccess $array
+     * @param null|int|string $key
+     * @param mixed $default
+     */
+    public static function arrayGet($array, $key = null, $default = null)
+    {
+        if (is_null($key)) {
+            return $array;
+        }
+
+        if (isset($array[$key])) {
+            return $array[$key];
+        }
+
+        if (!is_string($key) || strpos($key, '.') === false) {
+            return isset($array[$key]) ? $array[$key] : self::value($default);
+        }
+
+        foreach (explode('.', $key) as $segment) {
+            if (static::accessible($array) && static::exists($array, $segment)) {
+                $array = $array[$segment];
+            } else {
+                return self::value($default);
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     *
+     * @param mixed $array
+     * @param int|string $key
+     * @return bool
+     */
+    public static function exists($array, $key)
+    {
+        if ($array instanceof ArrayAccess) {
+            return $array->offsetExists($key);
+        }
+
+        return array_key_exists($key, $array);
+    }
+
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    public static function accessible($value)
+    {
+        return is_array($value) || $value instanceof ArrayAccess;
     }
 }

@@ -3,27 +3,32 @@
 interface JetServiceCenterInterface
 {
     /**
-     * @param string $service 
-     * @param string|null $protocol 
-     * @return JetTransporterInterface 
+     * @param JetLoadBalancerInterface|null $loadBalancer
+     * @return void
      */
-    public function getTransporter($service, $protocol = null);
+    public function setLoadBalancer($loadBalancer);
 
     /**
-     * @param string $service 
-     * @param string|null $protocol 
+     * @return JetLoadBalancerInterface|null
+     */
+    public function getLoadBalancer();
+
+    /**
+     * @return array
+     */
+    public function getServices();
+
+    /**
+     * @param string $service
+     * @param string|null $protocol
      * @return array|JetLoadBalancerNode[]
      */
     public function getServiceNodes($service, $protocol = null);
 
     /**
-     * @param JetLoadBalancerInterface|null $loadBalancer 
-     * @return void 
+     * @param string $service
+     * @param string|null $protocol
+     * @return JetTransporterInterface
      */
-    public function setLoadBalancer($loadBalancer);
-
-    /**
-     * @return JetLoadBalancerInterface|null  
-     */
-    public function getLoadBalancer();
+    public function getTransporter($service, $protocol = null);
 }

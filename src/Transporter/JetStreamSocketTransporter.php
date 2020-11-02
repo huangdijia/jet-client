@@ -112,9 +112,8 @@ class JetStreamSocketTransporter extends AbstractJetTransporter
         list($host, $port) = $this->getTarget();
 
         $client = stream_socket_client("tcp://{$host}:{$port}", $errno, $errstr, $this->timeout);
-        if ($client === false) {
-            throw new RuntimeException(sprintf('[%d] %s', $errno, $errstr));
-        }
+
+        JetUtil::throwIf($client === false, new RuntimeException(sprintf('[%d] %s', $errno, $errstr)));
 
         $this->client      = $client;
         $this->isConnected = true;

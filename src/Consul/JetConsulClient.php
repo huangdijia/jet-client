@@ -12,8 +12,8 @@ class JetConsulClient
             'timeout' => 2,
         ), $options);
 
-        $this->baseUri = rtrim($options['uri'], '/');
-        $this->timeout = $options['timeout'];
+        $this->baseUri = rtrim(JetUtil::arrayGet($options, 'uri', ''), '/');
+        $this->timeout = JetUtil::arrayGet($options, 'timeout', 1);
     }
 
     /**
