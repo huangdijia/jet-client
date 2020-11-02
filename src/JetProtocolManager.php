@@ -2,8 +2,11 @@
 
 class JetProtocolManager
 {
-    const TRANSPORTER  = 'tp';
-    const CONSULPORTER = 'cp';
+    const TRANSPORTER    = 'tp';
+    const CONSULPORTER   = 'cp';
+    const PACKER         = 'pk';
+    const PATH_GENERATOR = 'pg';
+    const DATA_FORMATTER = 'df';
 
     /**
      * @var array
