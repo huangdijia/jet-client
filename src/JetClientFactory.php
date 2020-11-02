@@ -18,12 +18,12 @@ class JetClientFactory
 
         if (is_null($transporter)) {
             if (
-                isset($serviceMetadata[JetServiceManager::CONSULPORTER])
-                && $serviceMetadata[JetServiceManager::CONSULPORTER] instanceof JetConsulporterInterface
+                isset($serviceMetadata[JetServiceManager::SERVICE_CENTER])
+                && $serviceMetadata[JetServiceManager::SERVICE_CENTER] instanceof JetServiceCenterInterface
             ) {
-                /** @var JetConsulporterInterface $consulporter */
-                $consulporter = $serviceMetadata[JetServiceManager::CONSULPORTER];
-                $transporter  = $consulporter->getTransporter($service);
+                /** @var JetServiceCenterInterface $serviceCenter */
+                $serviceCenter = $serviceMetadata[JetServiceManager::SERVICE_CENTER];
+                $transporter   = $serviceCenter->getTransporter($service);
             } else {
                 JetUtil::throwIf(
                     !$serviceMetadata,

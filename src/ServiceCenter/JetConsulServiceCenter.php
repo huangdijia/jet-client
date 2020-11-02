@@ -1,6 +1,6 @@
 <?php
 
-class JetConsulporter implements JetConsulporterInterface
+class JetConsulServiceCenter implements JetServiceCenterInterface
 {
     /**
      * @var string
@@ -63,13 +63,6 @@ class JetConsulporter implements JetConsulporterInterface
         return $transporter;
     }
 
-    /**
-     * @param mixed $service
-     * @param string|null $protocol
-     * @return array
-     * @throws InvalidArgumentException
-     * @throws Exception
-     */
     public function getServiceNodes($service, $protocol = null)
     {
         $loadBalancer = $this->getLoadBalancer();

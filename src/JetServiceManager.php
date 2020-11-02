@@ -2,8 +2,8 @@
 
 class JetServiceManager
 {
+    const SERVICE_CENTER = 'sc';
     const TRANSPORTER    = 'tp';
-    const CONSULPORTER   = 'cp';
     const PACKER         = 'pk';
     const DATA_FORMATTER = 'df';
     const PATH_GENERATOR = 'pg';

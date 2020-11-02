@@ -1,12 +1,12 @@
 <?php
 require_once __DIR__ . '/../src/bootstrap.php';
 
-$consul = new JetConsulporter('127.0.0.1', 8500);
+$consul = new JetConsulServiceCenter('127.0.0.1', 8500);
 
 JetServiceManager::register('CalculatorService', array(
     // JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
     JetServiceManager::TRANSPORTER => $consul->getTransporter('CalculatorService'),
-    // JetServiceManager::CONSULPORTER => $consul,
+    JetServiceManager::SERVICE_CENTER => $consul,
 ));
 JetServiceManager::register('TcpService', array(
     // JetServiceManager::TRANSPORTER => new JetStreamSocketTransporter('127.0.0.1', 9503),

@@ -2,13 +2,13 @@
 
 $baseDir = realpath(__DIR__);
 $classMap = array(
-    'JetConsulporterInterface' => $baseDir . '/Contract/JetConsulporterInterface.php',
+    'JetConsulServiceCenter' => $baseDir . '/ServiceCenter/JetConsulServiceCenter.php',
+    'JetServiceCenterInterface' => $baseDir . '/Contract/JetServiceCenterInterface.php',
     'JetDataFormatterInterface' => $baseDir . '/Contract/JetDataFormatterInterface.php',
     'JetPackerInterface' => $baseDir . '/Contract/JetPackerInterface.php',
     'JetPathGeneratorInterface' => $baseDir . '/Contract/JetPathGeneratorInterface.php',
     'JetLoadBalancerInterface' => $baseDir . '/Contract/JetLoadBalancerInterface.php',
     'JetTransporterInterface' => $baseDir . '/Contract/JetTransporterInterface.php',
-    'JetConsulporter' => $baseDir . '/Consulporter/JetConsulporter.php',
     'JetServiceManager' => $baseDir . '/JetServiceManager.php',
     'AbstractJetClient' => $baseDir . '/AbstractJetClient.php',
     'JetCurlHttpTransporter' => $baseDir . '/Transporter/JetCurlHttpTransporter.php',

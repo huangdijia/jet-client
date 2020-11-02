@@ -26,8 +26,8 @@ composer require huangdijia/jet-client
 JetServiceManager::register('CalculatorService', array(
     // register by transporter
     JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
-    // or register by consulporter
-    JetServiceManager::CONSULPORTER => new JetConsulporter('127.0.0.1', 8500),
+    // or register by service center
+    JetServiceManager::SERVICE_CENTER => new JetConsulServiceCenter('127.0.0.1', 8500),
 ));
 ~~~
 

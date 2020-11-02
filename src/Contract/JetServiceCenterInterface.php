@@ -1,6 +1,6 @@
 <?php
 
-interface JetConsulporterInterface
+interface JetServiceCenterInterface
 {
     /**
      * @param string $service 
@@ -8,6 +8,13 @@ interface JetConsulporterInterface
      * @return JetTransporterInterface 
      */
     public function getTransporter($service, $protocol = null);
+
+    /**
+     * @param string $service 
+     * @param string|null $protocol 
+     * @return array|JetLoadBalancerNode[]
+     */
+    public function getServiceNodes($service, $protocol = null);
 
     /**
      * @param JetLoadBalancerInterface|null $loadBalancer 
