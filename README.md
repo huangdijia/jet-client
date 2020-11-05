@@ -57,6 +57,9 @@ var_dump($client->add(1, 20));
 ### Call by custom client
 
 ~~~php
+/**
+ * @method int add(int $a, int $b)
+ */
 class CalculatorService extends JetClient
 {
     public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null)
