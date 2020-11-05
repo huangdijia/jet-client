@@ -5,44 +5,50 @@ class JetClientFactory
     /**
      * Create a client
      * @param string $service
-     * @param JetTransporterInterface $transporter
+     * @param JetTransporterInterface|string|null $transporter
      * @return JetClient
      */
     public static function create($service, $transporter = null)
     {
-        $serviceMetadata = JetServiceManager::get($service);
-
         $packer        = null;
         $dataFormatter = null;
         $pathGenerator = null;
+        $protocol      = null;
+        
+        if (!($transporter instanceof JetTransporterInterface)) {
+            $serviceMetadata = JetServiceManager::get($service);
 
-        if (is_null($transporter)) {
-            if (
-                isset($serviceMetadata[JetServiceManager::SERVICE_CENTER])
-                && $serviceMetadata[JetServiceManager::SERVICE_CENTER] instanceof JetServiceCenterInterface
-            ) {
+            JetUtil::throwIf(
+                !$serviceMetadata,
+                new JetClientException(sprintf('Service %s does not register yet.', $service))
+            );
+
+            // when $transporter is string
+            if (is_string($transporter)) {
+                $protocol    = $transporter;
+                $transporter = null;
+            }
+
+            if (isset($serviceMetadata[JetServiceManager::TRANSPORTER])) { // preference to using transporter
+                $transporter = $serviceMetadata[JetServiceManager::TRANSPORTER];
+
+                JetUtil::throwIf(
+                    !($transporter instanceof JetTransporterInterface),
+                    new JetClientException(sprintf('Service %s\'s transporter must be instanceof JetTransporterInterface.', $service))
+                );
+            } elseif (isset($serviceMetadata[JetServiceManager::SERVICE_CENTER])) { // using service center
                 /** @var JetServiceCenterInterface $serviceCenter */
                 $serviceCenter = $serviceMetadata[JetServiceManager::SERVICE_CENTER];
-                $transporter   = $serviceCenter->getTransporter($service);
-            } else {
-                JetUtil::throwIf(
-                    !$serviceMetadata,
-                    new JetClientException(sprintf('Service %s does not register yet.', $service))
-                );
 
                 JetUtil::throwIf(
-                    !isset($serviceMetadata[JetServiceManager::TRANSPORTER]),
-                    new JetClientException(sprintf('Service %s transporter does not register yet.', $service))
+                    !($serviceCenter instanceof JetServiceCenterInterface),
+                    new JetClientException(sprintf('Service %s\'s service center must be instanceof JetServiceCenterInterface.', $service))
                 );
 
-                JetUtil::throwIf(
-                    !($serviceMetadata[JetServiceManager::TRANSPORTER] instanceof JetTransporterInterface),
-                    new JetClientException(sprintf('Service %s transporter does not instanceof %s', $service, 'JetTransporterInterface'))
-                );
-
-                /** @var JetTransporterInterface $transporter */
-                $transporter = $serviceMetadata[JetServiceManager::TRANSPORTER];
+                $transporter = $serviceCenter->getTransporter($service, $protocol);
             }
+
+            JetUtil::throwIf(!$transporter, new JetClientException(sprintf('Service %s\'s transporter does not register yet.', $service)));
 
             if (isset($serviceMetadata[JetServiceManager::PACKER]) && $serviceMetadata[JetServiceManager::PACKER] instanceof JetPackerInterface) {
                 $packer = $serviceMetadata[JetServiceManager::PACKER];

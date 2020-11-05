@@ -33,7 +33,7 @@ class CalculatorService extends AbstractJetClient
 $service = new CalculatorService;
 var_dump($service->add(rand(0, 100), rand(0, 100)));
 
-$client = JetClientFactory::create('CalculatorTcpService');
+$client = JetClientFactory::create('CalculatorTcpService', 'jsonrpc');
 var_dump($client->add(rand(0, 100), rand(0, 100)));
 
 $client = JetClientFactory::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));

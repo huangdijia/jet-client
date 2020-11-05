@@ -140,6 +140,43 @@ class JetUtil
     }
 
     /**
+     * Check if an item or items exist in an array using "dot" notation.
+     *
+     * @param array|\ArrayAccess $array
+     * @param null|array|string $keys
+     */
+    public static function arrayHas($array, $keys)
+    {
+        if (is_null($keys)) {
+            return false;
+        }
+
+        $keys = (array) $keys;
+
+        if (!$array || $keys === array()) {
+            return false;
+        }
+
+        foreach ($keys as $key) {
+            $subKeyArray = $array;
+
+            if (static::exists($array, $key)) {
+                continue;
+            }
+
+            foreach (explode('.', $key) as $segment) {
+                if (static::accessible($subKeyArray) && static::exists($subKeyArray, $segment)) {
+                    $subKeyArray = $subKeyArray[$segment];
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
      *
      * @param mixed $array
      * @param int|string $key
