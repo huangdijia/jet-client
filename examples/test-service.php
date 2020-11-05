@@ -21,7 +21,7 @@ JetServiceManager::register('CalculatorService:tcp', array(
 /**
  * @method static int add(int $a, int $b)
  */
-class CalculatorFacade extends JetFacade
+class Calculator extends JetFacade
 {
     protected static function getFacadeAccessor()
     {
@@ -30,7 +30,7 @@ class CalculatorFacade extends JetFacade
     }
 }
 
-var_dump(CalculatorFacade::add(rand(0, 100), rand(0, 100)));
+var_dump(Calculator::add(rand(0, 100), rand(0, 100)));
 
 /**
  * @method int add(int$a, int$b)

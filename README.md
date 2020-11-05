@@ -20,17 +20,21 @@ composer require huangdijia/jet-client
 
 ## Quickstart
 
-### Register service
+### Register a service
 
 ~~~php
 JetServiceManager::register('CalculatorService', array(
-    // register by transporter
+    // register transporter
     JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
-    // or register by service center
+    // register service center
     JetServiceManager::SERVICE_CENTER => new JetConsulServiceCenter('127.0.0.1', 8500),
 ));
+~~~
 
-// or
+### Register services by service center
+
+~~~php
+
 $consulServiceCenter = new JetConsulServiceCenter($host, $port);
 $services            = $consulServiceCenter->getServices();
 
@@ -77,7 +81,7 @@ var_dump($service->add(3, 10));
 /**
  * @method static int add(int $a, int $b)
  */
-class CalculatorFacade extends JetFacade
+class Calculator extends JetFacade
 {
     protected static function getFacadeAccessor()
     {
@@ -86,5 +90,5 @@ class CalculatorFacade extends JetFacade
     }
 }
 
-var_dump(CalculatorFacade::add(rand(0, 100), rand(0, 100)));
+var_dump(Calculator::add(rand(0, 100), rand(0, 100)));
 ~~~
