@@ -2,6 +2,9 @@
 
 abstract class AbstractJetClient
 {
+    /**
+     * @var JetClient
+     */
     protected $client;
 
     /**
