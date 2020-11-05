@@ -24,5 +24,5 @@ foreach ($services as $service) {
 $client = JetClientFactory::create('CalculatorService');
 var_dump($client->add(rand(1, 100), rand(1, 100)));
 
-$client = JetClientFactory::create('TcpService');
+$client = JetClientFactory::create('CalculatorTcpService');
 var_dump($client->add(rand(1, 100), rand(1, 100)));
