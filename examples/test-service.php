@@ -23,7 +23,7 @@ JetServiceManager::register('CalculatorService:tcp', array(
  */
 class CalculatorFacade extends JetFacade
 {
-    public static function getFacadeAccessor()
+    protected static function getFacadeAccessor()
     {
         // return JetClientFactory::create('CalculatorService');
         return 'CalculatorService';

@@ -6,7 +6,7 @@ abstract class JetFacade
      * @return JetClient|string
      * @throws RuntimeException
      */
-    public static function getFacadeAccessor()
+    protected static function getFacadeAccessor()
     {
         throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
     }

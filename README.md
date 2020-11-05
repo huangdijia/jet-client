@@ -79,7 +79,7 @@ var_dump($service->add(3, 10));
  */
 class CalculatorFacade extends JetFacade
 {
-    public static function getFacadeAccessor()
+    protected static function getFacadeAccessor()
     {
         // return JetClientFactory::create('CalculatorService');
         return 'CalculatorService';
