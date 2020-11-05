@@ -9,12 +9,13 @@ $serviceCenter = new JetConsulServiceCenter($host, $port);
 
 JetServiceManager::register('CalculatorService', array(
     // JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
-    JetServiceManager::TRANSPORTER    => $serviceCenter->getTransporter('CalculatorService'),
+    // JetServiceManager::TRANSPORTER => $serviceCenter->getTransporter('CalculatorService'),
     JetServiceManager::SERVICE_CENTER => $serviceCenter,
 ));
-JetServiceManager::register('TcpService', array(
+JetServiceManager::register('CalculatorTcpService', array(
     // JetServiceManager::TRANSPORTER => new JetStreamSocketTransporter('127.0.0.1', 9503),
-    JetServiceManager::TRANSPORTER => $serviceCenter->getTransporter('TcpService'),
+    // JetServiceManager::TRANSPORTER => $serviceCenter->getTransporter('CalculatorTcpService', 'jsonrpc'),
+    JetServiceManager::SERVICE_CENTER => $serviceCenter,
 ));
 
 /**
@@ -32,7 +33,7 @@ class CalculatorService extends AbstractJetClient
 $service = new CalculatorService;
 var_dump($service->add(rand(0, 100), rand(0, 100)));
 
-$client = JetClientFactory::create('TcpService');
+$client = JetClientFactory::create('CalculatorTcpService');
 var_dump($client->add(rand(0, 100), rand(0, 100)));
 
 $client = JetClientFactory::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));

@@ -46,29 +46,33 @@ class JetClient
 
     public function __call($name, $arguments)
     {
-        $tries       = 1;
-        $path        = $this->pathGenerator->generate($this->service, $name);
-        $data        = $this->dataFormatter->formatRequest(array($path, $arguments, uniqid()));
-        $transporter = $this->transporter;
-        $packer      = $this->packer;
+        $tries         = 1;
+        $path          = $this->pathGenerator->generate($this->service, $name);
+        $transporter   = $this->transporter;
+        $dataFormatter = $this->dataFormatter;
+        $packer        = $this->packer;
 
         if ($this->transporter->getLoadBalancer()) {
             $tries = count($this->transporter->getLoadBalancer()->getNodes());
         }
 
-        $data = JetUtil::retry($tries, function () use ($transporter, $packer, $data) {
+        return JetUtil::retry($tries, function () use ($transporter, $dataFormatter, $packer, $path, $arguments) {
+            $data = $dataFormatter->formatRequest(array($path, $arguments, uniqid()));
+
             $transporter->send($packer->pack($data));
+
             $ret = $transporter->recv();
 
-            JetUtil::throwIf(!is_string($ret), new RuntimeException('Recv failed'));
+            JetUtil::throwIf(!is_string($ret), new JetRecvFailedException('Recv failed'));
 
-            return $packer->unpack($ret);
+            return JetUtil::with($packer->unpack($ret), function ($data) {
+                if (array_key_exists('result', $data)) {
+                    return $data['result'];
+                }
+
+                throw new JetServerException(isset($data['error']) ? $data['error'] : 'Server error');
+            });
         });
 
-        if (array_key_exists('result', $data)) {
-            return $data['result'];
-        }
-
-        throw new JetServerException(isset($data['error']) ? $data['error'] : 'Server error');
     }
 }
