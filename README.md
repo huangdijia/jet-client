@@ -60,7 +60,22 @@ class CalculatorService extends AbstractJetClient
 {
     public function __construct()
     {
-        parent::__construct(Jet::create('CalculatorService'));
+        parent::__construct(JetClientFactory::create('CalculatorService'));
+    }
+}
+
+// or
+class CalculatorService2 extends JetClient
+{
+    public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null)
+    {
+        $serviceCenter = new JetConsulServiceCenter('127.0.0.1', 8500);
+        $transporter   = $serviceCenter->getTransporter($service);
+
+        // or
+        $transporter = new JetCurlHttpTransporter('127.0.0.1', 9502);
+
+        parent::__construct($service, $transporter, $packer, $dataFormatter, $pathGenerator);
     }
 }
 

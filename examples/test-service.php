@@ -20,7 +20,6 @@ JetServiceManager::register('CalculatorTcpService', array(
 
 /**
  * @method mixed add($a, $b)
- * @package
  */
 class CalculatorService extends AbstractJetClient
 {
@@ -31,6 +30,23 @@ class CalculatorService extends AbstractJetClient
 }
 
 $service = new CalculatorService;
+var_dump($service->add(rand(0, 100), rand(0, 100)));
+
+/**
+ * @method mixed add($a, $b)
+ * @package
+ */
+class CalculatorService2 extends JetClient
+{
+    public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null)
+    {
+        $transporter = new JetCurlHttpTransporter('127.0.0.1', 9502);
+
+        parent::__construct($service, $transporter, $packer, $dataFormatter, $pathGenerator);
+    }
+}
+
+$service = new CalculatorService2;
 var_dump($service->add(rand(0, 100), rand(0, 100)));
 
 $client = JetClientFactory::create('CalculatorTcpService', 'jsonrpc');

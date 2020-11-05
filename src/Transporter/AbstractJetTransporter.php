@@ -11,7 +11,7 @@ abstract class AbstractJetTransporter implements JetTransporterInterface
      */
     protected $loadBalancer;
 
-    public function __construct($host = '127.0.0.1', $port = 9503, $timeout = 1.0)
+    public function __construct($host = '127.0.0.1', $port = 9502, $timeout = 1.0)
     {
         $this->host    = $host;
         $this->port    = $port;
