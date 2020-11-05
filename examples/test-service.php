@@ -19,24 +19,24 @@ JetServiceManager::register('CalculatorTcpService', array(
 ));
 
 /**
- * @method mixed add($a, $b)
+ * @method static int add(int $a, int $b)
  */
-class CalculatorService extends AbstractJetClient
+class CalculatorFacade extends JetFacade
 {
-    public function __construct()
+    public static function getFacadeAccessor()
     {
-        parent::__construct(JetClientFactory::create('CalculatorService'));
+        // return JetClientFactory::create('CalculatorService');
+        return 'CalculatorService';
     }
 }
 
-$service = new CalculatorService;
-var_dump($service->add(rand(0, 100), rand(0, 100)));
+var_dump(CalculatorFacade::add(rand(0, 100), rand(0, 100)));
 
 /**
- * @method mixed add($a, $b)
+ * @method int add(int$a, int$b)
  * @package
  */
-class CalculatorService2 extends JetClient
+class CalculatorService extends JetClient
 {
     public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null)
     {
@@ -46,7 +46,7 @@ class CalculatorService2 extends JetClient
     }
 }
 
-$service = new CalculatorService2;
+$service = new CalculatorService;
 var_dump($service->add(rand(0, 100), rand(0, 100)));
 
 $client = JetClientFactory::create('CalculatorTcpService', 'jsonrpc');

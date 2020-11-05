@@ -53,18 +53,6 @@ var_dump($client->add(1, 20));
 ### Call by custom client
 
 ~~~php
-/**
- * @method mixed add($a, $b)
- */
-class CalculatorService extends AbstractJetClient
-{
-    public function __construct()
-    {
-        parent::__construct(JetClientFactory::create('CalculatorService'));
-    }
-}
-
-// or
 class CalculatorService2 extends JetClient
 {
     public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null)
@@ -81,4 +69,22 @@ class CalculatorService2 extends JetClient
 
 $service = new CalculatorService;
 var_dump($service->add(3, 10));
+~~~
+
+### Call by custom facade
+
+~~~php
+/**
+ * @method static int add(int $a, int $b)
+ */
+class CalculatorFacade extends JetFacade
+{
+    public static function getFacadeAccessor()
+    {
+        // return JetClientFactory::create('CalculatorService');
+        return 'CalculatorService';
+    }
+}
+
+var_dump(CalculatorFacade::add(rand(0, 100), rand(0, 100)));
 ~~~
