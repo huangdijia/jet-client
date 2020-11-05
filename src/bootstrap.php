@@ -29,6 +29,7 @@ $classMap = array(
     'JetUtil' => $baseDir . '/JetUtil.php',
     'JetServerException' => $baseDir . '/Exception/JetServerException.php',
     'JetClientException' => $baseDir . '/Exception/JetClientException.php',
+    'JetException' => $baseDir . '/Exception/JetException.php',
     'JetRecvFailedException' => $baseDir . '/Exception/JetRecvFailedException.php',
     'JetDataFormatter' => $baseDir . '/DataFormatter/JetDataFormatter.php',
     'JetJsonEofPacker' => $baseDir . '/Packer/JetJsonEofPacker.php',

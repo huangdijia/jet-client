@@ -261,12 +261,12 @@ class JetConsulResponse implements ArrayAccess
      * @param string|int|null $key
      * @param mixed $default
      * @return mixed
-     * @throws JetServerException
+     * @throws JetException
      */
     public function json($key = null, $default = null)
     {
         if ($this->header('Content-Type') !== 'application/json') {
-            throw new JetServerException('The Content-Type of response is not equal application/json');
+            throw new JetException('The Content-Type of response is not equal application/json');
         }
 
         $data = json_decode((string) $this->body(), true);

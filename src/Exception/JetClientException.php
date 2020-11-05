@@ -1,6 +1,6 @@
 <?php
 
-class JetClientException extends Exception
+class JetClientException extends JetException
 {
     
 }

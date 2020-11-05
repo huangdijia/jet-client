@@ -1,6 +1,6 @@
 <?php
 
-class JetRecvFailedException extends Exception
+class JetRecvFailedException extends JetException
 {
     
 }
