@@ -13,8 +13,10 @@ for FILE in `find ./src -type f -name "*.php"`; do
     REALPATH=`echo ${FILE} |sed -r "s/^\.\/src//"`
     FILENAME="$(basename -- $FILE)"
     CLASS="${FILENAME%.php}"
-    CLASSMAP="'${CLASS}' => \$baseDir . '${REALPATH}',"
-    echo "    ${CLASSMAP}" >> ${BOOTSTRAP}
+    if [ "${CLASS}" != "bootstrap" ]; then
+        CLASSMAP="'${CLASS}' => \$baseDir . '${REALPATH}',"
+        echo "    ${CLASSMAP}" >> ${BOOTSTRAP}
+    fi
 done
 
 cat <<EOT >> ${BOOTSTRAP}
@@ -26,3 +28,7 @@ spl_autoload_register(function (\$class) use (\$classMap) {
     }
 });
 EOT
+
+echo "done!"
+
+exit 0
