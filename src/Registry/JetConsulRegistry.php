@@ -1,6 +1,6 @@
 <?php
 
-class JetConsulServiceCenter implements JetServiceCenterInterface
+class JetConsulRegistry implements JetRegistryInterface
 {
     /**
      * @var string

@@ -1,6 +1,6 @@
 <?php
 
-interface JetServiceCenterInterface
+interface JetRegistryInterface
 {
     /**
      * @param JetLoadBalancerInterface|null $loadBalancer

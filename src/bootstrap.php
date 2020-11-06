@@ -2,8 +2,7 @@
 
 $baseDir = realpath(__DIR__);
 $classMap = array(
-    'JetConsulServiceCenter' => $baseDir . '/ServiceCenter/JetConsulServiceCenter.php',
-    'JetServiceCenterInterface' => $baseDir . '/Contract/JetServiceCenterInterface.php',
+    'JetRegistryInterface' => $baseDir . '/Contract/JetRegistryInterface.php',
     'JetDataFormatterInterface' => $baseDir . '/Contract/JetDataFormatterInterface.php',
     'JetPackerInterface' => $baseDir . '/Contract/JetPackerInterface.php',
     'JetPathGeneratorInterface' => $baseDir . '/Contract/JetPathGeneratorInterface.php',
@@ -25,6 +24,7 @@ $classMap = array(
     'JetConsulResponse' => $baseDir . '/Consul/JetConsulResponse.php',
     'JetConsulHealth' => $baseDir . '/Consul/JetConsulHealth.php',
     'JetClientFactory' => $baseDir . '/JetClientFactory.php',
+    'JetConsulRegistry' => $baseDir . '/Registry/JetConsulRegistry.php',
     'JetUtil' => $baseDir . '/JetUtil.php',
     'JetServerException' => $baseDir . '/Exception/JetServerException.php',
     'JetClientException' => $baseDir . '/Exception/JetClientException.php',

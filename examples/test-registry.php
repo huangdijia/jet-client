@@ -11,13 +11,13 @@ $catalog = new JetConsulCatalog(array(
 $services = $catalog->services()->json();
 var_dump($services);
 
-$consulServiceCenter = new JetConsulServiceCenter($host, $port);
-$services            = $consulServiceCenter->getServices();
+$registry = new JetConsulRegistry($host, $port);
+$services = $registry->getServices();
 var_dump($services);
 
 foreach ($services as $service) {
     JetServiceManager::register($service, array(
-        JetServiceManager::SERVICE_CENTER => $consulServiceCenter,
+        JetServiceManager::REGISTRY => $registry,
     ));
 }
 

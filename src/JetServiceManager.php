@@ -2,7 +2,7 @@
 
 class JetServiceManager
 {
-    const SERVICE_CENTER = 'sc';
+    const REGISTRY       = 'rg';
     const TRANSPORTER    = 'tp';
     const PACKER         = 'pk';
     const DATA_FORMATTER = 'df';

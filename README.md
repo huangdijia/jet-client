@@ -27,7 +27,7 @@ JetServiceManager::register('CalculatorService', array(
     // register transporter
     JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
     // register service center
-    JetServiceManager::SERVICE_CENTER => new JetConsulServiceCenter('127.0.0.1', 8500),
+    JetServiceManager::REGISTRY => new JetConsulRegistry('127.0.0.1', 8500),
 ));
 ~~~
 
@@ -35,12 +35,12 @@ JetServiceManager::register('CalculatorService', array(
 
 ~~~php
 
-$consulServiceCenter = new JetConsulServiceCenter($host, $port);
-$services            = $consulServiceCenter->getServices();
+$registry = new JetConsulRegistry($host, $port);
+$services = $registry->getServices();
 
 foreach ($services as $service) {
     JetServiceManager::register($service, array(
-        JetServiceManager::SERVICE_CENTER => $consulServiceCenter,
+        JetServiceManager::REGISTRY => $registry,
     ));
 }
 ~~~
@@ -64,8 +64,8 @@ class CalculatorService extends JetClient
 {
     public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null)
     {
-        $serviceCenter = new JetConsulServiceCenter('127.0.0.1', 8500);
-        $transporter   = $serviceCenter->getTransporter($service);
+        $registry    = new JetConsulRegistry('127.0.0.1', 8500);
+        $transporter = $registry->getTransporter($service);
 
         // or
         $transporter = new JetCurlHttpTransporter('127.0.0.1', 9502);
