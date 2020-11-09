@@ -5,7 +5,6 @@ namespace Huangdijia\Jet\Consul;
 use ArrayAccess;
 use LogicException;
 use RuntimeException;
-use Huangdijia\Jet\Exception\Exception;
 
 class Response implements ArrayAccess
 {
@@ -268,12 +267,12 @@ class Response implements ArrayAccess
      * @param string|int|null $key
      * @param mixed $default
      * @return mixed
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function json($key = null, $default = null)
     {
         if ($this->header('Content-Type') !== 'application/json') {
-            throw new Exception('The Content-Type of response is not equal application/json');
+            throw new RuntimeException('The Content-Type of response is not equal application/json');
         }
 
         $data = json_decode((string) $this->body(), true);
@@ -318,12 +317,11 @@ class Response implements ArrayAccess
     /**
      * Throw an exception if a server or client error occurred.
      * @return $this
-     * @throws Exception
+     * @throws RuntimeException
      */
-    public function throw()
-    {
+    function throw () {
         if ($this->failed()) {
-            throw new Exception($this->body());
+            throw new RuntimeException($this->body());
         }
 
         return $this;
