@@ -30,7 +30,7 @@ if (!function_exists('retry')) {
 
 if (!function_exists('throw_if')) {
     /**
-     * @param mixed $value
+     * @param mixed $condition
      * @param \Throwable|string $exception
      * @return mixed
      * @throws InvalidArgumentException
@@ -52,7 +52,7 @@ if (!function_exists('tap')) {
      * @param callable|null $callback
      * @return mixed
      */
-    function tap($value, $callback = null)
+    function tap($value, ?callable $callback = null)
     {
         if (!is_null($callback)) {
             return new class($value)
