@@ -28,7 +28,9 @@ jobs:
           docker run -d --name dev-consul -e CONSUL_BIND_INTERFACE=eth0 --network host consul
           sleep 10
           php ./tests/register.php
-      - name: Run Test Cases
+      - name: Run Analyse
         run: |
           composer analyse src
+      - name: Run Test Cases
+        run: |
           composer test
