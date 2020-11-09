@@ -14,7 +14,8 @@ class JetClientFactory
         $dataFormatter = null;
         $pathGenerator = null;
         $protocol      = null;
-        
+        $tries         = 1;
+
         if (!($transporter instanceof JetTransporterInterface)) {
             $serviceMetadata = JetServiceManager::get($service);
 
@@ -61,8 +62,12 @@ class JetClientFactory
             if (isset($serviceMetadata[JetServiceManager::PATH_GENERATOR]) && $serviceMetadata[JetServiceManager::PATH_GENERATOR] instanceof JetPackerInterface) {
                 $pathGenerator = $serviceMetadata[JetServiceManager::PATH_GENERATOR];
             }
+
+            if (isset($serviceMetadata[JetServiceManager::TRIES])) {
+                $tries = (int) $serviceMetadata[JetServiceManager::TRIES];
+            }
         }
 
-        return new JetClient($service, $transporter, $packer, $dataFormatter, $pathGenerator);
+        return new JetClient($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
     }
 }

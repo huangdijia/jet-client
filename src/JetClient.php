@@ -19,8 +19,23 @@ class JetClient
      * @var JetPathGeneratorInterface
      */
     protected $pathGenerator;
+    /**
+     * @var int
+     */
+    protected $tries;
 
-    public function __construct($service, $transporter, $packer = null, $dataFormatter = null, $pathGenerator = null)
+    /**
+     * @param mixed $service
+     * @param AbstractJetTransporter $transporter
+     * @param JetPackerInterface|null $packer
+     * @param JetDataFormatterInterface|null $dataFormatter
+     * @param JetPathGeneratorInterface|null $pathGenerator
+     * @param int $tries
+     * @return void
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function __construct($service, $transporter, $packer = null, $dataFormatter = null, $pathGenerator = null, $tries = 1)
     {
         if (is_null($packer)) {
             $packer = new JetJsonEofPacker();
@@ -41,19 +56,23 @@ class JetClient
         $this->packer        = $packer;
         $this->dataFormatter = $dataFormatter;
         $this->pathGenerator = $pathGenerator;
+        $this->tries         = $tries;
 
     }
 
     public function __call($name, $arguments)
     {
-        $tries         = 1;
+        $tries         = $this->tries;
         $path          = $this->pathGenerator->generate($this->service, $name);
         $transporter   = $this->transporter;
         $dataFormatter = $this->dataFormatter;
         $packer        = $this->packer;
 
         if ($this->transporter->getLoadBalancer()) {
-            $tries = count($this->transporter->getLoadBalancer()->getNodes());
+            $nodeCount = count($this->transporter->getLoadBalancer()->getNodes());
+            if ($nodeCount > $tries) {
+                $tries = $nodeCount;
+            }
         }
 
         return JetUtil::retry($tries, function () use ($transporter, $dataFormatter, $packer, $path, $arguments) {

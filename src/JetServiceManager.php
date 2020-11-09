@@ -7,6 +7,7 @@ class JetServiceManager
     const PACKER         = 'pk';
     const DATA_FORMATTER = 'df';
     const PATH_GENERATOR = 'pg';
+    const TRIES          = 'ts';
 
     /**
      * @var array
