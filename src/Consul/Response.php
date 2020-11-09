@@ -214,7 +214,7 @@ class Response implements ArrayAccess
      * @param string $cookieJar
      * @return array
      */
-    protected function parseCookies(string $cookieJar = '')
+    protected function parseCookies(?string $cookieJar = null)
     {
         $cookies = [];
 
