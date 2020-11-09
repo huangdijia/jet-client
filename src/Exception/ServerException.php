@@ -4,7 +4,7 @@ namespace Huangdijia\Jet\Exception;
 
 use Throwable;
 
-class ServerException extends Exception
+class ServerException extends JetException
 {
     /**
      * @var array
@@ -13,7 +13,7 @@ class ServerException extends Exception
 
     /**
      * @param array $error
-     * @param Exception|null $previous
+     * @param JetException|null $previous
      * @return void
      */
     public function __construct(array $error = [], Throwable $previous = null)

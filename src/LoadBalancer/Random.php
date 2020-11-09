@@ -8,7 +8,7 @@ class Random extends AbstractLoadBalancer
      * Select an item via the load balancer.
      * @return Node
      */
-    public function select()
+    public function select(): Node
     {
         if (empty($this->nodes)) {
             throw new \RuntimeException('Cannot select any node from load balancer.');

@@ -7,11 +7,11 @@ use Huangdijia\Jet\Contract\PathGeneratorInterface;
 class PathGenerator implements PathGeneratorInterface
 {
     /**
-     * @param string $service 
-     * @param string $method 
-     * @return string 
+     * @param string $service
+     * @param string $method
+     * @return string
      */
-    public function generate(string $service, string $method)
+    public function generate(string $service, string $method): string
     {
         $handledNamespace = explode('\\', $service);
         $handledNamespace = str_replace('\\', '/', end($handledNamespace));

@@ -6,7 +6,7 @@ use Huangdijia\Jet\Contract\DataFormatterInterface;
 
 class DataFormatter implements DataFormatterInterface
 {
-    public function formatRequest($data)
+    public function formatRequest($data): array
     {
         list($path, $params, $id) = $data;
 
@@ -19,7 +19,7 @@ class DataFormatter implements DataFormatterInterface
         ];
     }
 
-    public function formatResponse($data)
+    public function formatResponse($data): array
     {
         list($id, $result) = $data;
 
@@ -30,7 +30,7 @@ class DataFormatter implements DataFormatterInterface
         ];
     }
 
-    public function formatErrorResponse($data)
+    public function formatErrorResponse($data): array
     {
         [$id, $code, $message, $data] = $data;
 

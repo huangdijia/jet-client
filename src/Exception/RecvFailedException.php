@@ -2,7 +2,7 @@
 
 namespace Huangdijia\Jet\Exception;
 
-class RecvFailedException extends Exception
+class RecvFailedException extends JetException
 {
     
 }

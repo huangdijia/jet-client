@@ -13,7 +13,7 @@ $configs = include __DIR__ . '/config.php';
 $host    = array_get($configs, 'consul.host', '127.0.0.1');
 $port    = array_get($configs, 'consul.port', 8500);
 
-$registry = new ConsulRegistry($host, $port);
+$registry = new ConsulRegistry($host, $port, 1);
 
 ServiceManager::register('CalculatorService', [
     // JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),

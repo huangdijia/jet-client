@@ -4,7 +4,7 @@ namespace Huangdijia\Jet\Exception;
 
 use RuntimeException;
 
-class Exception extends RuntimeException
+class JetException extends RuntimeException
 {
     //
 }

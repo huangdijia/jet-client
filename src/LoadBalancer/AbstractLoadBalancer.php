@@ -2,7 +2,6 @@
 
 namespace Huangdijia\Jet\LoadBalancer;
 
-use Huangdijia\Jet\LoadBalancer\Node;
 use Huangdijia\Jet\Contract\LoadBalancerInterface;
 
 abstract class AbstractLoadBalancer implements LoadBalancerInterface
@@ -32,7 +31,7 @@ abstract class AbstractLoadBalancer implements LoadBalancerInterface
     }
 
     /**
-     * @return Node[] 
+     * @return Node[]
      */
     public function getNodes()
     {

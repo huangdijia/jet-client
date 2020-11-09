@@ -3,6 +3,7 @@
 namespace Huangdijia\Jet\Contract;
 
 use Huangdijia\Jet\Contract\LoadBalancerInterface;
+use Huangdijia\Jet\LoadBalancer\Node;
 
 interface RegistryInterface
 {
@@ -25,7 +26,7 @@ interface RegistryInterface
     /**
      * @param string $service
      * @param string|null $protocol
-     * @return array|JetLoadBalancerNode[]
+     * @return array|Node[]
      */
     public function getServiceNodes(string $service, ?string $protocol = null);
 

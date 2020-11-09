@@ -29,7 +29,6 @@ abstract class AbstractTransporter implements TransporterInterface
      * @param string $host
      * @param int $port
      * @param int $timeout
-     * @return void
      */
     public function __construct(string $host = '127.0.0.1', int $port = 9502, int $timeout = 1)
     {
@@ -38,12 +37,12 @@ abstract class AbstractTransporter implements TransporterInterface
         $this->timeout = $timeout;
     }
 
-    public function getLoadBalancer()
+    public function getLoadBalancer(): ?LoadBalancerInterface
     {
         return $this->loadBalancer;
     }
 
-    public function setLoadBalancer(?LoadBalancerInterface $loadBalancer)
+    public function setLoadBalancer(?LoadBalancerInterface $loadBalancer): TransporterInterface
     {
         $this->loadBalancer = $loadBalancer;
 

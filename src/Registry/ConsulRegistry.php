@@ -31,6 +31,11 @@ class ConsulRegistry implements RegistryInterface
      */
     protected $loadBalancer;
 
+    /**
+     * @param string $host 
+     * @param int $port 
+     * @param int $timeout 
+     */
     public function __construct(string $host = '127.0.0.1', int $port = 8500, int $timeout = 1)
     {
         $this->host    = $host;

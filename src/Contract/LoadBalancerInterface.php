@@ -10,7 +10,7 @@ interface LoadBalancerInterface
      * Select an item via the load balancer.
      * @return Node
      */
-    public function select();
+    public function select(): Node;
 
     /**
      * @param Node $nodes

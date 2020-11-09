@@ -36,7 +36,7 @@ class JsonLengthPacker implements PackerInterface
      * @param mixed $data
      * @return string
      */
-    public function pack($data)
+    public function pack($data): string
     {
         $data = json_encode($data);
 

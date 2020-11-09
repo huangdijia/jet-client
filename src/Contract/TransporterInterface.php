@@ -18,12 +18,12 @@ interface TransporterInterface
     /**
      * @return LoadBalancerInterface|null
      */
-    public function getLoadBalancer();
+    public function getLoadBalancer(): ?LoadBalancerInterface;
 
     /**
      * @param LoadBalancerInterface|null $loadBalancer 
      * @return TransporterInterface 
      */
-    public function setLoadBalancer(?LoadBalancerInterface $loadBalancer);
+    public function setLoadBalancer(?LoadBalancerInterface $loadBalancer): TransporterInterface;
 
 }

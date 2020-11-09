@@ -21,6 +21,12 @@ class Node
      */
     public $options;
 
+    /**
+     * @param string $host 
+     * @param int $port 
+     * @param int $weight 
+     * @param array $options 
+     */
     public function __construct(string $host = '127.0.0.1', int $port = 9501, int $weight = 1, array $options = [])
     {
         $this->host    = $host;

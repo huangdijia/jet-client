@@ -2,9 +2,10 @@
 
 namespace Huangdijia\Jet\Transporter;
 
-use RuntimeException;
-use InvalidArgumentException;
+use Huangdijia\Jet\Exception\ConnectionException;
 use Huangdijia\Jet\Exception\RecvFailedException;
+use InvalidArgumentException;
+use RuntimeException;
 
 class StreamSocketTransporter extends AbstractTransporter
 {
@@ -119,7 +120,7 @@ class StreamSocketTransporter extends AbstractTransporter
 
         $client = stream_socket_client("tcp://{$host}:{$port}", $errno, $errstr, $this->timeout);
 
-        throw_if($client === false, new RuntimeException(sprintf('[%d] %s', $errno, $errstr)));
+        throw_if($client === false, new ConnectionException(sprintf('[%d] %s', $errno, $errstr)));
 
         $this->client      = $client;
         $this->isConnected = true;

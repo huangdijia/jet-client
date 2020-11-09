@@ -17,10 +17,10 @@ class JsonEofPacker implements PackerInterface
     }
 
     /**
-     * @param mixed $data 
-     * @return string 
+     * @param mixed $data
+     * @return string
      */
-    public function pack($data)
+    public function pack($data): string
     {
         $data = json_encode($data);
 
@@ -28,8 +28,8 @@ class JsonEofPacker implements PackerInterface
     }
 
     /**
-     * @param string $data 
-     * @return array 
+     * @param string $data
+     * @return array
      */
     public function unpack(string $data)
     {
