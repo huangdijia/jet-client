@@ -55,11 +55,11 @@ class JetClientFactory
                 $packer = $serviceMetadata[JetServiceManager::PACKER];
             }
 
-            if (isset($serviceMetadata[JetServiceManager::DATA_FORMATTER]) && $serviceMetadata[JetServiceManager::DATA_FORMATTER] instanceof JetPackerInterface) {
+            if (isset($serviceMetadata[JetServiceManager::DATA_FORMATTER]) && $serviceMetadata[JetServiceManager::DATA_FORMATTER] instanceof JetDataFormatterInterface) {
                 $dataFormatter = $serviceMetadata[JetServiceManager::DATA_FORMATTER];
             }
 
-            if (isset($serviceMetadata[JetServiceManager::PATH_GENERATOR]) && $serviceMetadata[JetServiceManager::PATH_GENERATOR] instanceof JetPackerInterface) {
+            if (isset($serviceMetadata[JetServiceManager::PATH_GENERATOR]) && $serviceMetadata[JetServiceManager::PATH_GENERATOR] instanceof JetPathGeneratorInterface) {
                 $pathGenerator = $serviceMetadata[JetServiceManager::PATH_GENERATOR];
             }
 
