@@ -6,12 +6,6 @@
 
 ## Installation
 
-### Require
-
-~~~php
-require 'path/jet-client/bootstrap.php';
-~~~
-
 ### Composer
 
 ~~~php
@@ -23,25 +17,31 @@ composer require huangdijia/jet-client
 ### Register a service
 
 ~~~php
-JetServiceManager::register('CalculatorService', array(
+use Huangdijia\Jet\ServiceManager;
+use Huangdijia\Jet\Registry\ConsulRegistry;
+use Huangdijia\Jet\Transporter\CurlHttpTransporter;
+
+ServiceManager::register('CalculatorService', [
     // register transporter
-    JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
+    ServiceManager::TRANSPORTER => new CurlHttpTransporter('127.0.0.1', 9502),
     // register service center
-    JetServiceManager::REGISTRY => new JetConsulRegistry('127.0.0.1', 8500),
-));
+    ServiceManager::REGISTRY => new ConsulRegistry('127.0.0.1', 8500),
+]);
 ~~~
 
 ### Register services by service center
 
 ~~~php
+use Huangdijia\Jet\ServiceManager;
+use Huangdijia\Jet\Registry\ConsulRegistry;
 
-$registry = new JetConsulRegistry($host, $port);
+$registry = new ConsulRegistry($host, $port);
 $services = $registry->getServices();
 
 foreach ($services as $service) {
-    JetServiceManager::register($service, array(
-        JetServiceManager::REGISTRY => $registry,
-    ));
+    ServiceManager::register($service, [
+        ServiceManager::REGISTRY => $registry,
+    ]);
 }
 ~~~
 
@@ -50,25 +50,31 @@ foreach ($services as $service) {
 ### Call by ClientFactory
 
 ~~~php
-$client = JetClientFactory::create('CalculatorService');
+use Huangdijia\Jet\ClientFactory;
+
+$client = ClientFactory::create('CalculatorService');
 var_dump($client->add(1, 20));
 ~~~
 
 ### Call by custom client
 
 ~~~php
+use Huangdijia\Jet\Client;
+use Huangdijia\Jet\Transporter\CurlHttpTransporter;
+use Huangdijia\Jet\Registry\ConsulRegistry;
+
 /**
  * @method int add(int $a, int $b)
  */
-class CalculatorService extends JetClient
+class CalculatorService extends Client
 {
     public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null)
     {
-        $registry    = new JetConsulRegistry('127.0.0.1', 8500);
+        $registry    = new ConsulRegistry('127.0.0.1', 8500);
         $transporter = $registry->getTransporter($service);
 
         // or
-        $transporter = new JetCurlHttpTransporter('127.0.0.1', 9502);
+        $transporter = new CurlHttpTransporter('127.0.0.1', 9502);
 
         parent::__construct($service, $transporter, $packer, $dataFormatter, $pathGenerator);
     }
@@ -81,14 +87,17 @@ var_dump($service->add(3, 10));
 ### Call by custom facade
 
 ~~~php
+use Huangdijia\Jet\Facade;
+use Huangdijia\Jet\ClientFactory;
+
 /**
  * @method static int add(int $a, int $b)
  */
-class Calculator extends JetFacade
+class Calculator extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        // return JetClientFactory::create('CalculatorService');
+        // return ClientFactory::create('CalculatorService');
         return 'CalculatorService';
     }
 }
