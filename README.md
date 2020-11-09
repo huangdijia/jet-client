@@ -15,7 +15,7 @@ require 'path/jet-client/bootstrap.php';
 ### Composer
 
 ~~~php
-composer require huangdijia/jet-client
+composer require "huangdijia/jet-client:^1.0"
 ~~~
 
 ## Quickstart
