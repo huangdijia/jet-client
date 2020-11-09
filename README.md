@@ -1,4 +1,4 @@
-# Hyperf jet client for PHP5.3+
+# Hyperf jet client
 
 [![Latest Stable Version](https://poser.pugx.org/huangdijia/jet-client/version.png)](https://packagist.org/packages/huangdijia/jet-client)
 [![Total Downloads](https://poser.pugx.org/huangdijia/jet-client/d/total.png)](https://packagist.org/packages/huangdijia/jet-client)
