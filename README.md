@@ -19,11 +19,11 @@ composer require huangdijia/jet-client
 ~~~php
 use Huangdijia\Jet\ServiceManager;
 use Huangdijia\Jet\Registry\ConsulRegistry;
-use Huangdijia\Jet\Transporter\CurlHttpTransporter;
+use Huangdijia\Jet\Transporter\GuzzleHttpTransporter;
 
 ServiceManager::register('CalculatorService', [
     // register transporter
-    ServiceManager::TRANSPORTER => new CurlHttpTransporter('127.0.0.1', 9502),
+    ServiceManager::TRANSPORTER => new GuzzleHttpTransporter('127.0.0.1', 9502),
     // register service center
     ServiceManager::REGISTRY => new ConsulRegistry('127.0.0.1', 8500),
 ]);
@@ -60,7 +60,7 @@ var_dump($client->add(1, 20));
 
 ~~~php
 use Huangdijia\Jet\Client;
-use Huangdijia\Jet\Transporter\CurlHttpTransporter;
+use Huangdijia\Jet\Transporter\GuzzleHttpTransporter;
 use Huangdijia\Jet\Registry\ConsulRegistry;
 
 /**
@@ -74,7 +74,7 @@ class CalculatorService extends Client
         $transporter = $registry->getTransporter($service);
 
         // or
-        $transporter = new CurlHttpTransporter('127.0.0.1', 9502);
+        $transporter = new GuzzleHttpTransporter('127.0.0.1', 9502);
 
         parent::__construct($service, $transporter, $packer, $dataFormatter, $pathGenerator);
     }

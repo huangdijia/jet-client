@@ -9,7 +9,6 @@
     }],
     "require": {
         "php": ">=7.0",
-        "ext-curl": "*",
         "guzzlehttp/guzzle": "^7.2"
     },
     "autoload": {
@@ -19,5 +18,8 @@
         "files": [
             "src/helpers.php"
         ]
+    },
+    "config": {
+        "sort-packages": true
     }
 }

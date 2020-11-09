@@ -2,17 +2,16 @@
 
 namespace Huangdijia\Jet\Registry;
 
-use RuntimeException;
 use GuzzleHttp\Client;
-use Huangdijia\Jet\Consul\Health;
 use Huangdijia\Jet\Consul\Catalog;
+use Huangdijia\Jet\Consul\Health;
+use Huangdijia\Jet\Contract\LoadBalancerInterface;
+use Huangdijia\Jet\Contract\RegistryInterface;
 use Huangdijia\Jet\LoadBalancer\Node;
 use Huangdijia\Jet\LoadBalancer\RoundRobin;
-use Huangdijia\Jet\Contract\RegistryInterface;
-use Huangdijia\Jet\Contract\LoadBalancerInterface;
-use Huangdijia\Jet\Transporter\CurlHttpTransporter;
 use Huangdijia\Jet\Transporter\GuzzleHttpTransporter;
 use Huangdijia\Jet\Transporter\StreamSocketTransporter;
+use RuntimeException;
 
 class ConsulRegistry implements RegistryInterface
 {
@@ -147,7 +146,7 @@ class ConsulRegistry implements RegistryInterface
             if ($node->options['type'] == 'tcp') {
                 $transporter = new StreamSocketTransporter($node->host, $node->port);
             } else {
-                // $transporter = new CurlHttpTransporter($node->host, $node->port);
+                // $transporter = new GuzzleHttpTransporter($node->host, $node->port);
                 $transporter = new GuzzleHttpTransporter($node->host, $node->port);
             }
         }
