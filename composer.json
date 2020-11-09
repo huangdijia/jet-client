@@ -1,6 +1,6 @@
 {
     "name": "huangdijia/jet-client",
-    "description": "Hyperf jet client for PHP5.3",
+    "description": "Hyperf jet client",
     "type": "library",
     "license": "MIT",
     "authors": [{
