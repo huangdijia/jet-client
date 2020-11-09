@@ -2,15 +2,17 @@
 
 namespace Huangdijia\Jet\Registry;
 
-use Huangdijia\Jet\Consul\Catalog;
+use RuntimeException;
+use GuzzleHttp\Client;
 use Huangdijia\Jet\Consul\Health;
-use Huangdijia\Jet\Contract\LoadBalancerInterface;
-use Huangdijia\Jet\Contract\RegistryInterface;
+use Huangdijia\Jet\Consul\Catalog;
 use Huangdijia\Jet\LoadBalancer\Node;
 use Huangdijia\Jet\LoadBalancer\RoundRobin;
+use Huangdijia\Jet\Contract\RegistryInterface;
+use Huangdijia\Jet\Contract\LoadBalancerInterface;
 use Huangdijia\Jet\Transporter\CurlHttpTransporter;
+use Huangdijia\Jet\Transporter\GuzzleHttpTransporter;
 use Huangdijia\Jet\Transporter\StreamSocketTransporter;
-use RuntimeException;
 
 class ConsulRegistry implements RegistryInterface
 {
@@ -32,9 +34,9 @@ class ConsulRegistry implements RegistryInterface
     protected $loadBalancer;
 
     /**
-     * @param string $host 
-     * @param int $port 
-     * @param int $timeout 
+     * @param string $host
+     * @param int $port
+     * @param int $timeout
      */
     public function __construct(string $host = '127.0.0.1', int $port = 8500, int $timeout = 1)
     {
@@ -68,18 +70,18 @@ class ConsulRegistry implements RegistryInterface
         $loadBalancer = $this->getLoadBalancer();
 
         return retry(count($loadBalancer->getNodes()), function () use ($loadBalancer) {
-            $catalog = new Catalog(with($loadBalancer, function ($loadBalancer) {
+            $catalog = new Catalog(function () use ($loadBalancer) {
                 /** @var LoadBalancerInterface $loadBalancer */
                 $node    = $loadBalancer->select();
                 $options = $node->options;
 
-                $options['uri']     = $options['uri'] ?? sprintf('http://%s:%s', $node->host, $node->port);
-                $options['timeout'] = $options['timeout'] ?? 1;
+                $options['base_uri'] = $options['base_uri'] ?? $options['uri'] ?? sprintf('http://%s:%s', $node->host, $node->port);
+                $options['timeout']  = $options['timeout'] ?? 1;
 
-                return $options;
-            }));
+                return new Client($options);
+            });
 
-            return with($catalog->services()->throw()->json(), function ($services) {
+            return with($catalog->services()->json(), function ($services) {
                 return array_keys($services);
             });
         });
@@ -90,17 +92,17 @@ class ConsulRegistry implements RegistryInterface
         $loadBalancer = $this->getLoadBalancer();
 
         return retry(count($loadBalancer->getNodes()), function () use ($loadBalancer, $service, $protocol) {
-            $health = new Health(with($loadBalancer, function ($loadBalancer) {
+            $health = new Health(function () use ($loadBalancer) {
                 $node    = $loadBalancer->select();
                 $options = $node->options ?? [];
 
-                $options['uri']     = $options['uri'] ?? sprintf('http://%s:%s', $node->host, $node->port);
-                $options['timeout'] = $options['timeout'] ?? 1;
+                $options['base_uri'] = $options['base_uri'] ?? $options['uri'] ?? sprintf('http://%s:%s', $node->host, $node->port);
+                $options['timeout']  = $options['timeout'] ?? 1;
 
-                return $options;
-            }));
+                return new Client($options);
+            });
 
-            return with($health->service($service)->throw()->json(), function ($serviceNodes) use ($protocol) {
+            return with($health->service($service)->json(), function ($serviceNodes) use ($protocol) {
                 /** @var array $serviceNodes */
                 $nodes = [];
 
@@ -145,7 +147,8 @@ class ConsulRegistry implements RegistryInterface
             if ($node->options['type'] == 'tcp') {
                 $transporter = new StreamSocketTransporter($node->host, $node->port);
             } else {
-                $transporter = new CurlHttpTransporter($node->host, $node->port);
+                // $transporter = new CurlHttpTransporter($node->host, $node->port);
+                $transporter = new GuzzleHttpTransporter($node->host, $node->port);
             }
         }
 

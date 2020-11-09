@@ -5,13 +5,16 @@ namespace Huangdijia\Jet\Consul;
 class Catalog extends Client
 {
     /**
-     * @return Response 
-     * @throws InvalidArgumentException 
-     * @throws Exception 
+     * @param array $options
+     * @return Response
+     * @throws InvalidArgumentException
+     * @throws Exception
      */
-    public function services()
+    public function services(array $options = [])
     {
-        $params = $this->resolveOptions([], ['dc']);
+        $params = [
+            'query' => $this->resolveOptions($options, ['dc']),
+        ];
 
         return $this->request('GET', '/v1/catalog/services', $params);
     }

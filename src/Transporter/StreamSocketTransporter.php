@@ -39,7 +39,7 @@ class StreamSocketTransporter extends AbstractTransporter
      * @throws Exception
      * @throws RuntimeException
      */
-    public function send($data)
+    public function send(string $data)
     {
         $this->connect();
         fwrite($this->client, $data);

@@ -7,11 +7,14 @@ class Health extends Client
     /**
      * Get service
      * @param string $service
+     * @param array $options
      * @return Response
      */
-    public function service($service = '')
+    public function service($service = '', array $options = [])
     {
-        $params = $this->resolveOptions([], ['dc', 'tag', 'passing']);
+        $params = [
+            'query' => $this->resolveOptions($options, ['dc', 'tag', 'passing']),
+        ];
 
         return $this->request('GET', '/v1/health/service/' . $service, $params);
     }

@@ -2,20 +2,27 @@
 
 namespace Huangdijia\Jet\Consul;
 
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\TransferException;
+use Huangdijia\Jet\Exception\ClientException;
+use Huangdijia\Jet\Exception\ServerException;
+
 class Client
 {
-    protected $baseUri;
-    protected $timeout;
+    const DEFAULT_URI = 'http://127.0.0.1:8500';
 
-    public function __construct(array $options = [])
+    /**
+     * Will execute this closure everytime when the consul client send a HTTP request,
+     * and the closure should return a GuzzleHttp\ClientInterface instance.
+     * $clientFactory(array $options).
+     *
+     * @var \Closure
+     */
+    private $clientFactory;
+
+    public function __construct(\Closure $clientFactory)
     {
-        $options = array_merge([
-            'uri'     => '',
-            'timeout' => 2,
-        ], $options);
-
-        $this->baseUri = rtrim(array_get($options, 'uri', ''), '/');
-        $this->timeout = array_get($options, 'timeout', 1);
+        $this->clientFactory = $clientFactory;
     }
 
     /**
@@ -38,32 +45,32 @@ class Client
      * @param array $data
      * @return Response
      */
-    public function request(string $method = 'GET', string $uri = '', array $data = [])
+    public function request(string $method = 'GET', string $url = '', array $options = []): Response
     {
-        $url = $this->baseUri . '/' . ltrim($uri, '/');
-        $ch  = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-
-        if (preg_match('/^https:\/\//', $url)) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        try {
+            // Create a HTTP Client by $clientFactory closure.
+            $clientFactory = $this->clientFactory;
+            $client        = $clientFactory($options);
+            if (!$client instanceof ClientInterface) {
+                throw new ClientException(sprintf('The client factory should create a %s instance.', ClientInterface::class));
+            }
+            $response = $client->request($method, $url, $options);
+        } catch (TransferException $e) {
+            $message = sprintf('Something went wrong when calling consul (%s).', $e->getMessage());
+            $this->logger->error($message);
+            throw new ServerException(['message' => $e->getMessage(), 'code' => $e->getCode()], $e);
         }
 
-        switch (strtoupper($method)) {
-            case 'POST':
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-                break;
-            case 'GET':
-            default:
-                break;
+        if ($response->getStatusCode() >= 400) {
+            $message = sprintf('Something went wrong when calling consul (%s - %s).', $response->getStatusCode(), $response->getReasonPhrase());
+            $this->logger->error($message);
+            $message .= PHP_EOL . (string) $response->getBody();
+            if ($response->getStatusCode() >= 500) {
+                throw new ServerException(['message' => $message, 'code' => $response->getStatusCode()]);
+            }
+            throw new ClientException($message, $response->getStatusCode());
         }
 
-        return Response::make($ch);
+        return new Response($response);
     }
 }

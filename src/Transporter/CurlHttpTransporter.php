@@ -39,7 +39,7 @@ class CurlHttpTransporter extends AbstractTransporter
      * @throws InvalidArgumentException 
      * @throws Exception 
      */
-    public function send($data)
+    public function send(string $data)
     {
         list($host, $port) = $this->getTarget();
 

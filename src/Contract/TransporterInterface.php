@@ -8,7 +8,7 @@ interface TransporterInterface
      * @param string $data 
      * @return void 
      */
-    public function send($data);
+    public function send(string $data);
 
     /**
      * @return string 

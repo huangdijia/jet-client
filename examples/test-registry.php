@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use GuzzleHttp\Client;
 use Huangdijia\Jet\Consul\Catalog;
 use Huangdijia\Jet\Registry\ConsulRegistry;
 use Huangdijia\Jet\ServiceManager;
@@ -9,9 +10,11 @@ $configs = include __DIR__ . '/config.php';
 $host    = array_get($configs, 'consul.host', '127.0.0.1');
 $port    = array_get($configs, 'consul.port', 8500);
 
-$catalog = new Catalog([
-    'uri' => sprintf('http://%s:%s', $host, $port),
-]);
+$catalog = new Catalog(function () use ($host, $port) {
+    return new Client([
+        'base_uri' => sprintf('http://%s:%s', $host, $port),
+    ]);
+});
 $services = $catalog->services()->json();
 var_dump($services);
 
