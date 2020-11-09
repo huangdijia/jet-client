@@ -11,6 +11,12 @@
         "php": ">=7.0",
         "guzzlehttp/guzzle": "^7.2"
     },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.14",
+        "mockery/mockery": "^1.0",
+        "phpstan/phpstan": "^0.12",
+        "phpunit/phpunit": "^7.0"
+    },
     "autoload": {
         "psr-4": {
             "Huangdijia\\Jet\\": "src/"
@@ -19,7 +25,17 @@
             "src/helpers.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Huangdijia\\Jet\\Test\\": "tests/"
+        }
+    },
     "config": {
         "sort-packages": true
+    },
+    "scripts": {
+        "test": "phpunit -c phpunit.xml --colors=always",
+        "analyse": "phpstan analyse --memory-limit 1024M -l 5 ./src",
+        "cs-fix": "php-cs-fixer fix $1"
     }
 }
