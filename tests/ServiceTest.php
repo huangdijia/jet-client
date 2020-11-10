@@ -37,7 +37,7 @@ class ServiceTest extends TestCase
 
     public function testCalculatorServiceByRegistry()
     {
-        $registry = new ConsulRegistry($this->registryHost, $this->registryPort);
+        $registry = new ConsulRegistry($this->registryHost, $this->registryPort, 1);
 
         ServiceManager::register($this->service, [
             ServiceManager::REGISTRY => $registry,
