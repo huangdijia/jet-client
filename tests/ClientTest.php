@@ -36,6 +36,13 @@ class ClientTest extends TestCase
         $b = rand(1, 99);
 
         $this->assertSame($a + $b, $client->add($a, $b));
+
+        $client = ClientFactory::create($this->service, 'jsonrpc');
+
+        $a = rand(1, 99);
+        $b = rand(1, 99);
+
+        $this->assertSame($a + $b, $client->add($a, $b));
     }
 
     public function testCalculatorServiceByGuzzleHttpTransporter()
