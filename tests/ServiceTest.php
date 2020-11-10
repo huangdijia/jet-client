@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ServiceTest extends TestCase
 {
-    private $service = 'Calculator';
+    private $service = 'CalculatorService';
 
     private $registryHost = '127.0.0.1';
 
