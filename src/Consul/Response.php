@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 namespace Huangdijia\Jet\Consul;
 
 use Huangdijia\Jet\Exception\ServerException;
@@ -17,11 +26,15 @@ class Response
         $this->response = $response;
     }
 
+    public function __call($name, $arguments)
+    {
+        return $this->response->{$name}(...$arguments);
+    }
+
     /**
-     * @param string|null $key 
-     * @param mixed|null $default 
-     * @return mixed 
-     * @throws ServerException 
+     * @param null|mixed $default
+     * @throws ServerException
+     * @return mixed
      */
     public function json(string $key = null, $default = null)
     {
@@ -31,7 +44,7 @@ class Response
 
         $data = json_decode((string) $this->response->getBody(), true);
 
-        if (!$key) {
+        if (! $key) {
             return $data;
         }
 
@@ -39,15 +52,10 @@ class Response
     }
 
     /**
-     * @return ResponseInterface 
+     * @return ResponseInterface
      */
     public function getResponse()
     {
         return $this->response;
-    }
-
-    public function __call($name, $arguments)
-    {
-        return $this->response->{$name}(...$arguments);
     }
 }

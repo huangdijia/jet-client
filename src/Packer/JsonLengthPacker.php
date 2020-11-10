@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 namespace Huangdijia\Jet\Packer;
 
 use Huangdijia\Jet\Contract\PackerInterface;
@@ -28,13 +37,12 @@ class JsonLengthPacker implements PackerInterface
     {
         $options = array_merge($this->defaultOptions, $options);
 
-        $this->type   = $options['package_length_type'];
+        $this->type = $options['package_length_type'];
         $this->length = $options['package_body_offset'];
     }
 
     /**
      * @param mixed $data
-     * @return string
      */
     public function pack($data): string
     {
@@ -44,14 +52,13 @@ class JsonLengthPacker implements PackerInterface
     }
 
     /**
-     * @param string $data
      * @return mixed
      */
     public function unpack(string $data)
     {
         $data = substr($data, $this->length);
 
-        if (!$data) {
+        if (! $data) {
             return null;
         }
 

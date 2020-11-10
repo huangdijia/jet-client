@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 namespace Huangdijia\Jet\Transporter;
 
 use Exception;
@@ -25,20 +34,14 @@ class StreamSocketTransporter extends AbstractTransporter
      */
     protected $isConnected = false;
 
-    /**
-     * @return void
-     */
     public function __destruct()
     {
         $this->close();
     }
 
     /**
-     * 
-     * @param string $data 
-     * @return void 
-     * @throws InvalidArgumentException 
-     * @throws RuntimeException 
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function send(string $data)
     {
@@ -51,9 +54,9 @@ class StreamSocketTransporter extends AbstractTransporter
      */
     public function recv()
     {
-        $buf     = '';
+        $buf = '';
         $timeout = 1000;
-        $client  = $this->client;
+        $client = $this->client;
 
         stream_set_blocking($this->client, false);
 
@@ -61,8 +64,8 @@ class StreamSocketTransporter extends AbstractTransporter
         // The waiting time is doubled each time until the server writes data to the buffer.
         // Usually, the data can be obtained within 1 microsecond.
         return retry(12, function () use (&$buf, &$timeout, $client) {
-            $read   = [$client];
-            $write  = null;
+            $read = [$client];
+            $write = null;
             $except = null;
             while (stream_select($read, $write, $except, 0, $timeout)) {
                 foreach ($read as $r) {
@@ -70,7 +73,7 @@ class StreamSocketTransporter extends AbstractTransporter
                 }
             }
 
-            if (!$buf) {
+            if (! $buf) {
                 $timeout *= 2;
 
                 throw new RecvFailedException('No data was received');
@@ -81,10 +84,9 @@ class StreamSocketTransporter extends AbstractTransporter
     }
 
     /**
-     * 
-     * @return (string|int)[] 
-     * @throws InvalidArgumentException 
-     * @throws Exception 
+     * @throws InvalidArgumentException
+     * @throws Exception
+     * @return (string|int)[]
      */
     protected function getTarget()
     {
@@ -95,7 +97,7 @@ class StreamSocketTransporter extends AbstractTransporter
         }
 
         throw_if(
-            !$node->host || !$node->port,
+            ! $node->host || ! $node->port,
             new InvalidArgumentException(sprintf('Invalid host %s or port %s.', $node->host, $node->port))
         );
 
@@ -103,10 +105,8 @@ class StreamSocketTransporter extends AbstractTransporter
     }
 
     /**
-     * 
-     * @return void 
-     * @throws InvalidArgumentException 
-     * @throws Exception 
+     * @throws InvalidArgumentException
+     * @throws Exception
      */
     protected function connect()
     {
@@ -118,19 +118,16 @@ class StreamSocketTransporter extends AbstractTransporter
             unset($this->client);
         }
 
-        list($host, $port) = $this->getTarget();
+        [$host, $port] = $this->getTarget();
 
         $client = stream_socket_client("tcp://{$host}:{$port}", $errno, $errstr, $this->timeout);
 
         throw_if($client === false, new ConnectionException(sprintf('[%d] %s', $errno, $errstr)));
 
-        $this->client      = $client;
+        $this->client = $client;
         $this->isConnected = true;
     }
 
-    /**
-     * @return void
-     */
     protected function close()
     {
         if ($this->client) {

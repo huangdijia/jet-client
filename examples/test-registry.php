@@ -1,4 +1,14 @@
 <?php
+
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use GuzzleHttp\Client;
@@ -7,8 +17,8 @@ use Huangdijia\Jet\Registry\ConsulRegistry;
 use Huangdijia\Jet\ServiceManager;
 
 $configs = include __DIR__ . '/config.php';
-$host    = array_get($configs, 'consul.host', '127.0.0.1');
-$port    = array_get($configs, 'consul.port', 8500);
+$host = array_get($configs, 'consul.host', '127.0.0.1');
+$port = array_get($configs, 'consul.port', 8500);
 
 $catalog = new Catalog(function () use ($host, $port) {
     return new Client([

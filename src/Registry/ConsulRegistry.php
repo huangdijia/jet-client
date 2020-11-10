@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 namespace Huangdijia\Jet\Registry;
 
 use GuzzleHttp\Client;
@@ -19,28 +28,26 @@ class ConsulRegistry implements RegistryInterface
      * @var string
      */
     protected $host;
+
     /**
      * @var int
      */
     protected $port;
+
     /**
      * @var int
      */
     protected $timeout;
+
     /**
-     * @var LoadBalancerInterface|null
+     * @var null|LoadBalancerInterface
      */
     protected $loadBalancer;
 
-    /**
-     * @param string $host
-     * @param int $port
-     * @param int $timeout
-     */
     public function __construct(string $host = '127.0.0.1', int $port = 8500, int $timeout = 1)
     {
-        $this->host    = $host;
-        $this->port    = $port;
+        $this->host = $host;
+        $this->port = $port;
         $this->timeout = $timeout;
     }
 
@@ -51,11 +58,11 @@ class ConsulRegistry implements RegistryInterface
 
     public function getLoadBalancer()
     {
-        if (!$this->loadBalancer) {
+        if (! $this->loadBalancer) {
             $this->loadBalancer = new RoundRobin();
             $this->loadBalancer->setNodes([
                 new Node('', 0, 1, [
-                    'uri'     => sprintf('http://%s:%s', $this->host, $this->port),
+                    'uri' => sprintf('http://%s:%s', $this->host, $this->port),
                     'timeout' => $this->timeout,
                 ]),
             ]);
@@ -71,11 +78,11 @@ class ConsulRegistry implements RegistryInterface
         return retry(count($loadBalancer->getNodes()), function () use ($loadBalancer) {
             $catalog = new Catalog(function () use ($loadBalancer) {
                 /** @var LoadBalancerInterface $loadBalancer */
-                $node    = $loadBalancer->select();
+                $node = $loadBalancer->select();
                 $options = $node->options;
 
                 $options['base_uri'] = $options['base_uri'] ?? $options['uri'] ?? sprintf('http://%s:%s', $node->host, $node->port);
-                $options['timeout']  = $options['timeout'] ?? 1;
+                $options['timeout'] = $options['timeout'] ?? 1;
 
                 return new Client($options);
             });
@@ -92,11 +99,11 @@ class ConsulRegistry implements RegistryInterface
 
         return retry(count($loadBalancer->getNodes()), function () use ($loadBalancer, $service, $protocol) {
             $health = new Health(function () use ($loadBalancer) {
-                $node    = $loadBalancer->select();
+                $node = $loadBalancer->select();
                 $options = $node->options ?? [];
 
                 $options['base_uri'] = $options['base_uri'] ?? $options['uri'] ?? sprintf('http://%s:%s', $node->host, $node->port);
-                $options['timeout']  = $options['timeout'] ?? 1;
+                $options['timeout'] = $options['timeout'] ?? 1;
 
                 return new Client($options);
             });
@@ -110,7 +117,7 @@ class ConsulRegistry implements RegistryInterface
                         continue;
                     }
 
-                    if (!is_null($protocol) && $protocol != array_get($node, 'Service.Meta.Protocol')) {
+                    if (! is_null($protocol) && $protocol != array_get($node, 'Service.Meta.Protocol')) {
                         continue;
                     }
 
@@ -119,7 +126,7 @@ class ConsulRegistry implements RegistryInterface
                         (int) array_get($node, 'Service.Port'),
                         1,
                         [
-                            'type'     => array_get($node, 'Checks.1.Type'),
+                            'type' => array_get($node, 'Checks.1.Type'),
                             'protocol' => array_get($node, 'Service.Meta.Protocol'),
                         ]
                     );
@@ -136,7 +143,7 @@ class ConsulRegistry implements RegistryInterface
 
         throw_if(count($nodes) <= 0, new RuntimeException('Service nodes not found!'));
 
-        $transporter     = null;
+        $transporter = null;
         $serviceBalancer = new RoundRobin();
         $serviceBalancer->setNodes($nodes);
 

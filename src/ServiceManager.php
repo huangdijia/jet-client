@@ -1,15 +1,29 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 namespace Huangdijia\Jet;
 
 class ServiceManager
 {
-    const REGISTRY       = 'rg';
-    const TRANSPORTER    = 'tp';
-    const PACKER         = 'pk';
+    const REGISTRY = 'rg';
+
+    const TRANSPORTER = 'tp';
+
+    const PACKER = 'pk';
+
     const DATA_FORMATTER = 'df';
+
     const PATH_GENERATOR = 'pg';
-    const TRIES          = 'ts';
+
+    const TRIES = 'ts';
 
     /**
      * @var array
@@ -17,7 +31,6 @@ class ServiceManager
     protected static $services = [];
 
     /**
-     * @param string $service
      * @return array
      */
     public static function get(string $service)
@@ -26,7 +39,6 @@ class ServiceManager
     }
 
     /**
-     * @param string $service
      * @return bool
      */
     public static function isRegistered(string $service)
@@ -34,21 +46,11 @@ class ServiceManager
         return isset(static::$services[$service]);
     }
 
-    /**
-     * 
-     * @param string $service 
-     * @param array $metadata 
-     * @return void 
-     */
     public static function register(string $service, array $metadata = [])
     {
         static::$services[$service] = $metadata;
     }
 
-    /**
-     * @param string $service
-     * @return void
-     */
     public static function deregister(string $service)
     {
         unset(static::$services[$service]);

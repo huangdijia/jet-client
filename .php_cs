@@ -1,12 +1,12 @@
 <?php
 
 $header = <<<'EOF'
-This file is part of Hyperf.
+This file is part of Jet-Client.
 
-@link     https://www.hyperf.io
-@document https://hyperf.wiki
-@contact  group@hyperf.io
-@license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+@link     https://github.com/huangdijia/jet-client
+@document https://github.com/huangdijia/jet-client/blob/main/README.md
+@contact  huangdijia@gmail.com
+@license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
 EOF;
 
 return PhpCsFixer\Config::create()

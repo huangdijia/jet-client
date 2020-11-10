@@ -1,13 +1,13 @@
 <?php
 
-declare (strict_types = 1);
+declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of Hyperf Jet-client.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
  */
 namespace Huangdijia\Jet\Transporter;
 
@@ -34,10 +34,10 @@ class GuzzleHttpTransporter extends AbstractTransporter
 
     public function __construct(string $host = '', int $port = 9501, array $config = [])
     {
-        $this->host   = $host;
-        $this->port   = $port;
+        $this->host = $host;
+        $this->port = $port;
         $this->config = array_merge_recursive($config, [
-            'headers'     => [
+            'headers' => [
                 'Content-Type' => 'application/json',
             ],
             'http_errors' => false,
@@ -60,12 +60,12 @@ class GuzzleHttpTransporter extends AbstractTransporter
 
     protected function client()
     {
-        if (!$this->client instanceof Client) {
-            if (!isset($this->config['handler'])) {
+        if (! $this->client instanceof Client) {
+            if (! isset($this->config['handler'])) {
                 $this->config['handler'] = HandlerStack::create();
             }
 
-            if (!isset($this->config['base_uri'])) {
+            if (! isset($this->config['base_uri'])) {
                 if ($this->getLoadBalancer()) {
                     $node = $this->getLoadBalancer()->select();
                 } else {

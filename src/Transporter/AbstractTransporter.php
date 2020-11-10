@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 namespace Huangdijia\Jet\Transporter;
 
 use Huangdijia\Jet\Contract\LoadBalancerInterface;
@@ -11,10 +20,12 @@ abstract class AbstractTransporter implements TransporterInterface
      * @var string
      */
     protected $host;
+
     /**
      * @var int
      */
     protected $port;
+
     /**
      * @var int
      */
@@ -25,15 +36,10 @@ abstract class AbstractTransporter implements TransporterInterface
      */
     protected $loadBalancer;
 
-    /**
-     * @param string $host
-     * @param int $port
-     * @param int $timeout
-     */
     public function __construct(string $host = '127.0.0.1', int $port = 9502, int $timeout = 1)
     {
-        $this->host    = $host;
-        $this->port    = $port;
+        $this->host = $host;
+        $this->port = $port;
         $this->timeout = $timeout;
     }
 

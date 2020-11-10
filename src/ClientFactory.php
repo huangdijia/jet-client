@@ -1,41 +1,49 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 namespace Huangdijia\Jet;
 
 use Huangdijia\Jet\Contract\DataFormatterInterface;
 use Huangdijia\Jet\Contract\PackerInterface;
 use Huangdijia\Jet\Contract\PathGeneratorInterface;
 use Huangdijia\Jet\Contract\RegistryInterface;
-use Huangdijia\Jet\Exception\ClientException;
 use Huangdijia\Jet\Contract\TransporterInterface;
+use Huangdijia\Jet\Exception\ClientException;
 
 class ClientFactory
 {
     /**
-     * Create a client
-     * @param string $service
-     * @param TransporterInterface|string|null $transporter
+     * Create a client.
+     * @param null|string|TransporterInterface $transporter
      * @return Client
      */
     public static function create(string $service, $transporter = null)
     {
-        $packer        = null;
+        $packer = null;
         $dataFormatter = null;
         $pathGenerator = null;
-        $protocol      = null;
-        $tries         = 1;
+        $protocol = null;
+        $tries = 1;
 
-        if (!($transporter instanceof TransporterInterface)) {
+        if (! ($transporter instanceof TransporterInterface)) {
             $serviceMetadata = ServiceManager::get($service);
 
             throw_if(
-                !$serviceMetadata,
+                ! $serviceMetadata,
                 new ClientException(sprintf('Service %s does not register yet.', $service))
             );
 
             // when $transporter is string
             if (is_string($transporter)) {
-                $protocol    = $transporter;
+                $protocol = $transporter;
                 $transporter = null;
             }
 
@@ -43,7 +51,7 @@ class ClientFactory
                 $transporter = $serviceMetadata[ServiceManager::TRANSPORTER];
 
                 throw_if(
-                    !($transporter instanceof TransporterInterface),
+                    ! ($transporter instanceof TransporterInterface),
                     new ClientException(sprintf('Service %s\'s transporter must be instanceof JetTransporterInterface.', $service))
                 );
             } elseif (isset($serviceMetadata[ServiceManager::REGISTRY])) { // using service center
@@ -51,14 +59,14 @@ class ClientFactory
                 $registry = $serviceMetadata[ServiceManager::REGISTRY];
 
                 throw_if(
-                    !($registry instanceof RegistryInterface),
+                    ! ($registry instanceof RegistryInterface),
                     new ClientException(sprintf('Service %s\'s service center must be instanceof JetRegistryInterface.', $service))
                 );
 
                 $transporter = $registry->getTransporter($service, $protocol);
             }
 
-            throw_if(!$transporter, new ClientException(sprintf('Service %s\'s transporter does not register yet.', $service)));
+            throw_if(! $transporter, new ClientException(sprintf('Service %s\'s transporter does not register yet.', $service)));
 
             if (isset($serviceMetadata[ServiceManager::PACKER]) && $serviceMetadata[ServiceManager::PACKER] instanceof PackerInterface) {
                 $packer = $serviceMetadata[ServiceManager::PACKER];

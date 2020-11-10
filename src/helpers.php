@@ -1,11 +1,17 @@
 <?php
-if (!function_exists('retry')) {
+
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
+if (! function_exists('retry')) {
     /**
-     * Retry
-     * @param int $times
-     * @param callable $callback
-     * @param int $sleep
-     * @param  callable|null  $when
+     * Retry.
      * @return mixed
      */
     function retry(int $times, callable $callback, int $sleep = 0, callable $when = null)
@@ -15,7 +21,7 @@ if (!function_exists('retry')) {
         try {
             return $callback();
         } catch (\Throwable $e) {
-            if ($times < 1 || ($when && !$when($e))) {
+            if ($times < 1 || ($when && ! $when($e))) {
                 throw $e;
             }
 
@@ -28,13 +34,13 @@ if (!function_exists('retry')) {
     }
 }
 
-if (!function_exists('throw_if')) {
+if (! function_exists('throw_if')) {
     /**
      * @param mixed $condition
-     * @param \Throwable|string $exception
-     * @return mixed
+     * @param string|\Throwable $exception
      * @throws InvalidArgumentException
      * @throws Exception
+     * @return mixed
      */
     function throw_if($condition, $exception, ...$parameters)
     {
@@ -46,17 +52,15 @@ if (!function_exists('throw_if')) {
     }
 }
 
-if (!function_exists('tap')) {
+if (! function_exists('tap')) {
     /**
      * @param mixed $value
-     * @param callable|null $callback
      * @return mixed
      */
     function tap($value, ?callable $callback = null)
     {
         if (is_null($callback)) {
-            return new class($value)
-            {
+            return new class($value) {
                 public $target;
 
                 public function __construct($target)
@@ -79,10 +83,9 @@ if (!function_exists('tap')) {
     }
 }
 
-if (!function_exists('with')) {
+if (! function_exists('with')) {
     /**
      * @param mixed $value
-     * @param callable|null $callback
      * @return mixed
      */
     function with($value, callable $callback = null)
@@ -91,7 +94,7 @@ if (!function_exists('with')) {
     }
 }
 
-if (!function_exists('str_snake')) {
+if (! function_exists('str_snake')) {
     /**
      * @param string $value
      * @param string $delimiter
@@ -99,7 +102,7 @@ if (!function_exists('str_snake')) {
      */
     function str_snake($value, $delimiter = '_')
     {
-        if (!ctype_lower($value)) {
+        if (! ctype_lower($value)) {
             $value = preg_replace('/\s+/u', '', ucwords($value));
             $value = str_lower(preg_replace('/(.)(?=[A-Z])/u', '$1' . $delimiter, $value));
         }
@@ -108,7 +111,7 @@ if (!function_exists('str_snake')) {
     }
 }
 
-if (!function_exists('str_lower')) {
+if (! function_exists('str_lower')) {
     /**
      * @param string $value
      * @return string
@@ -119,7 +122,7 @@ if (!function_exists('str_lower')) {
     }
 }
 
-if (!function_exists('value')) {
+if (! function_exists('value')) {
     /**
      * @param mixed $value
      * @return mixed
@@ -128,10 +131,9 @@ if (!function_exists('value')) {
     {
         return $value instanceof Closure ? $value() : $value;
     }
-
 }
 
-if (!function_exists('array_get')) {
+if (! function_exists('array_get')) {
     /**
      * Get an item from an array using "dot" notation.
      *
@@ -149,7 +151,7 @@ if (!function_exists('array_get')) {
             return $array[$key];
         }
 
-        if (!is_string($key) || strpos($key, '.') === false) {
+        if (! is_string($key) || strpos($key, '.') === false) {
             return $array[$key] ?? value($default);
         }
 
@@ -165,7 +167,7 @@ if (!function_exists('array_get')) {
     }
 }
 
-if (!function_exists('array_has')) {
+if (! function_exists('array_has')) {
     /**
      * Check if an item or items exist in an array using "dot" notation.
      *
@@ -180,7 +182,7 @@ if (!function_exists('array_has')) {
 
         $keys = (array) $keys;
 
-        if (!$array || $keys === []) {
+        if (! $array || $keys === []) {
             return false;
         }
 
@@ -204,9 +206,8 @@ if (!function_exists('array_has')) {
     }
 }
 
-if (!function_exists('array_exists')) {
+if (! function_exists('array_exists')) {
     /**
-     *
      * @param mixed $array
      * @param int|string $key
      * @return bool
@@ -221,7 +222,7 @@ if (!function_exists('array_exists')) {
     }
 }
 
-if (!function_exists('array_accessible')) {
+if (! function_exists('array_accessible')) {
     /**
      * @param mixed $value
      * @return bool

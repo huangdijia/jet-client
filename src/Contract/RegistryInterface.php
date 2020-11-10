@@ -1,20 +1,24 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 namespace Huangdijia\Jet\Contract;
 
-use Huangdijia\Jet\Contract\LoadBalancerInterface;
 use Huangdijia\Jet\LoadBalancer\Node;
 
 interface RegistryInterface
 {
-    /**
-     * @param LoadBalancerInterface|null $loadBalancer
-     * @return void
-     */
     public function setLoadBalancer(?LoadBalancerInterface $loadBalancer);
 
     /**
-     * @return LoadBalancerInterface|null
+     * @return null|LoadBalancerInterface
      */
     public function getLoadBalancer();
 
@@ -24,15 +28,11 @@ interface RegistryInterface
     public function getServices();
 
     /**
-     * @param string $service
-     * @param string|null $protocol
      * @return array|Node[]
      */
     public function getServiceNodes(string $service, ?string $protocol = null);
 
     /**
-     * @param string $service
-     * @param string|null $protocol
      * @return TransporterInterface
      */
     public function getTransporter(string $service, ?string $protocol = null);

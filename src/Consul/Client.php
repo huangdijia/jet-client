@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 namespace Huangdijia\Jet\Consul;
 
 use GuzzleHttp\ClientInterface;
@@ -27,24 +36,6 @@ class Client
     }
 
     /**
-     * @param array $options
-     * @param array $availableOptions
-     * @return array
-     */
-    protected function resolveOptions(array $options, array $availableOptions)
-    {
-        // Add key of ACL token to $availableOptions
-        $availableOptions[] = 'token';
-
-        return array_intersect_key($options, array_flip($availableOptions));
-    }
-
-    /**
-     *
-     * @param string $method
-     * @param string $url
-     * @param array $options
-     * @return Response
      * @throws ServerException
      * @throws ClientException
      * @throws GuzzleException
@@ -54,9 +45,9 @@ class Client
         try {
             // Create a HTTP Client by $clientFactory closure.
             $clientFactory = $this->clientFactory;
-            $client        = $clientFactory($options);
+            $client = $clientFactory($options);
 
-            throw_if(!$client instanceof ClientInterface, new ClientException(sprintf('The client factory should create a %s instance.', ClientInterface::class)));
+            throw_if(! $client instanceof ClientInterface, new ClientException(sprintf('The client factory should create a %s instance.', ClientInterface::class)));
 
             $response = $client->request($method, $url, $options);
         } catch (TransferException $e) {
@@ -75,5 +66,16 @@ class Client
         }
 
         return new Response($response);
+    }
+
+    /**
+     * @return array
+     */
+    protected function resolveOptions(array $options, array $availableOptions)
+    {
+        // Add key of ACL token to $availableOptions
+        $availableOptions[] = 'token';
+
+        return array_intersect_key($options, array_flip($availableOptions));
     }
 }

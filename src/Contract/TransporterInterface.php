@@ -1,29 +1,26 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 namespace Huangdijia\Jet\Contract;
 
 interface TransporterInterface
 {
-    /**
-     * @param string $data 
-     * @return void 
-     */
     public function send(string $data);
 
     /**
-     * @return string 
+     * @return string
      */
     public function recv();
 
-    /**
-     * @return LoadBalancerInterface|null
-     */
     public function getLoadBalancer(): ?LoadBalancerInterface;
 
-    /**
-     * @param LoadBalancerInterface|null $loadBalancer 
-     * @return TransporterInterface 
-     */
     public function setLoadBalancer(?LoadBalancerInterface $loadBalancer): TransporterInterface;
-
 }

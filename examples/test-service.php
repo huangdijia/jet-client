@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Huangdijia\Jet\Client;
@@ -10,8 +19,8 @@ use Huangdijia\Jet\ServiceManager;
 use Huangdijia\Jet\Transporter\GuzzleHttpTransporter;
 
 $configs = include __DIR__ . '/config.php';
-$host    = array_get($configs, 'consul.host', '127.0.0.1');
-$port    = array_get($configs, 'consul.port', 8500);
+$host = array_get($configs, 'consul.host', '127.0.0.1');
+$port = array_get($configs, 'consul.port', 8500);
 
 $registry = new ConsulRegistry($host, $port, 1);
 
@@ -42,7 +51,6 @@ var_dump(Calculator::add(rand(0, 100), rand(0, 100)));
 
 /**
  * @method int add(int$a, int$b)
- * @package
  */
 class CalculatorService extends Client
 {
@@ -54,7 +62,7 @@ class CalculatorService extends Client
     }
 }
 
-$service = new CalculatorService;
+$service = new CalculatorService();
 var_dump($service->add(rand(0, 100), rand(0, 100)));
 
 $client = ClientFactory::create('CalculatorService:tcp', 'jsonrpc');

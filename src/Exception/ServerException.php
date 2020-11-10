@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 namespace Huangdijia\Jet\Exception;
 
 use Throwable;
@@ -11,14 +20,9 @@ class ServerException extends JetException
      */
     protected $error;
 
-    /**
-     * @param array $error
-     * @param Throwable|null $previous
-     * @return void
-     */
     public function __construct(array $error = [], Throwable $previous = null)
     {
-        $code    = $error['code'] ?? 0;
+        $code = $error['code'] ?? 0;
         $message = $error['message'] ?? 'Server Error';
 
         $this->error = $error;

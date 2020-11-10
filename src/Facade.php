@@ -1,11 +1,19 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf Jet-client.
+ *
+ * @link     https://github.com/huangdijia/jet-client
+ * @document https://github.com/huangdijia/jet-client/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/jet-client/blob/main/LICENSE
+ */
 namespace Huangdijia\Jet;
 
 use Exception;
-use RuntimeException;
-use Huangdijia\Jet\ClientFactory;
 use InvalidArgumentException;
+use RuntimeException;
 
 abstract class Facade
 {
@@ -15,9 +23,19 @@ abstract class Facade
     protected static $instances = [];
 
     /**
-     * 
-     * @return Client 
-     * @throws RuntimeException 
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public static function __callStatic($name, $arguments)
+    {
+        // return call_user_func_array([static::getFacadeRoot(), $name], $arguments);
+        return static::getFacadeRoot()->{$name}(...$arguments);
+    }
+
+    /**
+     * @throws RuntimeException
+     * @return Client
      */
     protected static function getFacadeRoot()
     {
@@ -25,11 +43,10 @@ abstract class Facade
     }
 
     /**
-     * 
-     * @param mixed $name 
-     * @return mixed 
-     * @throws InvalidArgumentException 
-     * @throws Exception 
+     * @param mixed $name
+     * @throws InvalidArgumentException
+     * @throws Exception
+     * @return mixed
      */
     protected static function resolveFacadeInstance($name)
     {
@@ -45,22 +62,11 @@ abstract class Facade
     }
 
     /**
-     * @return Client|string
      * @throws RuntimeException
+     * @return Client|string
      */
     protected static function getFacadeAccessor()
     {
         throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
-    }
-
-    /**
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     */
-    public static function __callStatic($name, $arguments)
-    {
-        // return call_user_func_array([static::getFacadeRoot(), $name], $arguments);
-        return static::getFacadeRoot()->$name(...$arguments);
     }
 }
