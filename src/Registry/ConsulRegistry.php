@@ -28,7 +28,7 @@ class ConsulRegistry implements RegistryInterface
      */
     protected $timeout;
     /**
-     * @var JetLoadBalancerInterface
+     * @var LoadBalancerInterface|null
      */
     protected $loadBalancer;
 

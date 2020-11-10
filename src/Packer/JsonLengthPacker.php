@@ -45,7 +45,7 @@ class JsonLengthPacker implements PackerInterface
 
     /**
      * @param string $data
-     * @return array
+     * @return mixed
      */
     public function unpack(string $data)
     {

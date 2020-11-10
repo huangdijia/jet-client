@@ -2,8 +2,10 @@
 
 namespace Huangdijia\Jet;
 
+use Exception;
 use RuntimeException;
 use Huangdijia\Jet\ClientFactory;
+use InvalidArgumentException;
 
 abstract class Facade
 {
@@ -13,10 +15,9 @@ abstract class Facade
     protected static $instances = [];
 
     /**
-     * @return Client
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
-     * @throws Exception
+     * 
+     * @return Client 
+     * @throws RuntimeException 
      */
     protected static function getFacadeRoot()
     {
@@ -24,10 +25,11 @@ abstract class Facade
     }
 
     /**
-     * @param Client|string $name
-     * @return Client
-     * @throws InvalidArgumentException
-     * @throws Exception
+     * 
+     * @param mixed $name 
+     * @return mixed 
+     * @throws InvalidArgumentException 
+     * @throws Exception 
      */
     protected static function resolveFacadeInstance($name)
     {

@@ -13,7 +13,7 @@ class ServerException extends JetException
 
     /**
      * @param array $error
-     * @param JetException|null $previous
+     * @param Throwable|null $previous
      * @return void
      */
     public function __construct(array $error = [], Throwable $previous = null)

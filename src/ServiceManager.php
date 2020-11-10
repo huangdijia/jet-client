@@ -35,10 +35,10 @@ class ServiceManager
     }
 
     /**
-     * @param string $service
-     * @param array $metadata
-     * @return void
-     * @throws Exception
+     * 
+     * @param string $service 
+     * @param array $metadata 
+     * @return void 
      */
     public static function register(string $service, array $metadata = [])
     {
@@ -47,7 +47,6 @@ class ServiceManager
 
     /**
      * @param string $service
-     * @param string $protocol
      * @return void
      */
     public static function deregister(string $service)

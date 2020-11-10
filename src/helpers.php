@@ -54,7 +54,7 @@ if (!function_exists('tap')) {
      */
     function tap($value, ?callable $callback = null)
     {
-        if (!is_null($callback)) {
+        if (is_null($callback)) {
             return new class($value)
             {
                 public $target;

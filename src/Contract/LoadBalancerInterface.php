@@ -13,7 +13,7 @@ interface LoadBalancerInterface
     public function select(): Node;
 
     /**
-     * @param Node $nodes
+     * @param Node[] $nodes
      * @return $this
      */
     public function setNodes(array $nodes);

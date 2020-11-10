@@ -3,6 +3,7 @@
 namespace Huangdijia\Jet\Consul;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\TransferException;
 use Huangdijia\Jet\Exception\ClientException;
 use Huangdijia\Jet\Exception\ServerException;
@@ -39,11 +40,14 @@ class Client
     }
 
     /**
-     * Request
+     *
      * @param string $method
-     * @param string $uri
-     * @param array $data
+     * @param string $url
+     * @param array $options
      * @return Response
+     * @throws ServerException
+     * @throws ClientException
+     * @throws GuzzleException
      */
     public function request(string $method = 'GET', string $url = '', array $options = []): Response
     {
@@ -51,23 +55,22 @@ class Client
             // Create a HTTP Client by $clientFactory closure.
             $clientFactory = $this->clientFactory;
             $client        = $clientFactory($options);
-            if (!$client instanceof ClientInterface) {
-                throw new ClientException(sprintf('The client factory should create a %s instance.', ClientInterface::class));
-            }
+
+            throw_if(!$client instanceof ClientInterface, new ClientException(sprintf('The client factory should create a %s instance.', ClientInterface::class)));
+
             $response = $client->request($method, $url, $options);
         } catch (TransferException $e) {
             $message = sprintf('Something went wrong when calling consul (%s).', $e->getMessage());
-            $this->logger->error($message);
+
             throw new ServerException(['message' => $e->getMessage(), 'code' => $e->getCode()], $e);
         }
 
         if ($response->getStatusCode() >= 400) {
             $message = sprintf('Something went wrong when calling consul (%s - %s).', $response->getStatusCode(), $response->getReasonPhrase());
-            $this->logger->error($message);
             $message .= PHP_EOL . (string) $response->getBody();
-            if ($response->getStatusCode() >= 500) {
-                throw new ServerException(['message' => $message, 'code' => $response->getStatusCode()]);
-            }
+
+            throw_if($response->getStatusCode() >= 500, new ServerException(['message' => $message, 'code' => $response->getStatusCode()]));
+
             throw new ClientException($message, $response->getStatusCode());
         }
 

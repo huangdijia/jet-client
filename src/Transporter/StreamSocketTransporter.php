@@ -2,6 +2,7 @@
 
 namespace Huangdijia\Jet\Transporter;
 
+use Exception;
 use Huangdijia\Jet\Exception\ConnectionException;
 use Huangdijia\Jet\Exception\RecvFailedException;
 use InvalidArgumentException;
@@ -33,11 +34,11 @@ class StreamSocketTransporter extends AbstractTransporter
     }
 
     /**
-     * @param string $data
-     * @return void
-     * @throws InvalidArgumentException
-     * @throws Exception
-     * @throws RuntimeException
+     * 
+     * @param string $data 
+     * @return void 
+     * @throws InvalidArgumentException 
+     * @throws RuntimeException 
      */
     public function send(string $data)
     {
@@ -80,9 +81,10 @@ class StreamSocketTransporter extends AbstractTransporter
     }
 
     /**
-     * @return array
-     * @throws InvalidArgumentException
-     * @throws Exception
+     * 
+     * @return (string|int)[] 
+     * @throws InvalidArgumentException 
+     * @throws Exception 
      */
     protected function getTarget()
     {
@@ -101,10 +103,10 @@ class StreamSocketTransporter extends AbstractTransporter
     }
 
     /**
-     * @return void
-     * @throws InvalidArgumentException
-     * @throws Exception
-     * @throws RuntimeException
+     * 
+     * @return void 
+     * @throws InvalidArgumentException 
+     * @throws Exception 
      */
     protected function connect()
     {

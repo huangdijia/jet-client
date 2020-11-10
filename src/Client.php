@@ -11,13 +11,12 @@ use Huangdijia\Jet\Exception\RecvFailedException;
 use Huangdijia\Jet\Exception\ServerException;
 use Huangdijia\Jet\Packer\JsonEofPacker;
 use Huangdijia\Jet\PathGenerator\PathGenerator;
-use InvalidArgumentException;
 
 class Client
 {
     protected $service;
     /**
-     * @var AbstractJetTransporter
+     * @var TransporterInterface
      */
     protected $transporter;
     /**
@@ -38,15 +37,14 @@ class Client
     protected $tries;
 
     /**
-     * @param mixed $service
-     * @param  $transporter
+     *
+     * @param string $service
+     * @param TransporterInterface $transporter
      * @param PackerInterface|null $packer
      * @param DataFormatterInterface|null $dataFormatter
      * @param PathGeneratorInterface|null $pathGenerator
      * @param int $tries
      * @return void
-     * @throws InvalidArgumentException
-     * @throws Exception
      */
     public function __construct(string $service, TransporterInterface $transporter, PackerInterface $packer = null, DataFormatterInterface $dataFormatter = null, PathGeneratorInterface $pathGenerator = null, int $tries = 1)
     {
