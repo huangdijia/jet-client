@@ -4,16 +4,19 @@ class JetConsulClient
 {
     protected $baseUri;
     protected $timeout;
+    protected $headers;
 
     public function __construct($options = array())
     {
         $options = array_merge(array(
             'uri'     => '',
             'timeout' => 2,
+            'headers' => array(), // array('X-Consul-Token' => 'your-token')
         ), $options);
 
         $this->baseUri = rtrim(JetUtil::arrayGet($options, 'uri', ''), '/');
         $this->timeout = JetUtil::arrayGet($options, 'timeout', 1);
+        $this->headers = JetUtil::arrayGet($options, 'headers', array());
     }
 
     /**
@@ -47,6 +50,13 @@ class JetConsulClient
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
+        if ($this->headers) {
+            $headers = array_map(function($k, $v) {
+                return "{$k}: {$v}";
+            }, array_keys($this->headers), array_values($this->headers));;
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        }
+
         if (preg_match('/^https:\/\//', $url)) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
@@ -62,16 +72,6 @@ class JetConsulClient
                 break;
         }
 
-        // $response = curl_exec($ch);
-
-        // JetUtil::throwIf(curl_errno($ch), new RuntimeException(curl_error($ch)));
-
-        // curl_close($ch);
-
-        // return JetUtil::tap(json_decode($response, true), function ($decoded) {
-        //     JetUtil::throwIf(!is_array($decoded), new RuntimeException('Parse response failed'));
-        // });
-
-        return JetConsulResponse::make($ch);
+        return new JetConsulResponse($ch);
     }
 }

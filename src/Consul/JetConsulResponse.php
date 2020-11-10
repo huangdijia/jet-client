@@ -55,16 +55,6 @@ class JetConsulResponse implements ArrayAccess
     }
 
     /**
-     * Make an CurlResponse
-     * @param mixed $ch
-     * @return JetConsulResponse
-     */
-    public static function make($ch)
-    {
-        return new self($ch);
-    }
-
-    /**
      * Get the information about this response,
      * including header, status code and content.
      *
