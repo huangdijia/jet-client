@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf Jet-client.
+ * This file is part of Jet-Client.
  *
  * @link     https://github.com/huangdijia/jet-client
  * @document https://github.com/huangdijia/jet-client/blob/main/README.md

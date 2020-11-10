@@ -27,7 +27,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Huangdijia\\Jet\\Test\\": "tests/"
+            "Huangdijia\\Jet\\Tests\\": "tests/"
         }
     },
     "config": {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf Jet-client.
+ * This file is part of Jet-Client.
  *
  * @link     https://github.com/huangdijia/jet-client
  * @document https://github.com/huangdijia/jet-client/blob/main/README.md
@@ -62,7 +62,7 @@ class ConsulRegistry implements RegistryInterface
             $this->loadBalancer = new RoundRobin();
             $this->loadBalancer->setNodes([
                 new Node('', 0, 1, [
-                    'uri' => sprintf('http://%s:%s', $this->host, $this->port),
+                    'base_uri' => sprintf('http://%s:%s', $this->host, $this->port),
                     'timeout' => $this->timeout,
                 ]),
             ]);
@@ -81,7 +81,7 @@ class ConsulRegistry implements RegistryInterface
                 $node = $loadBalancer->select();
                 $options = $node->options;
 
-                $options['base_uri'] = $options['base_uri'] ?? $options['uri'] ?? sprintf('http://%s:%s', $node->host, $node->port);
+                $options['base_uri'] = $options['base_uri'] ?? sprintf('http://%s:%s', $node->host, $node->port);
                 $options['timeout'] = $options['timeout'] ?? 1;
 
                 return new Client($options);
@@ -102,7 +102,7 @@ class ConsulRegistry implements RegistryInterface
                 $node = $loadBalancer->select();
                 $options = $node->options ?? [];
 
-                $options['base_uri'] = $options['base_uri'] ?? $options['uri'] ?? sprintf('http://%s:%s', $node->host, $node->port);
+                $options['base_uri'] = $options['base_uri'] ?? sprintf('http://%s:%s', $node->host, $node->port);
                 $options['timeout'] = $options['timeout'] ?? 1;
 
                 return new Client($options);
