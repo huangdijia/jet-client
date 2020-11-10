@@ -30,7 +30,7 @@ class ClientTest extends TestCase
             ServiceManager::REGISTRY => $registry,
         ]);
 
-        $client = ClientFactory::create($this->service);
+        $client = ClientFactory::create($this->service, 'jsonrpc-http');
 
         $a = rand(1, 99);
         $b = rand(1, 99);
