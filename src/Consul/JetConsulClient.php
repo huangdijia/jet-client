@@ -36,24 +36,23 @@ class JetConsulClient
      * Request
      * @param string $method
      * @param string $uri
-     * @param array $data
+     * @param array $options
      * @return JetConsulResponse
      */
-    public function request($method = 'GET', $uri = '', $data = array())
+    public function request($method = 'GET', $uri = '', $options = array())
     {
         $url = $this->baseUri . '/' . ltrim($uri, '/');
         $ch  = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
         if ($this->headers) {
-            $headers = array_map(function($k, $v) {
+            $headers = array_map(function ($k, $v) {
                 return "{$k}: {$v}";
-            }, array_keys($this->headers), array_values($this->headers));;
+            }, array_keys($this->headers), array_values($this->headers));
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         }
 
@@ -65,12 +64,26 @@ class JetConsulClient
         switch (strtoupper($method)) {
             case 'POST':
                 curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+                curl_setopt($ch, CURLOPT_POSTFIELDS, JetUtil::arrayGet($options, 'form_params', array()));
+                break;
+            case 'PUT':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(JetUtil::arrayGet($options, 'body', array())));
+                break;
+            case 'DELETE':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(JetUtil::arrayGet($options, 'body', array())));
                 break;
             case 'GET':
+                $url .= (strpos($url, '?') === false ? '?' : '&') . http_build_query($options['query']);
+                curl_setopt($ch, CURLOPT_HTTPGET, true);
+                break;
             default:
                 break;
         }
+
+        curl_setopt($ch, CURLOPT_URL, $url);
 
         return new JetConsulResponse($ch);
     }

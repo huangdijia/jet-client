@@ -5,12 +5,15 @@ class JetConsulHealth extends JetConsulClient
     /**
      * Get service
      * @param string $service
+     * @param array $options
      * @return JetConsulResponse
      */
-    public function service($service = '')
+    public function service($service = '', $options = array())
     {
-        $params = $this->resolveOptions(array(), array('dc', 'tag', 'passing'));
+        $options = array(
+            'query' => $this->resolveOptions($options, array('dc', 'tag', 'passing')),
+        );
 
-        return $this->request('GET', '/v1/health/service/' . $service, $params);
+        return $this->request('GET', '/v1/health/service/' . $service, $options);
     }
 }
