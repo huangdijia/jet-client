@@ -36,13 +36,9 @@ use Huangdijia\Jet\ServiceManager;
 use Huangdijia\Jet\Registry\ConsulRegistry;
 
 $registry = new ConsulRegistry($host, $port);
-$services = $registry->getServices();
-
-foreach ($services as $service) {
-    ServiceManager::register($service, [
-        ServiceManager::REGISTRY => $registry,
-    ]);
-}
+$registry->register('CalculatorService'); // register a service
+$registry->register(['CalculatorService', 'CalculatorService2']); // register some services
+$registry->register(); // register all service
 ~~~
 
 ## Call RPC method

@@ -18,6 +18,7 @@ use Huangdijia\Jet\Contract\LoadBalancerInterface;
 use Huangdijia\Jet\Contract\RegistryInterface;
 use Huangdijia\Jet\LoadBalancer\Node;
 use Huangdijia\Jet\LoadBalancer\RoundRobin;
+use Huangdijia\Jet\ServiceManager;
 use Huangdijia\Jet\Transporter\GuzzleHttpTransporter;
 use Huangdijia\Jet\Transporter\StreamSocketTransporter;
 use RuntimeException;
@@ -163,5 +164,18 @@ class ConsulRegistry implements RegistryInterface
         }
 
         return $transporter;
+    }
+
+    public function register($service = null)
+    {
+        if (is_null($service)) {
+            $service = $this->getServices();
+        }
+
+        foreach ((array) $service as $serviceName) {
+            ServiceManager::register($serviceName, [
+                ServiceManager::REGISTRY => $this,
+            ]);
+        }
     }
 }

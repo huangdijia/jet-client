@@ -11,6 +11,9 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Jet\Tests;
 
+use Huangdijia\Jet\Contract\RegistryInterface;
+use Huangdijia\Jet\ServiceManager;
+
 /**
  * @internal
  * @coversNothing
@@ -24,5 +27,12 @@ class RegistryTest extends TestCase
 
         $this->assertIsArray($services);
         $this->assertContains('consul', $services);
+
+        $registry->register();
+        $datameta = ServiceManager::get('consul');
+
+        $this->assertIsArray($datameta);
+        $this->assertArrayHasKey(ServiceManager::REGISTRY, $datameta);
+        $this->assertInstanceOf(RegistryInterface::class, $datameta[ServiceManager::REGISTRY]);
     }
 }

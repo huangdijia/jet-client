@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare(strict_types=1);
 /**
  * This file is part of Jet-Client.
  *
@@ -22,29 +22,37 @@ use Huangdijia\Jet\Transporter\StreamSocketTransporter;
 class TestCase extends \PHPUnit\Framework\TestCase
 {
     private $consulHost;
+
     private $consulPort;
+
     private $consulTimeout;
+
     private $jsonrpcHost;
+
     private $jsonrpcPort;
+
     private $jsonrpcTimeout;
+
     private $jsonrpcHttpHost;
+
     private $jsonrpcHttpPort;
+
     private $jsonrpcHttpTimeout;
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
 
-        $this->consulHost    = $_ENV['CONSUL_HOST'] ?? '127.0.0.1';
-        $this->consulPort    = (int) ($_ENV['CONSUL_PORT'] ?? 8500);
+        $this->consulHost = $_ENV['CONSUL_HOST'] ?? '127.0.0.1';
+        $this->consulPort = (int) ($_ENV['CONSUL_PORT'] ?? 8500);
         $this->consulTimeout = (int) ($_ENV['CONSUL_TIMEOUT'] ?? 2);
 
-        $this->jsonrpcHost    = $_ENV['JSONRPC_HOST'] ?? '127.0.0.1';
-        $this->jsonrpcPort    = (int) ($_ENV['JSONRPC_PORT'] ?? 9503);
+        $this->jsonrpcHost = $_ENV['JSONRPC_HOST'] ?? '127.0.0.1';
+        $this->jsonrpcPort = (int) ($_ENV['JSONRPC_PORT'] ?? 9503);
         $this->jsonrpcTimeout = (int) ($_ENV['JSONRPC_TIMEOUT'] ?? 2);
 
-        $this->jsonrpcHttpHost    = $_ENV['JSONRPC_HTTP_HOST'] ?? '127.0.0.1';
-        $this->jsonrpcHttpPort    = (int) ($_ENV['JSONRPC_HTTP_PORT'] ?? 9502);
+        $this->jsonrpcHttpHost = $_ENV['JSONRPC_HTTP_HOST'] ?? '127.0.0.1';
+        $this->jsonrpcHttpPort = (int) ($_ENV['JSONRPC_HTTP_PORT'] ?? 9502);
         $this->jsonrpcHttpTimeout = (int) ($_ENV['JSONRPC_HTTP_TIMEOUT'] ?? 2);
     }
 
