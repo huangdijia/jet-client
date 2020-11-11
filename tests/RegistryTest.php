@@ -27,12 +27,24 @@ class RegistryTest extends TestCase
 
         $this->assertIsArray($services);
         $this->assertContains('consul', $services);
+    }
 
+    public function testRegisterService()
+    {
+        $registry = $this->createRegistry();
         $registry->register();
         $datameta = ServiceManager::get('consul');
 
         $this->assertIsArray($datameta);
         $this->assertArrayHasKey(ServiceManager::REGISTRY, $datameta);
         $this->assertInstanceOf(RegistryInterface::class, $datameta[ServiceManager::REGISTRY]);
+    }
+
+    public function testRegisterDefaultRegistry()
+    {
+        $registry = $this->createRegistry();
+
+        ServiceManager::registerDefaultRegistry($registry);
+        $this->assertInstanceOf(RegistryInterface::class, ServiceManager::getDefaultRegistry());
     }
 }

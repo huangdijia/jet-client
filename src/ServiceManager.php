@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Jet;
 
+use Huangdijia\Jet\Contract\RegistryInterface;
+
 class ServiceManager
 {
     const REGISTRY = 'rg';
@@ -24,6 +26,8 @@ class ServiceManager
     const PATH_GENERATOR = 'pg';
 
     const TRIES = 'ts';
+
+    protected static $defaultRegistry;
 
     /**
      * @var array
@@ -54,5 +58,18 @@ class ServiceManager
     public static function deregister(string $service)
     {
         unset(static::$services[$service]);
+    }
+
+    public static function registerDefaultRegistry(RegistryInterface $registry)
+    {
+        static::$defaultRegistry = $registry;
+    }
+
+    /**
+     * @return null|RegistryInterface
+     */
+    public static function getDefaultRegistry()
+    {
+        return static::$defaultRegistry;
     }
 }

@@ -36,6 +36,10 @@ class ClientFactory
         if (! ($transporter instanceof TransporterInterface)) {
             $serviceMetadata = ServiceManager::get($service);
 
+            if (! $serviceMetadata && $registry = ServiceManager::getDefaultRegistry()) {
+                $serviceMetadata = [ServiceManager::REGISTRY => $registry];
+            }
+
             throw_if(
                 ! $serviceMetadata,
                 new ClientException(sprintf('Service %s does not register yet.', $service))
@@ -52,15 +56,15 @@ class ClientFactory
 
                 throw_if(
                     ! ($transporter instanceof TransporterInterface),
-                    new ClientException(sprintf('Service %s\'s transporter must be instanceof JetTransporterInterface.', $service))
+                    new ClientException(sprintf('Service %s\'s transporter must be instanceof %s.', $service, TransporterInterface::class))
                 );
-            } elseif (isset($serviceMetadata[ServiceManager::REGISTRY])) { // using service center
+            } elseif (isset($serviceMetadata[ServiceManager::REGISTRY])) { // using registry
                 /** @var RegistryInterface $registry */
                 $registry = $serviceMetadata[ServiceManager::REGISTRY];
 
                 throw_if(
                     ! ($registry instanceof RegistryInterface),
-                    new ClientException(sprintf('Service %s\'s service center must be instanceof JetRegistryInterface.', $service))
+                    new ClientException(sprintf('Service %s\'s registry must be instanceof %s.', $service, RegistryInterface::class))
                 );
 
                 $transporter = $registry->getTransporter($service, $protocol);
