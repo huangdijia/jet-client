@@ -2,3 +2,4 @@
 /examples/config.php
 composer.lock
 *.bak
+/phpunit.xml

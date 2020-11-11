@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types = 1);
 /**
  * This file is part of Jet-Client.
  *
@@ -21,18 +21,43 @@ use Huangdijia\Jet\Transporter\StreamSocketTransporter;
  */
 class TestCase extends \PHPUnit\Framework\TestCase
 {
+    private $consulHost;
+    private $consulPort;
+    private $consulTimeout;
+    private $jsonrpcHost;
+    private $jsonrpcPort;
+    private $jsonrpcTimeout;
+    private $jsonrpcHttpHost;
+    private $jsonrpcHttpPort;
+    private $jsonrpcHttpTimeout;
+
+    public function __construct()
+    {
+        $this->consulHost    = $_ENV['CONSUL_HOST'] ?? '127.0.0.1';
+        $this->consulPort    = (int) ($_ENV['CONSUL_PORT'] ?? 8500);
+        $this->consulTimeout = (int) ($_ENV['CONSUL_TIMEOUT'] ?? 2);
+
+        $this->jsonrpcHost    = $_ENV['JSONRPC_HOST'] ?? '127.0.0.1';
+        $this->jsonrpcPort    = (int) ($_ENV['JSONRPC_PORT'] ?? 9503);
+        $this->jsonrpcTimeout = (int) ($_ENV['JSONRPC_TIMEOUT'] ?? 2);
+
+        $this->jsonrpcHttpHost    = $_ENV['JSONRPC_HTTP_HOST'] ?? '127.0.0.1';
+        $this->jsonrpcHttpPort    = (int) ($_ENV['JSONRPC_HTTP_PORT'] ?? 9502);
+        $this->jsonrpcHttpTimeout = (int) ($_ENV['JSONRPC_HTTP_TIMEOUT'] ?? 2);
+    }
+
     public function createGuzzleHttpTransporter()
     {
-        return new GuzzleHttpTransporter('127.0.0.1', 9502, ['timeout' => 2]);
+        return new GuzzleHttpTransporter($this->jsonrpcHttpHost, $this->jsonrpcHttpPort, ['timeout' => 2]);
     }
 
     public function createStreamSocketTransporter()
     {
-        return new StreamSocketTransporter('127.0.0.1', 9503, 2);
+        return new StreamSocketTransporter($this->jsonrpcHost, $this->jsonrpcPort, 2);
     }
 
     protected function createRegistry()
     {
-        return new ConsulRegistry('127.0.0.1', 8500, 2);
+        return new ConsulRegistry($this->consulHost, $this->consulPort, 2);
     }
 }
