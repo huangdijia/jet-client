@@ -31,8 +31,10 @@ class TestCase extends \PHPUnit\Framework\TestCase
     private $jsonrpcHttpPort;
     private $jsonrpcHttpTimeout;
 
-    public function __construct()
+    public function __construct($name = null, array $data = [], $dataName = '')
     {
+        parent::__construct($name, $data, $dataName);
+
         $this->consulHost    = $_ENV['CONSUL_HOST'] ?? '127.0.0.1';
         $this->consulPort    = (int) ($_ENV['CONSUL_PORT'] ?? 8500);
         $this->consulTimeout = (int) ($_ENV['CONSUL_TIMEOUT'] ?? 2);
@@ -48,16 +50,16 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
     public function createGuzzleHttpTransporter()
     {
-        return new GuzzleHttpTransporter($this->jsonrpcHttpHost, $this->jsonrpcHttpPort, ['timeout' => 2]);
+        return new GuzzleHttpTransporter($this->jsonrpcHttpHost, $this->jsonrpcHttpPort, ['timeout' => $this->jsonrpcHttpTimeout]);
     }
 
     public function createStreamSocketTransporter()
     {
-        return new StreamSocketTransporter($this->jsonrpcHost, $this->jsonrpcPort, 2);
+        return new StreamSocketTransporter($this->jsonrpcHost, $this->jsonrpcPort, $this->jsonrpcTimeout);
     }
 
     protected function createRegistry()
     {
-        return new ConsulRegistry($this->consulHost, $this->consulPort, 2);
+        return new ConsulRegistry($this->consulHost, $this->consulPort, $this->consulTimeout);
     }
 }

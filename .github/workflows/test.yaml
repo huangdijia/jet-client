@@ -33,4 +33,5 @@ jobs:
           composer analyse src
       - name: Run Test Cases
         run: |
+          cp phpunit.xml.dist phpunit.xml
           composer test

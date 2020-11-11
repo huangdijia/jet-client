@@ -23,6 +23,6 @@ class RegistryTest extends TestCase
         $services = $registry->getServices();
 
         $this->assertIsArray($services);
-        $this->assertContains('CalculatorService', $services);
+        $this->assertContains('consul', $services);
     }
 }
