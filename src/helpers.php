@@ -11,8 +11,13 @@ declare(strict_types=1);
  */
 if (! function_exists('retry')) {
     /**
-     * Retry.
-     * @return mixed
+     * Retry
+     * @param int $times 
+     * @param callable $callback 
+     * @param int $sleep 
+     * @param callable|null $when 
+     * @return mixed 
+     * @throws Throwable 
      */
     function retry(int $times, callable $callback, int $sleep = 0, callable $when = null)
     {

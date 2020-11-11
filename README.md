@@ -9,7 +9,7 @@
 ### Composer
 
 ~~~php
-composer require huangdijia/jet-client
+composer require "huangdijia/jet-client:^2.0"
 ~~~
 
 ## Quickstart
