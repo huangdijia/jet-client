@@ -1,0 +1,14 @@
+{
+    "Name": "CalculatorService",
+    "ID": "CalculatorService-jsonrpc-http",
+    "Address": "127.0.0.1",
+    "Port": 9502,
+    "Meta": {
+        "Protocol": "jsonrpc-http"
+    },
+    "Check": {
+        "DeregisterCriticalServiceAfter": "90m",
+        "HTTP": "http:\/\/localhost:9502\/",
+        "Interval": "1s"
+    }
+}

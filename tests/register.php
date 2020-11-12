@@ -53,7 +53,7 @@ foreach ($protocols as $i => $protocol) {
 
     // $response = $agent->deregisterService($requestBody['ID']);
     // var_dump($response->body());
-    var_dump($requestBody);
+    echo json_encode($requestBody);
     $response = $agent->registerService($requestBody)->throwIf();
     var_dump($response->body());
 }
