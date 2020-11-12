@@ -1,19 +1,21 @@
 <?php
 require_once __DIR__ . '/../src/bootstrap.php';
 
-$configs = include __DIR__ . '/config.php';
-$host    = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
-$port    = JetUtil::arrayGet($configs, 'consul.port', 8500);
+$configFile = is_file(__DIR__ . '/config.php') ? __DIR__ . '/config.php' : __DIR__ . '/config.php.dist';
+$configs    = include $configFile;
 
-$service = 'CalculatorService';
+$host = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
+$port = JetUtil::arrayGet($configs, 'consul.port', 8500);
+
+$service  = 'CalculatorService';
 $registry = new JetConsulRegistry($host, $port);
 
 JetServiceManager::registerDefaultRegistry($registry);
 
 // JetServiceManager::register($service, array(
-    // JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
-    // JetServiceManager::TRANSPORTER => $registry->getTransporter($service),
-    // JetServiceManager::REGISTRY => $registry,
+// JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
+// JetServiceManager::TRANSPORTER => $registry->getTransporter($service),
+// JetServiceManager::REGISTRY => $registry,
 // ));
 
 $client = JetClientFactory::create($service, new JetCurlHttpTransporter('127.0.0.1', 9502));

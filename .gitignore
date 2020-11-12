@@ -1,5 +1,5 @@
 /vendor/
-/examples/config.php
+/tests/config.php
 composer.lock
 *.bak
 phpunit.xml

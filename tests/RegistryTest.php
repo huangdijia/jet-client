@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . '/../src/bootstrap.php';
 
-$configs = include __DIR__ . '/config.php';
-$host    = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
-$port    = JetUtil::arrayGet($configs, 'consul.port', 8500);
+$configFile = is_file(__DIR__ . '/config.php') ? __DIR__ . '/config.php' : __DIR__ . '/config.php.dist';
+$configs    = include $configFile;
+
+$host = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
+$port = JetUtil::arrayGet($configs, 'consul.port', 8500);
 
 $catalog = new JetConsulCatalog(array(
     'uri' => sprintf('http://%s:%s', $host, $port),
