@@ -73,7 +73,7 @@ use Huangdijia\Jet\Registry\ConsulRegistry;
  */
 class CalculatorService extends Client
 {
-    public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null)
+    public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null, $tries = null)
     {
         // Custom transporter
         $transporter = new GuzzleHttpTransporter('127.0.0.1', 9502);
@@ -82,7 +82,7 @@ class CalculatorService extends Client
         $registry    = new ConsulRegistry('127.0.0.1', 8500);
         $transporter = $registry->getTransporter($service);
 
-        parent::__construct($service, $transporter, $packer, $dataFormatter, $pathGenerator);
+        parent::__construct($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
     }
 }
 
