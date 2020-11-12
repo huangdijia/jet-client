@@ -49,7 +49,6 @@ foreach ($protocols as $i => $protocol) {
             break;
     }
 
-    $response = $agent->registerService($requestBody);
-
-    var_dump($response->body());
+    $response = $agent->registerService($requestBody)->throwIf()->json();
+    var_dump($response);
 }
