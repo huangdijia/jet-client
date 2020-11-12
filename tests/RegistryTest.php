@@ -7,6 +7,8 @@ $configs    = include $configFile;
 $host = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
 $port = JetUtil::arrayGet($configs, 'consul.port', 8500);
 
+echo sprintf("CONSUL_URI: http://%s:%s\n", $host, $port);
+
 $catalog = new JetConsulCatalog(array(
     'uri' => sprintf('http://%s:%s', $host, $port),
 ));
