@@ -5,19 +5,23 @@ require_once __DIR__ . '/../src/bootstrap.php';
 $configFile = is_file(__DIR__ . '/config.php') ? __DIR__ . '/config.php' : __DIR__ . '/config.php.dist';
 $configs    = include $configFile;
 
-$host = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
-$port = JetUtil::arrayGet($configs, 'consul.port', 8500);
-
-echo sprintf("CONSUL_URI: http://%s:%s\n", $host, $port);
+$consulHost = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
+$consulPort = JetUtil::arrayGet($configs, 'consul.port', 8500);
+echo sprintf("CONSUL_URI: http://%s:%s\n", $consulHost, $consulPort);
 
 $agent = new JetConsulAgent(array(
-    'uri'     => sprintf('http://%s:%s', $host, $port),
+    'uri'     => sprintf('http://%s:%s', $consulHost, $consulPort),
+    'timeout' => 2,
+));
+
+$health = new JetConsulHealth(array(
+    'uri'     => sprintf('http://%s:%s', $consulHost, $consulPort),
     'timeout' => 2,
 ));
 
 $protocols = array('jsonrpc-http', 'jsonrpc');
 $ports     = array(9502, 9503);
-$host      = PHP_OS === 'Darwin' ? 'localhost' : 'localhost';
+$host      = PHP_OS === 'Darwin' ? getHostByName(getHostName()) : 'localhost';
 
 foreach ($protocols as $i => $protocol) {
     echo "Registering {$protocol} ...\n";
@@ -26,7 +30,7 @@ foreach ($protocols as $i => $protocol) {
     $requestBody = array(
         'Name'    => 'CalculatorService',
         'ID'      => 'CalculatorService-' . $protocol,
-        'Address' => '127.0.0.1',
+        'Address' => $host,
         'Port'    => $ports[$i],
         'Meta'    => array(
             'Protocol' => $protocol,
@@ -58,10 +62,5 @@ foreach ($protocols as $i => $protocol) {
     }
 
 }
-
-$health = new JetConsulHealth(array(
-    'uri'     => sprintf('http://%s:%s', $host, $port),
-    'timeout' => 2,
-));
 
 var_dump($health->service('CalculatorService')->throwIf()->json());
