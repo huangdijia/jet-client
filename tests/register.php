@@ -2,10 +2,10 @@
 
 require_once __DIR__ . '/../src/bootstrap.php';
 
-$agent = new JetConsulAgent([
+$agent = new JetConsulAgent(array(
     'uri'     => 'http://127.0.0.1:8500',
     'timeout' => 2,
-]);
+));
 
 $protocols = array('jsonrpc-http', 'jsonrpc');
 $ports     = array(9502, 9503);
