@@ -121,18 +121,17 @@ class JetConsulRegistry implements JetRegistryInterface
 
         $serviceBalancer = new JetRandomLoadBalancer($nodes);
         $node            = $serviceBalancer->select();
-        $nodeType        = $node->options['type'];
 
-        $nodes = array_filter($nodes, function ($node) use ($nodeType) {
-            return $node->options['type'] = $nodeType;
-        });
-
-        $serviceBalancer->setNodes($nodes);
-
-        if ($nodeType == 'tcp') {
+        if ($node->options['type'] == 'tcp') {
             $transporter = new JetStreamSocketTransporter($node->host, $node->port);
+            $serviceBalancer->setNodes(array_filter($nodes, function ($node) {
+                return $node->options['type'] = 'tcp';
+            }));
         } else {
             $transporter = new JetCurlHttpTransporter($node->host, $node->port);
+            $serviceBalancer->setNodes(array_filter($nodes, function ($node) {
+                return $node->options['type'] = 'http';
+            }));
         }
 
         if (count($nodes) > 1) {
