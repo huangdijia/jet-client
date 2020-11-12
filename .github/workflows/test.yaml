@@ -27,11 +27,11 @@ jobs:
           docker run -d --name dev-consul -e CONSUL_BIND_INTERFACE=eth0 --network host consul
       - name: Setup Services
         run: |
-          # docker run -d --name jsonrpc -p 9501:9501 -p 9502:9502 -p 9503:9503 -p 9504:9504 limingxinleo/hyperf-jsonrpc-demo:latest
           pecl install swoole
           git clone https://github.com/limingxinleo/hyperf-jsonrpc-demo.git
           php -d swoole.use_shortname=Off hyperf-jsonrpc-demo/bin/hyperf.php start
           sleep 5
+          # docker run -d --name jsonrpc -p 9501:9501 -p 9502:9502 -p 9503:9503 -p 9504:9504 limingxinleo/hyperf-jsonrpc-demo:latest
       - name: Register Services
           php ./tests/register.php
       - name: Run Test Cases
