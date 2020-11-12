@@ -101,6 +101,7 @@ class JetConsulClient
                 curl_setopt($ch, CURLOPT_HTTPGET, true);
                 break;
             default:
+                throw new JetClientException("Not support method: {$method}");
                 break;
         }
 
