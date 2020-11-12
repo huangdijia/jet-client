@@ -8,6 +8,8 @@ $configs    = include $configFile;
 $host = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
 $port = JetUtil::arrayGet($configs, 'consul.port', 8500);
 
+var_dump($host, $port);
+
 $agent = new JetConsulAgent(array(
     'uri'     => sprintf('http://%s:%s', $host, $port),
     'timeout' => 2,
@@ -49,6 +51,6 @@ foreach ($protocols as $i => $protocol) {
             break;
     }
 
-    $response = $agent->registerService($requestBody)->throwIf()->json();
-    var_dump($response);
+    // var_dump($requestBody);
+    $response = $agent->registerService($requestBody)->throwIf();
 }

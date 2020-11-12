@@ -41,20 +41,14 @@ class JetConsulClient
      */
     public function request($method = 'GET', $uri = '', $options = array())
     {
-        $url = $this->baseUri . '/' . ltrim($uri, '/');
-        $ch  = curl_init();
+        $headers = array_merge_recursive($this->headers, isset($options['headers']) ? $options['headers'] : array());
+        $url     = $this->baseUri . '/' . ltrim($uri, '/');
+        $ch      = curl_init();
 
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-
-        if ($this->headers) {
-            $headers = array_map(function ($k, $v) {
-                return "{$k}: {$v}";
-            }, array_keys($this->headers), array_values($this->headers));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        }
 
         if (preg_match('/^https:\/\//', $url)) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -68,12 +62,24 @@ class JetConsulClient
                 curl_setopt($ch, CURLOPT_POSTFIELDS, JetUtil::arrayGet($options, 'form_params', array()));
                 break;
             case 'PUT':
+                $body    = json_encode(JetUtil::arrayGet($options, 'body', array()));
+                $headers = array_merge_recursive($headers, array(
+                    'Content-Type'   => 'application/json; charset=utf-8',
+                    'Content-Length' => strlen($body),
+                ));
+
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(JetUtil::arrayGet($options, 'body', array())));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
                 break;
             case 'DELETE':
+                $body    = json_encode(JetUtil::arrayGet($options, 'body', array()));
+                // $headers = array_merge_recursive($headers, array(
+                //     'Content-Type'   => 'application/json',
+                //     'Content-Length' => strlen($body),
+                // ));
+
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(JetUtil::arrayGet($options, 'body', array())));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
                 break;
             case 'GET':
                 $url .= (strpos($url, '?') === false ? '?' : '&') . http_build_query($options['query']);
@@ -81,6 +87,15 @@ class JetConsulClient
                 break;
             default:
                 break;
+        }
+
+        if ($headers) {
+            $modifyHeaders = array();
+            foreach ($headers as $k => $v) {
+                $modifyHeaders[] = "{$k}: {$v}";
+            }
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $modifyHeaders);
         }
 
         curl_setopt($ch, CURLOPT_URL, $url);

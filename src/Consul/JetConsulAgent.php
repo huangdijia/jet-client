@@ -8,6 +8,6 @@ class JetConsulAgent extends JetConsulClient
             'body' => $service,
         );
 
-        return $this->request('PUT', '/v1/agent/service/register', $options);
+        return $this->request('PUT', '/v1/agent/service/register?replace-existing-checks=true', $options);
     }
 }
