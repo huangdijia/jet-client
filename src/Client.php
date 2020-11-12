@@ -62,10 +62,10 @@ class Client
     }
 
     /**
-     * @param mixed $name 
-     * @param mixed $arguments 
-     * @return mixed 
-     * @throws Throwable 
+     * @param mixed $name
+     * @param mixed $arguments
+     * @throws Throwable
+     * @return mixed
      */
     public function __call($name, $arguments)
     {

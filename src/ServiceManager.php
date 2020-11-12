@@ -95,7 +95,7 @@ class ServiceManager
     public static function assertTransporter($transporter)
     {
         if (! is_null($transporter) && ! ($transporter instanceof TransporterInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s transporter must be instanceof %s.', TransporterInterface::class));
+            throw new InvalidArgumentException(sprintf('Service\'s TRANSPORTER must be instanceof %s.', TransporterInterface::class));
         }
     }
 
@@ -106,7 +106,7 @@ class ServiceManager
     public static function assertRegistry($registry)
     {
         if (! is_null($registry) && ! ($registry instanceof RegistryInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s registry must be instanceof %s.', RegistryInterface::class));
+            throw new InvalidArgumentException(sprintf('Service\'s REGISTRY must be instanceof %s.', RegistryInterface::class));
         }
     }
 
@@ -117,7 +117,7 @@ class ServiceManager
     public static function assertPacker($packer)
     {
         if (! is_null($packer) && ! ($packer instanceof PackerInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s packer must be instanceof %s.', PackerInterface::class));
+            throw new InvalidArgumentException(sprintf('Service\'s PACKER must be instanceof %s.', PackerInterface::class));
         }
     }
 
@@ -128,7 +128,7 @@ class ServiceManager
     public static function assertDataFormatter($dataFormatter)
     {
         if (! is_null($dataFormatter) && ! ($dataFormatter instanceof DataFormatterInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s packer must be instanceof %s.', DataFormatterInterface::class));
+            throw new InvalidArgumentException(sprintf('Service\'s DATA_FORMATTER must be instanceof %s.', DataFormatterInterface::class));
         }
     }
 
@@ -139,7 +139,7 @@ class ServiceManager
     public static function assertPathGenerator($pathGenerator)
     {
         if (! is_null($pathGenerator) && ! ($pathGenerator instanceof PathGeneratorInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s packer must be instanceof %s.', PathGeneratorInterface::class));
+            throw new InvalidArgumentException(sprintf('Service\'s PATH_GENERATOR must be instanceof %s.', PathGeneratorInterface::class));
         }
     }
 
@@ -149,8 +149,8 @@ class ServiceManager
      */
     public static function assertTries($tries)
     {
-        if (! is_int($tries)) {
-            throw new InvalidArgumentException('Service\'s packer must be int.');
+        if (! is_null($tries) && ! is_int($tries)) {
+            throw new InvalidArgumentException('Service\'s TRIES must be int.');
         }
     }
 }
