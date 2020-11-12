@@ -2,8 +2,14 @@
 
 require_once __DIR__ . '/../src/bootstrap.php';
 
+$configFile = is_file(__DIR__ . '/config.php') ? __DIR__ . '/config.php' : __DIR__ . '/config.php.dist';
+$configs    = include $configFile;
+
+$host = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
+$port = JetUtil::arrayGet($configs, 'consul.port', 8500);
+
 $agent = new JetConsulAgent(array(
-    'uri'     => 'http://127.0.0.1:8500',
+    'uri'     => sprintf('http://%s:%s', $host, $port),
     'timeout' => 2,
 ));
 
