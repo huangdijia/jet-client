@@ -51,6 +51,8 @@ foreach ($protocols as $i => $protocol) {
             break;
     }
 
+    echo "Service Metadata: " . json_encode($requestBody) . "\n";
+
     if ($agent->registerService($requestBody)->throwIf()->ok()) {
         echo "Registered!\n";
     }
