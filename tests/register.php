@@ -18,6 +18,8 @@ $ports     = array(9502, 9503);
 $host      = PHP_OS === 'Darwin' ? 'docker.for.mac.host.internal' : 'localhost';
 
 foreach ($protocols as $i => $protocol) {
+    echo "Registering {$protocol} ...\n";
+
     // $agent
     $requestBody = array(
         'Name'    => 'CalculatorService',
