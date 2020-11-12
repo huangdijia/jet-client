@@ -20,34 +20,35 @@ composer require "huangdijia/jet-client:^1.0"
 
 ## Quickstart
 
-### Register a service
+### Register with metadata
 
 ~~~php
-JetServiceManager::register('CalculatorService', array(
-    // register transporter
+JetServiceManager::register('CalculatorService', [
+    // register with transporter
     JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
-    // register service center
+    // or register with registry
     JetServiceManager::REGISTRY => new JetConsulRegistry('127.0.0.1', 8500),
-));
+]);
 ~~~
 
-### Register services by service center
+### Auto register services by registry
 
 ~~~php
-
 $registry = new JetConsulRegistry($host, $port);
-$services = $registry->getServices();
+$registry->register('CalculatorService'); // register a service
+$registry->register(['CalculatorService', 'AnotherService']); // register some services
+$registry->register(); // register all service
+~~~
 
-foreach ($services as $service) {
-    JetServiceManager::register($service, array(
-        JetServiceManager::REGISTRY => $registry,
-    ));
-}
+### Register default registry
+
+~~~php
+JetServiceManager::registerDefaultRegistry(new new JetConsulRegistry($host, $port));
 ~~~
 
 ## Call RPC method
 
-### Call by ClientFactory
+### Call by JetClientFactory
 
 ~~~php
 $client = JetClientFactory::create('CalculatorService');
@@ -62,15 +63,16 @@ var_dump($client->add(1, 20));
  */
 class CalculatorService extends JetClient
 {
-    public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null)
+    public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null, $tries = null)
     {
+        // Custom transporter
+        $transporter = new JetCurlHttpTransporter('127.0.0.1', 9502);
+
+        // Or get tranporter by registry
         $registry    = new JetConsulRegistry('127.0.0.1', 8500);
         $transporter = $registry->getTransporter($service);
 
-        // or
-        $transporter = new JetCurlHttpTransporter('127.0.0.1', 9502);
-
-        parent::__construct($service, $transporter, $packer, $dataFormatter, $pathGenerator);
+        parent::__construct($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
     }
 }
 

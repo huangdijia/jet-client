@@ -139,4 +139,17 @@ class JetConsulRegistry implements JetRegistryInterface
 
         return $transporter;
     }
+
+    public function register($service = null)
+    {
+        if (is_null($service)) {
+            $service = $this->getServices();
+        }
+
+        foreach ((array) $service as $serviceName) {
+            JetServiceManager::register($service, array(
+                JetServiceManager::REGISTRY => $this,
+            ));
+        }
+    }
 }
