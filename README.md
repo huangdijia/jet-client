@@ -14,7 +14,7 @@ composer require "huangdijia/jet-client:^2.0"
 
 ## Quickstart
 
-### Register a service
+### Register with metadata
 
 ~~~php
 use Huangdijia\Jet\ServiceManager;
@@ -22,14 +22,14 @@ use Huangdijia\Jet\Registry\ConsulRegistry;
 use Huangdijia\Jet\Transporter\GuzzleHttpTransporter;
 
 ServiceManager::register('CalculatorService', [
-    // register transporter
+    // register with transporter
     ServiceManager::TRANSPORTER => new GuzzleHttpTransporter('127.0.0.1', 9502),
-    // register service center
+    // or register with registry
     ServiceManager::REGISTRY => new ConsulRegistry('127.0.0.1', 8500),
 ]);
 ~~~
 
-### Register services by service center
+### Auto register services by registry
 
 ~~~php
 use Huangdijia\Jet\ServiceManager;
@@ -39,6 +39,15 @@ $registry = new ConsulRegistry($host, $port);
 $registry->register('CalculatorService'); // register a service
 $registry->register(['CalculatorService', 'CalculatorService2']); // register some services
 $registry->register(); // register all service
+~~~
+
+### Register default registry
+
+~~~php
+use Huangdijia\Jet\ServiceManager;
+use Huangdijia\Jet\Registry\ConsulRegistry;
+
+ServiceManager::registerDefaultRegistry(new new ConsulRegistry($host, $port));
 ~~~
 
 ## Call RPC method
@@ -66,11 +75,12 @@ class CalculatorService extends Client
 {
     public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null)
     {
+        // Custom transporter
+        $transporter = new GuzzleHttpTransporter('127.0.0.1', 9502);
+
+        // Or get tranporter by registry
         $registry    = new ConsulRegistry('127.0.0.1', 8500);
         $transporter = $registry->getTransporter($service);
-
-        // or
-        $transporter = new GuzzleHttpTransporter('127.0.0.1', 9502);
 
         parent::__construct($service, $transporter, $packer, $dataFormatter, $pathGenerator);
     }
