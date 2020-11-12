@@ -68,7 +68,13 @@ class JetConsulClient
                         'Content-Type'   => 'application/json',
                         'Content-Length' => strlen($body),
                     ));
+
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+                } else {
+                    $headers = array_merge_recursive($headers, array(
+                        'Content-Type'   => 'application/json',
+                        'Content-Length' => 0,
+                    ));
                 }
 
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
@@ -81,12 +87,17 @@ class JetConsulClient
                         'Content-Length' => strlen($body),
                     ));
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+                } else {
+                    $headers = array_merge_recursive($headers, array(
+                        'Content-Type'   => 'application/json',
+                        'Content-Length' => 0,
+                    ));
                 }
 
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
                 break;
             case 'GET':
-                $url .= (strpos($url, '?') === false ? '?' : '&') . http_build_query($options['query']);
+                $url .= (strpos($url, '?') === false ? '?' : '&') . http_build_query(JetUtil::arrayGet($options, 'query'));
                 curl_setopt($ch, CURLOPT_HTTPGET, true);
                 break;
             default:
