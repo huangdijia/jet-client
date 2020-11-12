@@ -12,12 +12,16 @@ echo sprintf("CONSUL_URI: http://%s:%s\n", $host, $port);
 $catalog = new JetConsulCatalog(array(
     'uri' => sprintf('http://%s:%s', $host, $port),
 ));
+
+echo "Test get services by JetConsulCatalog\n";
 $services = $catalog->services()->json();
 var_dump($services);
 
+echo "Test get services by JetConsulRegistry\n";
 $registry = new JetConsulRegistry($host, $port);
 $services = $registry->getServices();
 var_dump($services);
 
+echo "Test get service nodes\n";
 $nodes = $registry->getServiceNodes($service  = 'CalculatorService');
 var_dump($nodes);
