@@ -243,6 +243,10 @@ class JetConsulResponse implements ArrayAccess
      */
     public function parseBody($response, $headerSize)
     {
+        if (strlen($response) == $headerSize) {
+            return '';
+        }
+
         return substr($response, $headerSize);
     }
 

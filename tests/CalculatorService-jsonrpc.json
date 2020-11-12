@@ -1,14 +1,14 @@
 {
     "Name": "CalculatorService",
     "ID": "CalculatorService-jsonrpc",
-    "Address": "127.0.0.1",
+    "Address": "192.168.2.22",
     "Port": 9503,
     "Meta": {
         "Protocol": "jsonrpc"
     },
     "Check": {
         "DeregisterCriticalServiceAfter": "90m",
-        "TCP": "localhost:9503",
+        "TCP": "192.168.2.22:9503",
         "Interval": "1s"
     }
 }

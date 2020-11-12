@@ -8,7 +8,7 @@ $configs    = include $configFile;
 $host = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
 $port = JetUtil::arrayGet($configs, 'consul.port', 8500);
 
-var_dump($host, $port);
+echo sprintf("Host: %s\nPort: %s\n", $host, $port);
 
 $agent = new JetConsulAgent(array(
     'uri'     => sprintf('http://%s:%s', $host, $port),
@@ -51,9 +51,8 @@ foreach ($protocols as $i => $protocol) {
             break;
     }
 
-    // $response = $agent->deregisterService($requestBody['ID']);
-    // var_dump($response->body());
-    echo json_encode($requestBody);
-    $response = $agent->registerService($requestBody)->throwIf();
-    var_dump($response->body());
+    if ($agent->registerService($requestBody)->throwIf()->ok()) {
+        echo "Registered!\n";
+    }
+
 }
