@@ -1,5 +1,7 @@
 <?php
 
+use Huangdijia\Jet\ServiceManager;
+
 class JetClient
 {
     protected $service;
@@ -30,12 +32,12 @@ class JetClient
      * @param JetPackerInterface|null $packer
      * @param JetDataFormatterInterface|null $dataFormatter
      * @param JetPathGeneratorInterface|null $pathGenerator
-     * @param int $tries
+     * @param int|null $tries
      * @return void
      * @throws InvalidArgumentException
      * @throws Exception
      */
-    public function __construct($service, $transporter, $packer = null, $dataFormatter = null, $pathGenerator = null, $tries = 1)
+    public function __construct($service, $transporter, $packer = null, $dataFormatter = null, $pathGenerator = null, $tries = null)
     {
         if (is_null($packer)) {
             $packer = new JetJsonEofPacker();
@@ -46,10 +48,15 @@ class JetClient
         if (is_null($pathGenerator)) {
             $pathGenerator = new JetPathGenerator();
         }
+        if (is_null($tries)) {
+            $tries = 1;
+        }
 
-        JetUtil::throwIf(!($packer instanceof JetPackerInterface), new InvalidArgumentException('Invaild $packer'));
-        JetUtil::throwIf(!($dataFormatter instanceof JetDataFormatterInterface), new InvalidArgumentException('Invaild $dataFormatter'));
-        JetUtil::throwIf(!($pathGenerator instanceof JetPathGeneratorInterface), new InvalidArgumentException('Invaild $pathGenerator'));
+        JetServiceManager::assertTransporter($transporter);
+        JetServiceManager::assertPacker($packer);
+        JetServiceManager::assertDataFormatter($dataFormatter);
+        JetServiceManager::assertPathGenerator($pathGenerator);
+        JetServiceManager::assertTries($tries);
 
         $this->service       = $service;
         $this->transporter   = $transporter;

@@ -14,13 +14,3 @@ var_dump($services);
 $registry = new JetConsulRegistry($host, $port);
 $services = $registry->getServices();
 var_dump($services);
-
-foreach ($services as $service) {
-    JetServiceManager::register($service, array(
-        JetServiceManager::REGISTRY => $registry,
-    ));
-}
-
-foreach ($services as $service) {
-    var_dump(JetServiceManager::get($service));
-}

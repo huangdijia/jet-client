@@ -7,16 +7,18 @@ $port    = JetUtil::arrayGet($configs, 'consul.port', 8500);
 
 $registry = new JetConsulRegistry($host, $port);
 
-JetServiceManager::register('CalculatorService', array(
+JetServiceManager::registerDefaultRegistry($registry);
+
+// JetServiceManager::register('CalculatorService', array(
     // JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
     // JetServiceManager::TRANSPORTER => $registry->getTransporter('CalculatorService'),
-    JetServiceManager::REGISTRY => $registry,
-));
-JetServiceManager::register('CalculatorService:tcp', array(
+    // JetServiceManager::REGISTRY => $registry,
+// ));
+// JetServiceManager::register('CalculatorService:tcp', array(
     // JetServiceManager::TRANSPORTER => new JetStreamSocketTransporter('127.0.0.1', 9503),
     // JetServiceManager::TRANSPORTER => $registry->getTransporter('CalculatorTcpService', 'jsonrpc'),
-    JetServiceManager::REGISTRY => $registry,
-));
+    // JetServiceManager::REGISTRY => $registry,
+// ));
 
 /**
  * @method static int add(int $a, int $b)

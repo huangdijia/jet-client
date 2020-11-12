@@ -9,6 +9,8 @@ class JetServiceManager
     const PATH_GENERATOR = 'pg';
     const TRIES          = 'ts';
 
+    protected static $defaultRegistry;
+
     /**
      * @var array
      */
@@ -33,13 +35,20 @@ class JetServiceManager
     }
 
     /**
-     * @param string $service
+     * @param mixed $service
      * @param array $metadata
      * @return void
-     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public static function register($service, $metadata = array())
     {
+        static::assertTransporter(isset($metadata[static::TRANSPORTER]) ? $metadata[static::TRANSPORTER] : null);
+        static::assertRegistry(isset($metadata[static::REGISTRY]) ? $metadata[static::REGISTRY] : null);
+        static::assertPacker(isset($metadata[static::PACKER]) ? $metadata[static::PACKER] : null);
+        static::assertDataFormatter(isset($metadata[static::DATA_FORMATTER]) ? $metadata[static::DATA_FORMATTER] : null);
+        static::assertPathGenerator(isset($metadata[static::PATH_GENERATOR]) ? $metadata[static::PATH_GENERATOR] : null);
+        static::assertTries(isset($metadata[static::TRIES]) ? $metadata[static::TRIES] : null);
+
         static::$services[$service] = $metadata;
     }
 
@@ -51,5 +60,91 @@ class JetServiceManager
     public static function deregister($service)
     {
         unset(static::$services[$service]);
+    }
+
+    /**
+     * @param JetRegistryInterface $registry 
+     * @return void 
+     * @throws InvalidArgumentException 
+     */
+    public static function registerDefaultRegistry($registry)
+    {
+        static::assertRegistry($registry);
+
+        static::$defaultRegistry = $registry;
+    }
+
+    /**
+     * @return null|JetRegistryInterface
+     */
+    public static function getDefaultRegistry()
+    {
+        return static::$defaultRegistry;
+    }
+
+    /**
+     * @param mixed $transporter
+     * @throws InvalidArgumentException
+     */
+    public static function assertTransporter($transporter)
+    {
+        if (!is_null($transporter) && !($transporter instanceof JetTransporterInterface)) {
+            throw new InvalidArgumentException(sprintf('Service\'s transporter must be instanceof %s.', 'JetTransporterInterface'));
+        }
+    }
+
+    /**
+     * @param mixed $registry
+     * @throws InvalidArgumentException
+     */
+    public static function assertRegistry($registry)
+    {
+        if (!is_null($registry) && !($registry instanceof JetRegistryInterface)) {
+            throw new InvalidArgumentException(sprintf('Service\'s registry must be instanceof %s.', 'JetRegistryInterface'));
+        }
+    }
+
+    /**
+     * @param mixed $packer
+     * @throws InvalidArgumentException
+     */
+    public static function assertPacker($packer)
+    {
+        if (!is_null($packer) && !($packer instanceof JetPackerInterface)) {
+            throw new InvalidArgumentException(sprintf('Service\'s PACKER must be instanceof %s.', 'JetPackerInterface'));
+        }
+    }
+
+    /**
+     * @param mixed $dataFormatter
+     * @throws InvalidArgumentException
+     */
+    public static function assertDataFormatter($dataFormatter)
+    {
+        if (!is_null($dataFormatter) && !($dataFormatter instanceof JetDataFormatterInterface)) {
+            throw new InvalidArgumentException(sprintf('Service\'s DATA_FORMATTER must be instanceof %s.', 'JetDataFormatterInterface'));
+        }
+    }
+
+    /**
+     * @param mixed $pathGenerator
+     * @throws InvalidArgumentException
+     */
+    public static function assertPathGenerator($pathGenerator)
+    {
+        if (!is_null($pathGenerator) && !($pathGenerator instanceof JetPathGeneratorInterface)) {
+            throw new InvalidArgumentException(sprintf('Service\'s PATH_GENERATOR must be instanceof %s.', 'JetPathGeneratorInterface'));
+        }
+    }
+
+    /**
+     * @param mixed $tries
+     * @throws InvalidArgumentException
+     */
+    public static function assertTries($tries)
+    {
+        if (!is_null($tries) && !is_int($tries)) {
+            throw new InvalidArgumentException('Service\'s TRIES must be int.');
+        }
     }
 }
