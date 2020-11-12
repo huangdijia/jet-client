@@ -20,6 +20,7 @@ use Huangdijia\Jet\Exception\RecvFailedException;
 use Huangdijia\Jet\Exception\ServerException;
 use Huangdijia\Jet\Packer\JsonEofPacker;
 use Huangdijia\Jet\PathGenerator\PathGenerator;
+use Throwable;
 
 class Client
 {
@@ -50,16 +51,22 @@ class Client
      */
     protected $tries;
 
-    public function __construct(string $service, TransporterInterface $transporter, PackerInterface $packer = null, DataFormatterInterface $dataFormatter = null, PathGeneratorInterface $pathGenerator = null, int $tries = 1)
+    public function __construct(string $service, TransporterInterface $transporter, ?PackerInterface $packer = null, ?DataFormatterInterface $dataFormatter = null, ?PathGeneratorInterface $pathGenerator = null, ?int $tries = null)
     {
         $this->service = $service;
         $this->transporter = $transporter;
         $this->packer = $packer ?? new JsonEofPacker();
         $this->dataFormatter = $dataFormatter ?? new DataFormatter();
         $this->pathGenerator = $pathGenerator ?? new PathGenerator();
-        $this->tries = $tries;
+        $this->tries = $tries ?? 1;
     }
 
+    /**
+     * @param mixed $name 
+     * @param mixed $arguments 
+     * @return mixed 
+     * @throws Throwable 
+     */
     public function __call($name, $arguments)
     {
         $tries = $this->tries;
@@ -82,7 +89,9 @@ class Client
 
             $ret = $transporter->recv();
 
-            throw_if(! is_string($ret), new RecvFailedException('Recv failed'));
+            if (! is_string($ret)) {
+                throw new RecvFailedException('Recv failed');
+            }
 
             return with($packer->unpack($ret), function ($data) {
                 if (array_key_exists('result', $data)) {

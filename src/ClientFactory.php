@@ -11,83 +11,80 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Jet;
 
+use Exception;
 use Huangdijia\Jet\Contract\DataFormatterInterface;
 use Huangdijia\Jet\Contract\PackerInterface;
 use Huangdijia\Jet\Contract\PathGeneratorInterface;
 use Huangdijia\Jet\Contract\RegistryInterface;
 use Huangdijia\Jet\Contract\TransporterInterface;
 use Huangdijia\Jet\Exception\ClientException;
+use InvalidArgumentException;
 
 class ClientFactory
 {
     /**
      * Create a client.
-     * @param null|string|TransporterInterface $transporter
-     * @return Client
+     *
+     * @param null|string|TransporterInterface $transporter transporter, protocol or null
+     * @throws InvalidArgumentException
+     * @throws Exception
      */
-    public static function create(string $service, $transporter = null)
+    public static function create(string $service, $transporter = null, ?PackerInterface $packer = null, ?DataFormatterInterface $dataFormatter = null, ?PathGeneratorInterface $pathGenerator = null, ?int $tries = null): Client
     {
-        $packer = null;
-        $dataFormatter = null;
-        $pathGenerator = null;
         $protocol = null;
-        $tries = 1;
 
-        if (! ($transporter instanceof TransporterInterface)) {
-            $serviceMetadata = ServiceManager::get($service);
-
-            if (! $serviceMetadata && $registry = ServiceManager::getDefaultRegistry()) {
-                $serviceMetadata = [ServiceManager::REGISTRY => $registry];
-            }
-
-            throw_if(
-                ! $serviceMetadata,
-                new ClientException(sprintf('Service %s does not register yet.', $service))
-            );
-
-            // when $transporter is string
-            if (is_string($transporter)) {
-                $protocol = $transporter;
-                $transporter = null;
-            }
-
-            if (isset($serviceMetadata[ServiceManager::TRANSPORTER])) { // preference to using transporter
-                $transporter = $serviceMetadata[ServiceManager::TRANSPORTER];
-
-                throw_if(
-                    ! ($transporter instanceof TransporterInterface),
-                    new ClientException(sprintf('Service %s\'s transporter must be instanceof %s.', $service, TransporterInterface::class))
-                );
-            } elseif (isset($serviceMetadata[ServiceManager::REGISTRY])) { // using registry
-                /** @var RegistryInterface $registry */
-                $registry = $serviceMetadata[ServiceManager::REGISTRY];
-
-                throw_if(
-                    ! ($registry instanceof RegistryInterface),
-                    new ClientException(sprintf('Service %s\'s registry must be instanceof %s.', $service, RegistryInterface::class))
-                );
-
-                $transporter = $registry->getTransporter($service, $protocol);
-            }
-
-            throw_if(! $transporter, new ClientException(sprintf('Service %s\'s transporter does not register yet.', $service)));
-
-            if (isset($serviceMetadata[ServiceManager::PACKER]) && $serviceMetadata[ServiceManager::PACKER] instanceof PackerInterface) {
-                $packer = $serviceMetadata[ServiceManager::PACKER];
-            }
-
-            if (isset($serviceMetadata[ServiceManager::DATA_FORMATTER]) && $serviceMetadata[ServiceManager::DATA_FORMATTER] instanceof DataFormatterInterface) {
-                $dataFormatter = $serviceMetadata[ServiceManager::DATA_FORMATTER];
-            }
-
-            if (isset($serviceMetadata[ServiceManager::PATH_GENERATOR]) && $serviceMetadata[ServiceManager::PATH_GENERATOR] instanceof PathGeneratorInterface) {
-                $pathGenerator = $serviceMetadata[ServiceManager::PATH_GENERATOR];
-            }
-
-            if (isset($serviceMetadata[ServiceManager::TRIES])) {
-                $tries = (int) $serviceMetadata[ServiceManager::TRIES];
-            }
+        if ($transporter instanceof TransporterInterface) {
+            return static::createWithTransporter(...func_get_args());
         }
+
+        // when $transporter is string
+        if (is_string($transporter)) {
+            $protocol = $transporter;
+            $transporter = null;
+        }
+
+        $serviceMetadata = ServiceManager::get($service);
+
+        if (! $serviceMetadata) {
+            if ($registry = ServiceManager::getDefaultRegistry()) {
+                return self::createWithRegistry($service, $registry, $protocol, $packer, $dataFormatter, $pathGenerator, $tries);
+            }
+
+            throw new ClientException(sprintf('Service %s does not register yet.', $service));
+        }
+
+        if (isset($serviceMetadata[ServiceManager::TRANSPORTER])) { // preference to using transporter
+            /** @var TransporterInterface $transporter */
+            $transporter = $serviceMetadata[ServiceManager::TRANSPORTER];
+        } elseif (isset($serviceMetadata[ServiceManager::REGISTRY])) { // using registry
+            /** @var RegistryInterface $registry */
+            $registry = $serviceMetadata[ServiceManager::REGISTRY];
+            $transporter = $registry->getTransporter($service, $protocol);
+        }
+
+        if (! $transporter) {
+            throw new ClientException(sprintf('Service %s\'s transporter does not register yet.', $service));
+        }
+
+        $packer = $packer ?? $serviceMetadata[ServiceManager::PACKER] ?? null;
+        $dataFormatter = $dataFormatter ?? $serviceMetadata[ServiceManager::DATA_FORMATTER] ?? null;
+        $pathGenerator = $pathGenerator ?? $serviceMetadata[ServiceManager::PATH_GENERATOR] ?? null;
+        $tries = $tries ?? $serviceMetadata[ServiceManager::TRIES] ?? 1;
+
+        return static::createWithTransporter($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
+    }
+
+    /**
+     * Create a client with transporter.
+     */
+    public static function createWithTransporter(string $service, TransporterInterface $transporter, ?PackerInterface $packer = null, ?DataFormatterInterface $dataFormatter = null, ?PathGeneratorInterface $pathGenerator = null, ?int $tries = null): Client
+    {
+        return new Client($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
+    }
+
+    public static function createWithRegistry(string $service, RegistryInterface $registry, ?string $protocol = null, ?PackerInterface $packer = null, ?DataFormatterInterface $dataFormatter = null, ?PathGeneratorInterface $pathGenerator = null, ?int $tries = null): Client
+    {
+        $transporter = $registry->getTransporter($service, $protocol);
 
         return new Client($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
     }
