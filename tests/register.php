@@ -47,5 +47,7 @@ foreach ($protocols as $i => $protocol) {
             break;
     }
 
-    $agent->registerService($requestBody);
+    $response = $agent->registerService($requestBody);
+
+    var_dump($response->body());
 }
