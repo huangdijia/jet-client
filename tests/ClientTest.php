@@ -36,7 +36,7 @@ var_dump($client->add(rand(0, 100), rand(0, 100)));
 // $client = JetClientFactory::create($service, 'jsonrpc');
 // var_dump($client->add(rand(0, 100), rand(0, 100)));
 
-echo "Create with face\n";
+echo "Create with facade\n";
 /**
  * @method static int add(int $a, int $b)
  */
@@ -44,8 +44,8 @@ class Calculator extends JetFacade
 {
     protected static function getFacadeAccessor()
     {
-        return JetClientFactory::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));
-        // return 'CalculatorService';
+        // return JetClientFactory::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));
+        return 'CalculatorService';
     }
 }
 
