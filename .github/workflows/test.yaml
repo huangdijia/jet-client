@@ -27,6 +27,7 @@ jobs:
           docker run -d --name dev-consul -e CONSUL_BIND_INTERFACE=eth0 --network host consul
       - name: Setup Services
         run: |
+          pecl update-channels
           pecl install swoole
           git clone https://github.com/limingxinleo/hyperf-jsonrpc-demo.git
           php -d swoole.use_shortname=Off hyperf-jsonrpc-demo/bin/hyperf.php start
