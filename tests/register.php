@@ -58,3 +58,10 @@ foreach ($protocols as $i => $protocol) {
     }
 
 }
+
+$health = new JetConsulHealth(array(
+    'uri'     => sprintf('http://%s:%s', $host, $port),
+    'timeout' => 2,
+));
+
+var_dump($health->service('CalculatorService')->throwIf()->json());
