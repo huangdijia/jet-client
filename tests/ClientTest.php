@@ -18,18 +18,23 @@ JetServiceManager::registerDefaultRegistry($registry);
 // JetServiceManager::REGISTRY => $registry,
 // ));
 
+echo "Create with http transporter\n";
 $client = JetClientFactory::create($service, new JetCurlHttpTransporter('127.0.0.1', 9502));
 var_dump($client->add(rand(0, 100), rand(0, 100)));
 
+echo "Create with jsonrpc-http protocol\n";
 $client = JetClientFactory::create($service, 'jsonrpc-http');
 var_dump($client->add(rand(0, 100), rand(0, 100)));
 
+echo "Create with tcp transporter\n";
 $client = JetClientFactory::create($service, new JetStreamSocketTransporter('127.0.0.1', 9503));
 var_dump($client->add(rand(0, 100), rand(0, 100)));
 
+echo "Create with jsonrpc protocol\n";
 $client = JetClientFactory::create($service, 'jsonrpc');
 var_dump($client->add(rand(0, 100), rand(0, 100)));
 
+echo "Create with face\n";
 /**
  * @method static int add(int $a, int $b)
  */
@@ -44,6 +49,7 @@ class Calculator extends JetFacade
 
 var_dump(Calculator::add(rand(0, 100), rand(0, 100)));
 
+echo "Create with custom client\n";
 /**
  * @method int add(int$a, int$b)
  * @package
