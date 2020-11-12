@@ -5,20 +5,28 @@ $configs = include __DIR__ . '/config.php';
 $host    = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
 $port    = JetUtil::arrayGet($configs, 'consul.port', 8500);
 
+$service = 'CalculatorService';
 $registry = new JetConsulRegistry($host, $port);
 
 JetServiceManager::registerDefaultRegistry($registry);
 
-// JetServiceManager::register('CalculatorService', array(
+// JetServiceManager::register($service, array(
     // JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
-    // JetServiceManager::TRANSPORTER => $registry->getTransporter('CalculatorService'),
+    // JetServiceManager::TRANSPORTER => $registry->getTransporter($service),
     // JetServiceManager::REGISTRY => $registry,
 // ));
-// JetServiceManager::register('CalculatorService:tcp', array(
-    // JetServiceManager::TRANSPORTER => new JetStreamSocketTransporter('127.0.0.1', 9503),
-    // JetServiceManager::TRANSPORTER => $registry->getTransporter('CalculatorTcpService', 'jsonrpc'),
-    // JetServiceManager::REGISTRY => $registry,
-// ));
+
+$client = JetClientFactory::create($service, new JetCurlHttpTransporter('127.0.0.1', 9502));
+var_dump($client->add(rand(0, 100), rand(0, 100)));
+
+$client = JetClientFactory::create($service, 'jsonrpc-http');
+var_dump($client->add(rand(0, 100), rand(0, 100)));
+
+$client = JetClientFactory::create($service, new JetStreamSocketTransporter('127.0.0.1', 9503));
+var_dump($client->add(rand(0, 100), rand(0, 100)));
+
+$client = JetClientFactory::create($service, 'jsonrpc');
+var_dump($client->add(rand(0, 100), rand(0, 100)));
 
 /**
  * @method static int add(int $a, int $b)
@@ -50,9 +58,3 @@ class CalculatorService extends JetClient
 
 $service = new CalculatorService;
 var_dump($service->add(rand(0, 100), rand(0, 100)));
-
-$client = JetClientFactory::create('CalculatorService:tcp', 'jsonrpc');
-var_dump($client->add(rand(0, 100), rand(0, 100)));
-
-$client = JetClientFactory::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));
-var_dump($client->add(rand(0, 100), rand(0, 100)));

@@ -119,18 +119,20 @@ class JetConsulRegistry implements JetRegistryInterface
 
         JetUtil::throwIf(count($nodes) <= 0, new RuntimeException('Service nodes not found!'));
 
-        $transporter     = null;
-        $serviceBalancer = new JetRoundRobinLoadBalancer();
+        $serviceBalancer = new JetRandomLoadBalancer($nodes);
+        $node            = $serviceBalancer->select();
+        $nodeType        = $node->options['type'];
+
+        $nodes = array_filter($nodes, function ($node) use ($nodeType) {
+            return $node->options['type'] = $nodeType;
+        });
+
         $serviceBalancer->setNodes($nodes);
 
-        if (is_null($transporter)) {
-            $node = $serviceBalancer->select();
-
-            if ($node->options['type'] == 'tcp') {
-                $transporter = new JetStreamSocketTransporter($node->host, $node->port);
-            } else {
-                $transporter = new JetCurlHttpTransporter($node->host, $node->port);
-            }
+        if ($nodeType == 'tcp') {
+            $transporter = new JetStreamSocketTransporter($node->host, $node->port);
+        } else {
+            $transporter = new JetCurlHttpTransporter($node->host, $node->port);
         }
 
         if (count($nodes) > 1) {
