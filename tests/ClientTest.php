@@ -32,9 +32,9 @@ echo "Create with jsonrpc-http protocol\n";
 $client = JetClientFactory::create($service, 'jsonrpc-http');
 var_dump($client->add(rand(0, 100), rand(0, 100)));
 
-echo "Create with jsonrpc protocol\n";
-$client = JetClientFactory::create($service, 'jsonrpc');
-var_dump($client->add(rand(0, 100), rand(0, 100)));
+// echo "Create with jsonrpc protocol\n";
+// $client = JetClientFactory::create($service, 'jsonrpc');
+// var_dump($client->add(rand(0, 100), rand(0, 100)));
 
 echo "Create with face\n";
 /**
