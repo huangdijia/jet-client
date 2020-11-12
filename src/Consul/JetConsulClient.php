@@ -62,24 +62,28 @@ class JetConsulClient
                 curl_setopt($ch, CURLOPT_POSTFIELDS, JetUtil::arrayGet($options, 'form_params', array()));
                 break;
             case 'PUT':
-                $body    = json_encode(JetUtil::arrayGet($options, 'body', array()));
-                $headers = array_merge_recursive($headers, array(
-                    'Content-Type'   => 'application/json; charset=utf-8',
-                    'Content-Length' => strlen($body),
-                ));
+                if (JetUtil::arrayHas($options, 'body')) {
+                    $body    = json_encode(JetUtil::arrayGet($options, 'body', array()));
+                    $headers = array_merge_recursive($headers, array(
+                        'Content-Type'   => 'application/json',
+                        'Content-Length' => strlen($body),
+                    ));
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+                }
 
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
                 break;
             case 'DELETE':
-                $body    = json_encode(JetUtil::arrayGet($options, 'body', array()));
-                // $headers = array_merge_recursive($headers, array(
-                //     'Content-Type'   => 'application/json',
-                //     'Content-Length' => strlen($body),
-                // ));
+                if (JetUtil::arrayHas($options, 'body')) {
+                    $body    = json_encode(JetUtil::arrayGet($options, 'body', array()));
+                    $headers = array_merge_recursive($headers, array(
+                        'Content-Type'   => 'application/json',
+                        'Content-Length' => strlen($body),
+                    ));
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+                }
 
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
                 break;
             case 'GET':
                 $url .= (strpos($url, '?') === false ? '?' : '&') . http_build_query($options['query']);
@@ -91,11 +95,14 @@ class JetConsulClient
 
         if ($headers) {
             $modifyHeaders = array();
+
             foreach ($headers as $k => $v) {
                 $modifyHeaders[] = "{$k}: {$v}";
             }
 
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $modifyHeaders);
+            if ($modifyHeaders) {
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $modifyHeaders);
+            }
         }
 
         curl_setopt($ch, CURLOPT_URL, $url);
