@@ -17,7 +17,7 @@ $agent = new JetConsulAgent(array(
 
 $protocols = array('jsonrpc-http', 'jsonrpc');
 $ports     = array(9502, 9503);
-$host      = PHP_OS === 'Darwin' ? 'docker.for.mac.host.internal' : 'localhost';
+$host      = PHP_OS === 'Darwin' ? 'localhost' : 'localhost';
 
 foreach ($protocols as $i => $protocol) {
     echo "Registering {$protocol} ...\n";
