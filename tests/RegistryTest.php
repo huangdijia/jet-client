@@ -16,3 +16,6 @@ var_dump($services);
 $registry = new JetConsulRegistry($host, $port);
 $services = $registry->getServices();
 var_dump($services);
+
+$nodes = $registry->getServiceNodes($service  = 'CalculatorService');
+var_dump($nodes);
