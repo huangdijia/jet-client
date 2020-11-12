@@ -18,9 +18,9 @@ foreach ($protocols as $i => $protocol) {
         'ID'      => 'CalculatorService-' . $protocol,
         'Address' => '127.0.0.1',
         'Port'    => $ports[$i],
-        'Meta'    => [
+        'Meta'    => array(
             'Protocol' => $protocol,
-        ],
+        ),
     ];
 
     switch ($protocol) {
