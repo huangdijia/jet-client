@@ -144,19 +144,19 @@ class ConsulRegistry implements RegistryInterface
 
         throw_if(count($nodes) <= 0, new RuntimeException('Service nodes not found!'));
 
-        $transporter = null;
-        $serviceBalancer = new RoundRobin();
-        $serviceBalancer->setNodes($nodes);
+        $serviceBalancer = new RoundRobin($nodes);
+        $node = $serviceBalancer->select();
 
-        if (is_null($transporter)) {
-            $node = $serviceBalancer->select();
-
-            if ($node->options['type'] == 'tcp') {
-                $transporter = new StreamSocketTransporter($node->host, $node->port);
-            } else {
-                // $transporter = new GuzzleHttpTransporter($node->host, $node->port);
-                $transporter = new GuzzleHttpTransporter($node->host, $node->port);
-            }
+        if ($node->options['type'] == 'tcp') {
+            $transporter = new StreamSocketTransporter($node->host, $node->port);
+            $serviceBalancer->setNodes(array_filter($nodes, function ($node) {
+                return $node->options['type'] == 'tcp';
+            }));
+        } else {
+            $transporter = new GuzzleHttpTransporter($node->host, $node->port);
+            $serviceBalancer->setNodes(array_filter($nodes, function ($node) {
+                return $node->options['type'] == 'http';
+            }));
         }
 
         if (count($nodes) > 1) {
