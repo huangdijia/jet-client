@@ -44,8 +44,8 @@ class Calculator extends JetFacade
 {
     protected static function getFacadeAccessor()
     {
-        // return JetClientFactory::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));
-        return 'CalculatorService';
+        return JetClientFactory::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));
+        // return 'CalculatorService';
     }
 }
 
