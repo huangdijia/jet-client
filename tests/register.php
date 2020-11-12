@@ -13,7 +13,7 @@ $host      = PHP_OS === 'Darwin' ? 'docker.for.mac.host.internal' : 'localhost';
 
 foreach ($protocols as $i => $protocol) {
     // $agent
-    $requestBody = [
+    $requestBody = array(
         'Name'    => 'CalculatorService',
         'ID'      => 'CalculatorService-' . $protocol,
         'Address' => '127.0.0.1',
@@ -21,7 +21,7 @@ foreach ($protocols as $i => $protocol) {
         'Meta'    => array(
             'Protocol' => $protocol,
         ),
-    ];
+    );
 
     switch ($protocol) {
         case 'jsonrpc-http':
