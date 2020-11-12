@@ -53,5 +53,5 @@ foreach ($protocols as $i => $protocol) {
 
     // var_dump($requestBody);
     $response = $agent->registerService($requestBody)->throwIf();
-    var_dump($response);
+    var_dump($response->body());
 }
