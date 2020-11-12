@@ -28,9 +28,9 @@ echo "Create with tcp transporter\n";
 $client = JetClientFactory::create($service, new JetStreamSocketTransporter('127.0.0.1', 9503));
 var_dump($client->add(rand(0, 100), rand(0, 100)));
 
-echo "Create with jsonrpc-http protocol\n";
-$client = JetClientFactory::create($service, 'jsonrpc-http');
-var_dump($client->add(rand(0, 100), rand(0, 100)));
+// echo "Create with jsonrpc-http protocol\n";
+// $client = JetClientFactory::create($service, 'jsonrpc-http');
+// var_dump($client->add(rand(0, 100), rand(0, 100)));
 
 // echo "Create with jsonrpc protocol\n";
 // $client = JetClientFactory::create($service, 'jsonrpc');
@@ -44,8 +44,8 @@ class Calculator extends JetFacade
 {
     protected static function getFacadeAccessor()
     {
-        // return JetClientFactory::create('CalculatorService');
-        return 'CalculatorService';
+        return JetClientFactory::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));
+        // return 'CalculatorService';
     }
 }
 
