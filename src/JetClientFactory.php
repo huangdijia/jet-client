@@ -19,7 +19,7 @@ class JetClientFactory
         $serviceMetadata = JetServiceManager::get($service);
 
         if (!$serviceMetadata) {
-            if ($registry = JetServiceManager::getDefaultRegistry()) {
+            if ($registry = JetRegistryManager::get(JetRegistryManager::DEFAULT_REGISTRY)) {
                 return self::createWithRegistry($service, $registry, $protocol, $packer, $dataFormatter, $pathGenerator, $tries);
             }
 
@@ -30,8 +30,13 @@ class JetClientFactory
             /** @var TransporterInterface $transporter */
             $transporter = $serviceMetadata[JetServiceManager::TRANSPORTER];
         } elseif (isset($serviceMetadata[JetServiceManager::REGISTRY])) { // using registry
+            $registry = $serviceMetadata[JetServiceManager::REGISTRY];
+
+            if (is_string($registry)) {
+                $registry = JetRegistryManager::get($registry);
+            }
+
             /** @var RegistryInterface $registry */
-            $registry    = $serviceMetadata[JetServiceManager::REGISTRY];
             $transporter = $registry->getTransporter($service, $protocol);
         }
 

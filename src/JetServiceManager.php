@@ -9,8 +9,6 @@ class JetServiceManager
     const PATH_GENERATOR = 'pg';
     const TRIES          = 'ts';
 
-    protected static $defaultRegistry;
-
     /**
      * @var array
      */
@@ -63,15 +61,15 @@ class JetServiceManager
     }
 
     /**
-     * @param JetRegistryInterface $registry 
-     * @return void 
-     * @throws InvalidArgumentException 
+     * @param JetRegistryInterface $registry
+     * @return void
+     * @throws InvalidArgumentException
      */
     public static function registerDefaultRegistry($registry)
     {
         static::assertRegistry($registry);
 
-        static::$defaultRegistry = $registry;
+        JetRegistryManager::register(JetRegistryManager::DEFAULT_REGISTRY, $registry);
     }
 
     /**
@@ -79,7 +77,7 @@ class JetServiceManager
      */
     public static function getDefaultRegistry()
     {
-        return static::$defaultRegistry;
+        return JetRegistryManager::get(JetRegistryManager::DEFAULT_REGISTRY);
     }
 
     /**
@@ -99,7 +97,13 @@ class JetServiceManager
      */
     public static function assertRegistry($registry)
     {
-        if (!is_null($registry) && !($registry instanceof JetRegistryInterface)) {
+        if (is_null($registry)) {
+            return;
+        }
+
+        if (is_string($registry) && !JetRegistryManager::isRegistered($registry)) {
+            throw new InvalidArgumentException(sprintf('Registry \'%s\' not registered yet.', $registry));
+        } elseif (!($registry instanceof JetRegistryInterface)) {
             throw new InvalidArgumentException(sprintf('Service\'s registry must be instanceof %s.', 'JetRegistryInterface'));
         }
     }

@@ -9,6 +9,7 @@ $classMap = array(
     'JetLoadBalancerInterface' => $baseDir . '/Contract/JetLoadBalancerInterface.php',
     'JetTransporterInterface' => $baseDir . '/Contract/JetTransporterInterface.php',
     'JetServiceManager' => $baseDir . '/JetServiceManager.php',
+    'JetRegistryManager' => $baseDir . '/JetRegistryManager.php',
     'JetCurlHttpTransporter' => $baseDir . '/Transporter/JetCurlHttpTransporter.php',
     'JetStreamSocketTransporter' => $baseDir . '/Transporter/JetStreamSocketTransporter.php',
     'AbstractJetTransporter' => $baseDir . '/Transporter/AbstractJetTransporter.php',
