@@ -43,7 +43,7 @@ $registry->register(); // register all service
 ### Register default registry
 
 ~~~php
-JetServiceManager::registerDefaultRegistry(new new JetConsulRegistry($host, $port));
+JetRegistryManager::register(JetRegistryManager::DEFAULT, new new JetConsulRegistry($host, $port));
 ~~~
 
 ## Call RPC method
