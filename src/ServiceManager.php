@@ -57,16 +57,16 @@ class ServiceManager
     /**
      * @throws InvalidArgumentException
      */
-    public static function register(string $service, array $metadata = [])
+    public static function register(string $service, array $metadatas = [])
     {
-        static::assertTransporter($metadata[static::TRANSPORTER] ?? null);
-        static::assertRegistry($metadata[static::REGISTRY] ?? null);
-        static::assertPacker($metadata[static::PACKER] ?? null);
-        static::assertDataFormatter($metadata[static::DATA_FORMATTER] ?? null);
-        static::assertPathGenerator($metadata[static::PATH_GENERATOR] ?? null);
-        static::assertTries($metadata[static::TRIES] ?? null);
+        static::assertTransporter($metadatas[static::TRANSPORTER] ?? null);
+        static::assertRegistry($metadatas[static::REGISTRY] ?? null);
+        static::assertPacker($metadatas[static::PACKER] ?? null);
+        static::assertDataFormatter($metadatas[static::DATA_FORMATTER] ?? null);
+        static::assertPathGenerator($metadatas[static::PATH_GENERATOR] ?? null);
+        static::assertTries($metadatas[static::TRIES] ?? null);
 
-        static::$services[$service] = $metadata;
+        static::$services[$service] = $metadatas;
     }
 
     public static function deregister(string $service)

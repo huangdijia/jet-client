@@ -43,9 +43,9 @@ class ClientFactory
             $transporter = null;
         }
 
-        $serviceMetadata = ServiceManager::get($service);
+        $metadatas = ServiceManager::get($service);
 
-        if (! $serviceMetadata) {
+        if (! $metadatas) {
             if ($registry = RegistryManager::get(RegistryManager::DEFAULT)) {
                 return self::createWithRegistry($service, $registry, $protocol, $packer, $dataFormatter, $pathGenerator, $tries);
             }
@@ -53,12 +53,12 @@ class ClientFactory
             throw new ClientException(sprintf('Service %s does not register yet.', $service));
         }
 
-        if (isset($serviceMetadata[ServiceManager::TRANSPORTER])) { // Preference to using transporter
+        if (isset($metadatas[ServiceManager::TRANSPORTER])) { // Preference to using transporter
             /** @var TransporterInterface $transporter */
-            $transporter = $serviceMetadata[ServiceManager::TRANSPORTER];
-        } elseif (isset($serviceMetadata[ServiceManager::REGISTRY])) { // Using registry when registered
+            $transporter = $metadatas[ServiceManager::TRANSPORTER];
+        } elseif (isset($metadatas[ServiceManager::REGISTRY])) { // Using registry when registered
             /** @var RegistryInterface|string */
-            $registry = $serviceMetadata[ServiceManager::REGISTRY];
+            $registry = $metadatas[ServiceManager::REGISTRY];
 
             // Get registry from manager when it is string
             if (is_string($registry)) {
@@ -77,10 +77,10 @@ class ClientFactory
             throw new ClientException(sprintf('Transporter of %s does not register yet.', $service));
         }
 
-        $packer = $packer ?? $serviceMetadata[ServiceManager::PACKER] ?? null;
-        $dataFormatter = $dataFormatter ?? $serviceMetadata[ServiceManager::DATA_FORMATTER] ?? null;
-        $pathGenerator = $pathGenerator ?? $serviceMetadata[ServiceManager::PATH_GENERATOR] ?? null;
-        $tries = $tries ?? $serviceMetadata[ServiceManager::TRIES] ?? 1;
+        $packer = $packer ?? $metadatas[ServiceManager::PACKER] ?? null;
+        $dataFormatter = $dataFormatter ?? $metadatas[ServiceManager::DATA_FORMATTER] ?? null;
+        $pathGenerator = $pathGenerator ?? $metadatas[ServiceManager::PATH_GENERATOR] ?? null;
+        $tries = $tries ?? $metadatas[ServiceManager::TRIES] ?? 1;
 
         return static::createWithTransporter($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
     }
