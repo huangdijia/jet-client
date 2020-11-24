@@ -16,6 +16,7 @@ use Huangdijia\Jet\Contract\PackerInterface;
 use Huangdijia\Jet\Contract\PathGeneratorInterface;
 use Huangdijia\Jet\Contract\RegistryInterface;
 use Huangdijia\Jet\Contract\TransporterInterface;
+use Huangdijia\Jet\Exception\JetException;
 use InvalidArgumentException;
 
 class ServiceManager
@@ -31,8 +32,6 @@ class ServiceManager
     const PATH_GENERATOR = 'pg';
 
     const TRIES = 'ts';
-
-    protected static $defaultRegistry;
 
     /**
      * @var array
@@ -75,9 +74,13 @@ class ServiceManager
         unset(static::$services[$service]);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     * @throws JetException
+     */
     public static function registerDefaultRegistry(RegistryInterface $registry)
     {
-        static::$defaultRegistry = $registry;
+        RegistryManager::register(RegistryManager::DEFAULT, $registry);
     }
 
     /**
@@ -85,7 +88,7 @@ class ServiceManager
      */
     public static function getDefaultRegistry()
     {
-        return static::$defaultRegistry;
+        return RegistryManager::get(RegistryManager::DEFAULT);
     }
 
     /**
@@ -95,7 +98,7 @@ class ServiceManager
     public static function assertTransporter($transporter)
     {
         if (! is_null($transporter) && ! ($transporter instanceof TransporterInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s TRANSPORTER must be instanceof %s.', TransporterInterface::class));
+            throw new InvalidArgumentException(sprintf('Transporter of service must be instanceof %s.', TransporterInterface::class));
         }
     }
 
@@ -105,8 +108,16 @@ class ServiceManager
      */
     public static function assertRegistry($registry)
     {
-        if (! is_null($registry) && ! ($registry instanceof RegistryInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s REGISTRY must be instanceof %s.', RegistryInterface::class));
+        if (is_null($registry)) {
+            return;
+        }
+
+        if (is_string($registry)) {
+            if (! RegistryManager::isRegistered($registry)) {
+                throw new InvalidArgumentException(sprintf('Registry %s does not registered yet.', $registry));
+            }
+        } elseif (! ($registry instanceof RegistryInterface)) {
+            throw new InvalidArgumentException(sprintf('Register of service must be instanceof %s.', RegistryInterface::class));
         }
     }
 
@@ -117,7 +128,7 @@ class ServiceManager
     public static function assertPacker($packer)
     {
         if (! is_null($packer) && ! ($packer instanceof PackerInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s PACKER must be instanceof %s.', PackerInterface::class));
+            throw new InvalidArgumentException(sprintf('Packer of service must be instanceof %s.', PackerInterface::class));
         }
     }
 
@@ -139,7 +150,7 @@ class ServiceManager
     public static function assertPathGenerator($pathGenerator)
     {
         if (! is_null($pathGenerator) && ! ($pathGenerator instanceof PathGeneratorInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s PATH_GENERATOR must be instanceof %s.', PathGeneratorInterface::class));
+            throw new InvalidArgumentException(sprintf('PathGenerator of service must be instanceof %s.', PathGeneratorInterface::class));
         }
     }
 
@@ -150,7 +161,7 @@ class ServiceManager
     public static function assertTries($tries)
     {
         if (! is_null($tries) && ! is_int($tries)) {
-            throw new InvalidArgumentException('Service\'s TRIES must be int.');
+            throw new InvalidArgumentException('Tries of service must be int.');
         }
     }
 }

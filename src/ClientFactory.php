@@ -46,24 +46,35 @@ class ClientFactory
         $serviceMetadata = ServiceManager::get($service);
 
         if (! $serviceMetadata) {
-            if ($registry = ServiceManager::getDefaultRegistry()) {
+            if ($registry = RegistryManager::get(RegistryManager::DEFAULT)) {
                 return self::createWithRegistry($service, $registry, $protocol, $packer, $dataFormatter, $pathGenerator, $tries);
             }
 
             throw new ClientException(sprintf('Service %s does not register yet.', $service));
         }
 
-        if (isset($serviceMetadata[ServiceManager::TRANSPORTER])) { // preference to using transporter
+        if (isset($serviceMetadata[ServiceManager::TRANSPORTER])) { // Preference to using transporter
             /** @var TransporterInterface $transporter */
             $transporter = $serviceMetadata[ServiceManager::TRANSPORTER];
-        } elseif (isset($serviceMetadata[ServiceManager::REGISTRY])) { // using registry
-            /** @var RegistryInterface $registry */
+        } elseif (isset($serviceMetadata[ServiceManager::REGISTRY])) { // Using registry when registered
+            /** @var RegistryInterface|string */
             $registry = $serviceMetadata[ServiceManager::REGISTRY];
+
+            // Get registry from manager when it is string
+            if (is_string($registry)) {
+                if (! RegistryManager::isRegistered($registry)) {
+                    throw new InvalidArgumentException(sprintf('Registry %s does not registered yet.', $registry));
+                }
+
+                $registry = RegistryManager::get($registry);
+            }
+
+            /** @var RegistryInterface $registry */
             $transporter = $registry->getTransporter($service, $protocol);
         }
 
         if (! $transporter) {
-            throw new ClientException(sprintf('Service %s\'s transporter does not register yet.', $service));
+            throw new ClientException(sprintf('Transporter of %s does not register yet.', $service));
         }
 
         $packer = $packer ?? $serviceMetadata[ServiceManager::PACKER] ?? null;

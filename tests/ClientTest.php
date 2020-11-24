@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Huangdijia\Jet\Tests;
 
 use Huangdijia\Jet\ClientFactory;
+use Huangdijia\Jet\RegistryManager;
 use Huangdijia\Jet\ServiceManager;
 
 /**
@@ -26,9 +27,11 @@ class ClientTest extends TestCase
     {
         $registry = $this->createRegistry();
 
-        ServiceManager::register($this->service, [
-            ServiceManager::REGISTRY => $registry,
-        ]);
+        RegistryManager::register(RegistryManager::DEFAULT, $registry);
+
+        // ServiceManager::register($this->service, [
+        //     ServiceManager::REGISTRY => RegistryManager::DEFAULT,
+        // ]);
 
         $client = ClientFactory::create($this->service, 'jsonrpc-http');
 
