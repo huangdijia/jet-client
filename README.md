@@ -44,10 +44,10 @@ $registry->register(); // register all service
 ### Register default registry
 
 ~~~php
-use Huangdijia\Jet\ServiceManager;
+use Huangdijia\Jet\RegistryManager;
 use Huangdijia\Jet\Registry\ConsulRegistry;
 
-ServiceManager::registerDefaultRegistry(new new ConsulRegistry($host, $port));
+RegistryManager::register(RegistryManager::DEFAULT, new new ConsulRegistry($host, $port));
 ~~~
 
 ## Call RPC method
