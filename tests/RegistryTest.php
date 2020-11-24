@@ -11,9 +11,9 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Jet\Tests;
 
-use Huangdijia\Jet\ServiceManager;
-use Huangdijia\Jet\RegistryManager;
 use Huangdijia\Jet\Contract\RegistryInterface;
+use Huangdijia\Jet\RegistryManager;
+use Huangdijia\Jet\ServiceManager;
 
 /**
  * @internal
@@ -46,7 +46,7 @@ class RegistryTest extends TestCase
         $registry = $this->createRegistry();
 
         ServiceManager::registerDefaultRegistry($registry, true);
-        
+
         $this->assertInstanceOf(RegistryInterface::class, ServiceManager::getDefaultRegistry());
     }
 

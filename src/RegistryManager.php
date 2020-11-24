@@ -36,7 +36,6 @@ class RegistryManager
     /**
      * @param string $name
      * @param RegistryInterface $registry
-     * @param bool $force
      * @throws InvalidArgumentException
      * @throws JetException
      */
@@ -46,7 +45,7 @@ class RegistryManager
             throw new InvalidArgumentException('$registry must be instanceof RegistryInterface');
         }
 
-        if (!$force && self::isRegistered($name)) {
+        if (! $force && self::isRegistered($name)) {
             throw new JetException(sprintf('Registry %s has registered', $name));
         }
 
