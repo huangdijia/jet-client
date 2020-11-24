@@ -103,7 +103,7 @@ class JetServiceManager
 
         if (is_string($registry)) {
             if (!JetRegistryManager::isRegistered($registry)) {
-                throw new InvalidArgumentException(sprintf('Registry \'%s\' not registered yet.', $registry));
+                throw new InvalidArgumentException(sprintf('Registry \'%s\' does not registered yet.', $registry));
             }
         } elseif (!($registry instanceof JetRegistryInterface)) {
             throw new InvalidArgumentException(sprintf('Service\'s registry must be instanceof %s.', 'JetRegistryInterface'));

@@ -4,15 +4,15 @@ class JetClientFactory
 {
     /**
      * Create a client
-     * 
-     * @param string $service 
-     * @param JetTransporterInterface|string|null $transporter 
-     * @param JetPackerInterface|null $packer 
-     * @param JetDataFormatterInterface|null $dataFormatter 
-     * @param JetPathGeneratorInterface|null $pathGenerator 
-     * @param int|null $tries 
-     * @return JetClient 
-     * @throws JetClientException 
+     *
+     * @param string $service
+     * @param JetTransporterInterface|string|null $transporter
+     * @param JetPackerInterface|null $packer
+     * @param JetDataFormatterInterface|null $dataFormatter
+     * @param JetPathGeneratorInterface|null $pathGenerator
+     * @param int|null $tries
+     * @return JetClient
+     * @throws JetClientException
      */
     public static function create($service, $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null, $tries = null)
     {
@@ -45,6 +45,10 @@ class JetClientFactory
             $registry = $serviceMetadata[JetServiceManager::REGISTRY];
 
             if (is_string($registry)) {
+                if (!JetRegistryManager::isRegistered($registry)) {
+                    throw new InvalidArgumentException(sprintf('Registry \'%s\' does not registered yet.', $registry));
+                }
+
                 $registry = JetRegistryManager::get($registry);
             }
 
@@ -77,14 +81,14 @@ class JetClientFactory
 
     /**
      * Create a client with transporter.
-     * 
-     * @param string $service 
-     * @param JetTransporterInterface $transporter 
-     * @param JetPackerInterface|null $packer 
-     * @param JetDataFormatterInterface|null $dataFormatter 
-     * @param JetPathGeneratorInterface|null $pathGenerator 
-     * @param int|null $tries 
-     * @return JetClient 
+     *
+     * @param string $service
+     * @param JetTransporterInterface $transporter
+     * @param JetPackerInterface|null $packer
+     * @param JetDataFormatterInterface|null $dataFormatter
+     * @param JetPathGeneratorInterface|null $pathGenerator
+     * @param int|null $tries
+     * @return JetClient
      */
     public static function createWithTransporter($service, $transporter, $packer = null, $dataFormatter = null, $pathGenerator = null, $tries = null)
     {
@@ -93,15 +97,15 @@ class JetClientFactory
 
     /**
      * Create a client with registry.
-     * 
-     * @param string $service 
-     * @param JetRegistryInterface $registry 
-     * @param string|null $protocol 
-     * @param JetPackerInterface|null $packer 
-     * @param JetDataFormatterInterface|null $dataFormatter 
-     * @param JetPathGeneratorInterface|null $pathGenerator 
-     * @param int|null $tries 
-     * @return JetClient 
+     *
+     * @param string $service
+     * @param JetRegistryInterface $registry
+     * @param string|null $protocol
+     * @param JetPackerInterface|null $packer
+     * @param JetDataFormatterInterface|null $dataFormatter
+     * @param JetPathGeneratorInterface|null $pathGenerator
+     * @param int|null $tries
+     * @return JetClient
      */
     public static function createWithRegistry($service, $registry, $protocol = null, $packer = null, $dataFormatter = null, $pathGenerator = null, $tries = null)
     {
