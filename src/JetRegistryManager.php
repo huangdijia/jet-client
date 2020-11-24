@@ -21,17 +21,18 @@ class JetRegistryManager
     /**
      * @param string $name 
      * @param JetRegistryInterface $registry 
+     * @param bool $force 
      * @return void 
      * @throws InvalidArgumentException 
      * @throws RuntimeException 
      */
-    public static function register($name, $registry)
+    public static function register($name, $registry, $force = false)
     {
         if (!($registry instanceof JetRegistryInterface)) {
             throw new InvalidArgumentException('$registry must be instanceof JetRegistryInterface');
         }
 
-        if (self::isRegistered($name)) {
+        if (!$force && self::isRegistered($name)) {
             throw new RuntimeException($name . ' has registered');
         }
 

@@ -34,20 +34,20 @@ class JetServiceManager
 
     /**
      * @param mixed $service
-     * @param array $metadata
+     * @param array $metadatas
      * @return void
      * @throws InvalidArgumentException
      */
-    public static function register($service, $metadata = array())
+    public static function register($service, $metadatas = array())
     {
-        static::assertTransporter(isset($metadata[static::TRANSPORTER]) ? $metadata[static::TRANSPORTER] : null);
-        static::assertRegistry(isset($metadata[static::REGISTRY]) ? $metadata[static::REGISTRY] : null);
-        static::assertPacker(isset($metadata[static::PACKER]) ? $metadata[static::PACKER] : null);
-        static::assertDataFormatter(isset($metadata[static::DATA_FORMATTER]) ? $metadata[static::DATA_FORMATTER] : null);
-        static::assertPathGenerator(isset($metadata[static::PATH_GENERATOR]) ? $metadata[static::PATH_GENERATOR] : null);
-        static::assertTries(isset($metadata[static::TRIES]) ? $metadata[static::TRIES] : null);
+        static::assertTransporter(isset($metadatas[static::TRANSPORTER]) ? $metadatas[static::TRANSPORTER] : null);
+        static::assertRegistry(isset($metadatas[static::REGISTRY]) ? $metadatas[static::REGISTRY] : null);
+        static::assertPacker(isset($metadatas[static::PACKER]) ? $metadatas[static::PACKER] : null);
+        static::assertDataFormatter(isset($metadatas[static::DATA_FORMATTER]) ? $metadatas[static::DATA_FORMATTER] : null);
+        static::assertPathGenerator(isset($metadatas[static::PATH_GENERATOR]) ? $metadatas[static::PATH_GENERATOR] : null);
+        static::assertTries(isset($metadatas[static::TRIES]) ? $metadatas[static::TRIES] : null);
 
-        static::$services[$service] = $metadata;
+        static::$services[$service] = $metadatas;
     }
 
     /**
@@ -62,14 +62,15 @@ class JetServiceManager
 
     /**
      * @param JetRegistryInterface $registry
+     * @param bool $force
      * @return void
      * @throws InvalidArgumentException
      */
-    public static function registerDefaultRegistry($registry)
+    public static function registerDefaultRegistry($registry, $force = false)
     {
         static::assertRegistry($registry);
 
-        JetRegistryManager::register(JetRegistryManager::DEFAULT_REGISTRY, $registry);
+        JetRegistryManager::register(JetRegistryManager::DEFAULT_REGISTRY, $registry, $force);
     }
 
     /**
@@ -103,10 +104,10 @@ class JetServiceManager
 
         if (is_string($registry)) {
             if (!JetRegistryManager::isRegistered($registry)) {
-                throw new InvalidArgumentException(sprintf('Registry \'%s\' does not registered yet.', $registry));
+                throw new InvalidArgumentException(sprintf('REGISTRY %s does not registered yet.', $registry));
             }
         } elseif (!($registry instanceof JetRegistryInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s registry must be instanceof %s.', 'JetRegistryInterface'));
+            throw new InvalidArgumentException(sprintf('REGISTRY must be instanceof %s.', 'JetRegistryInterface'));
         }
     }
 
@@ -117,7 +118,7 @@ class JetServiceManager
     public static function assertPacker($packer)
     {
         if (!is_null($packer) && !($packer instanceof JetPackerInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s PACKER must be instanceof %s.', 'JetPackerInterface'));
+            throw new InvalidArgumentException(sprintf('PACKER of service must be instanceof %s.', 'JetPackerInterface'));
         }
     }
 
@@ -128,7 +129,7 @@ class JetServiceManager
     public static function assertDataFormatter($dataFormatter)
     {
         if (!is_null($dataFormatter) && !($dataFormatter instanceof JetDataFormatterInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s DATA_FORMATTER must be instanceof %s.', 'JetDataFormatterInterface'));
+            throw new InvalidArgumentException(sprintf('DATA_FORMATTER of service must be instanceof %s.', 'JetDataFormatterInterface'));
         }
     }
 
@@ -139,7 +140,7 @@ class JetServiceManager
     public static function assertPathGenerator($pathGenerator)
     {
         if (!is_null($pathGenerator) && !($pathGenerator instanceof JetPathGeneratorInterface)) {
-            throw new InvalidArgumentException(sprintf('Service\'s PATH_GENERATOR must be instanceof %s.', 'JetPathGeneratorInterface'));
+            throw new InvalidArgumentException(sprintf('PATH_GENERATOR of service must be instanceof %s.', 'JetPathGeneratorInterface'));
         }
     }
 
@@ -150,7 +151,7 @@ class JetServiceManager
     public static function assertTries($tries)
     {
         if (!is_null($tries) && !is_int($tries)) {
-            throw new InvalidArgumentException('Service\'s TRIES must be int.');
+            throw new InvalidArgumentException('TRIES of service must be int.');
         }
     }
 }

@@ -12,7 +12,7 @@ echo sprintf("CONSUL_URI: http://%s:%s\n", $host, $port);
 $service  = 'CalculatorService';
 $registry = new JetConsulRegistry($host, $port);
 
-JetServiceManager::registerDefaultRegistry($registry);
+JetServiceManager::registerDefaultRegistry($registry, true);
 
 // JetServiceManager::register($service, array(
 // JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),

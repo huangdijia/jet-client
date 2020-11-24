@@ -27,5 +27,5 @@ $nodes = $registry->getServiceNodes($service  = 'CalculatorService');
 var_dump($nodes);
 
 echo "Test JetRegistryManager::register()\n";
-JetRegistryManager::register(JetRegistryManager::DEFAULT_REGISTRY, $registry);
+JetRegistryManager::register(JetRegistryManager::DEFAULT_REGISTRY, $registry, true);
 var_dump(JetRegistryManager::get(JetRegistryManager::DEFAULT_REGISTRY) instanceof JetRegistryInterface);

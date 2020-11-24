@@ -28,9 +28,9 @@ class JetClientFactory
             $transporter = null;
         }
 
-        $serviceMetadata = JetServiceManager::get($service);
+        $metadatas = JetServiceManager::get($service);
 
-        if (!$serviceMetadata) {
+        if (!$metadatas) {
             if ($registry = JetRegistryManager::get(JetRegistryManager::DEFAULT_REGISTRY)) {
                 return self::createWithRegistry($service, $registry, $protocol, $packer, $dataFormatter, $pathGenerator, $tries);
             }
@@ -38,15 +38,16 @@ class JetClientFactory
             throw new JetClientException(sprintf('Service %s does not register yet.', $service));
         }
 
-        if (isset($serviceMetadata[JetServiceManager::TRANSPORTER])) { // preference to using transporter
+        if (isset($metadatas[JetServiceManager::TRANSPORTER])) { // preference to using transporter
             /** @var TransporterInterface $transporter */
-            $transporter = $serviceMetadata[JetServiceManager::TRANSPORTER];
-        } elseif (isset($serviceMetadata[JetServiceManager::REGISTRY])) { // using registry
-            $registry = $serviceMetadata[JetServiceManager::REGISTRY];
+            $transporter = $metadatas[JetServiceManager::TRANSPORTER];
+        } elseif (isset($metadatas[JetServiceManager::REGISTRY])) { // using registry
+            $registry = $metadatas[JetServiceManager::REGISTRY];
 
+            /** @var string|RegistryInterface $registry */
             if (is_string($registry)) {
                 if (!JetRegistryManager::isRegistered($registry)) {
-                    throw new InvalidArgumentException(sprintf('Registry \'%s\' does not registered yet.', $registry));
+                    throw new InvalidArgumentException(sprintf('Registry %s does not registered yet.', $registry));
                 }
 
                 $registry = JetRegistryManager::get($registry);
@@ -57,23 +58,23 @@ class JetClientFactory
         }
 
         if (!$transporter) {
-            throw new JetClientException(sprintf('Service %s\'s transporter does not register yet.', $service));
+            throw new JetClientException(sprintf('Transporter of service %s does not register yet.', $service));
         }
 
         if (is_null($packer)) {
-            $packer = isset($serviceMetadata[JetServiceManager::PACKER]) ? $serviceMetadata[JetServiceManager::PACKER] : null;
+            $packer = isset($metadatas[JetServiceManager::PACKER]) ? $metadatas[JetServiceManager::PACKER] : null;
         }
 
         if (is_null($dataFormatter)) {
-            $dataFormatter = isset($serviceMetadata[JetServiceManager::DATA_FORMATTER]) ? $serviceMetadata[JetServiceManager::DATA_FORMATTER] : null;
+            $dataFormatter = isset($metadatas[JetServiceManager::DATA_FORMATTER]) ? $metadatas[JetServiceManager::DATA_FORMATTER] : null;
         }
 
         if (is_null($pathGenerator)) {
-            $pathGenerator = isset($serviceMetadata[JetServiceManager::PATH_GENERATOR]) ? $serviceMetadata[JetServiceManager::PATH_GENERATOR] : null;
+            $pathGenerator = isset($metadatas[JetServiceManager::PATH_GENERATOR]) ? $metadatas[JetServiceManager::PATH_GENERATOR] : null;
         }
 
         if (is_null($tries)) {
-            $tries = isset($serviceMetadata[JetServiceManager::TRIES]) ? $serviceMetadata[JetServiceManager::TRIES] : 1;
+            $tries = isset($metadatas[JetServiceManager::TRIES]) ? $metadatas[JetServiceManager::TRIES] : 1;
         }
 
         return static::createWithTransporter($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
