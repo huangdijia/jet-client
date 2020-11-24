@@ -27,7 +27,7 @@ class ClientTest extends TestCase
     {
         $registry = $this->createRegistry();
 
-        RegistryManager::register(RegistryManager::DEFAULT, $registry);
+        RegistryManager::register(RegistryManager::DEFAULT, $registry, true);
 
         // ServiceManager::register($this->service, [
         //     ServiceManager::REGISTRY => RegistryManager::DEFAULT,

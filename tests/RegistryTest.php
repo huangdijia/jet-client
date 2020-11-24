@@ -45,11 +45,7 @@ class RegistryTest extends TestCase
     {
         $registry = $this->createRegistry();
 
-        if (RegistryManager::isRegistered(RegistryManager::DEFAULT)) {
-            RegistryManager::deregister(RegistryManager::DEFAULT);
-        }
-
-        ServiceManager::registerDefaultRegistry($registry);
+        ServiceManager::registerDefaultRegistry($registry, true);
         
         $this->assertInstanceOf(RegistryInterface::class, ServiceManager::getDefaultRegistry());
     }
@@ -58,11 +54,7 @@ class RegistryTest extends TestCase
     {
         $registry = $this->createRegistry();
 
-        if (RegistryManager::isRegistered(RegistryManager::DEFAULT)) {
-            RegistryManager::deregister(RegistryManager::DEFAULT);
-        }
-
-        RegistryManager::register(RegistryManager::DEFAULT, $registry);
+        RegistryManager::register(RegistryManager::DEFAULT, $registry, true);
 
         $this->assertInstanceOf(RegistryInterface::class, RegistryManager::get(RegistryManager::DEFAULT));
     }

@@ -78,9 +78,9 @@ class ServiceManager
      * @throws InvalidArgumentException
      * @throws JetException
      */
-    public static function registerDefaultRegistry(RegistryInterface $registry)
+    public static function registerDefaultRegistry(RegistryInterface $registry, bool $force = false)
     {
-        RegistryManager::register(RegistryManager::DEFAULT, $registry);
+        RegistryManager::register(RegistryManager::DEFAULT, $registry, $force);
     }
 
     /**

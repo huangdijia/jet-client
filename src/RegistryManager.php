@@ -36,17 +36,18 @@ class RegistryManager
     /**
      * @param string $name
      * @param RegistryInterface $registry
+     * @param bool $force
      * @throws InvalidArgumentException
      * @throws JetException
      */
-    public static function register($name, $registry)
+    public static function register($name, $registry, bool $force = false)
     {
         if (! ($registry instanceof RegistryInterface)) {
             throw new InvalidArgumentException('$registry must be instanceof RegistryInterface');
         }
 
-        if (self::isRegistered($name)) {
-            throw new JetException($name . ' has registered');
+        if (!$force && self::isRegistered($name)) {
+            throw new JetException(sprintf('Registry %s has registered', $name));
         }
 
         self::$registries[$name] = $registry;
