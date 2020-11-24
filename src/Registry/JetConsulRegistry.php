@@ -125,12 +125,12 @@ class JetConsulRegistry implements JetRegistryInterface
         if ($node->options['type'] == 'tcp') {
             $transporter = new JetStreamSocketTransporter($node->host, $node->port);
             $serviceBalancer->setNodes(array_filter($nodes, function ($node) {
-                return $node->options['type'] = 'tcp';
+                return $node->options['type'] == 'tcp';
             }));
         } else {
             $transporter = new JetCurlHttpTransporter($node->host, $node->port);
             $serviceBalancer->setNodes(array_filter($nodes, function ($node) {
-                return $node->options['type'] = 'http';
+                return $node->options['type'] == 'http';
             }));
         }
 
