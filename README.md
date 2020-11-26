@@ -1,5 +1,6 @@
 # Hyperf jet client
 
+[![Latest Test](https://github.com/huangdijia/jet-client/workflows/tests/badge.svg)](https://github.com/huangdijia/jet-client/actions)
 [![Latest Stable Version](https://poser.pugx.org/huangdijia/jet-client/version.png)](https://packagist.org/packages/huangdijia/jet-client)
 [![Total Downloads](https://poser.pugx.org/huangdijia/jet-client/d/total.png)](https://packagist.org/packages/huangdijia/jet-client)
 [![GitHub license](https://img.shields.io/github/license/huangdijia/jet-client)](https://github.com/huangdijia/jet-client)

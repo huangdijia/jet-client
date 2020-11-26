@@ -1,4 +1,4 @@
-name: PHPUnit for Jet Client
+name: tests
 
 on: [push, pull_request]
 
