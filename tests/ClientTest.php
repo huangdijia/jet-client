@@ -2,18 +2,18 @@
 require_once __DIR__ . '/../src/bootstrap.php';
 
 $configFile = is_file(__DIR__ . '/config.php') ? __DIR__ . '/config.php' : __DIR__ . '/config.php.dist';
-$configs    = include $configFile;
+$config     = include $configFile;
 
-$uri             = JetUtil::arrayGet($configs, 'consul.uri', 'http://127.0.0.1:8500');
-$jsonrpcHttpHost = JetUtil::arrayGet($configs, 'jsonrpc.http.host', '127.0.0.1');
-$jsonrpcHttpPort = JetUtil::arrayGet($configs, 'jsonrpc.http.port', 9502);
-$jsonrpcTcpHost  = JetUtil::arrayGet($configs, 'jsonrpc.tcp.host', '127.0.0.1');
-$jsonrpcTcpPort  = JetUtil::arrayGet($configs, 'jsonrpc.tcp.port', 9503);
+$consulUri       = JetUtil::arrayGet($config, 'consul.uri', 'http://127.0.0.1:8500');
+$jsonrpcHttpHost = JetUtil::arrayGet($config, 'jsonrpc.http.host', '127.0.0.1');
+$jsonrpcHttpPort = JetUtil::arrayGet($config, 'jsonrpc.http.port', 9502);
+$jsonrpcTcpHost  = JetUtil::arrayGet($config, 'jsonrpc.tcp.host', '127.0.0.1');
+$jsonrpcTcpPort  = JetUtil::arrayGet($config, 'jsonrpc.tcp.port', 9503);
 
-echo sprintf("CONSUL_URI: %s\n", $uri);
+echo sprintf("CONSUL_URI: %s\n", $consulUri);
 
 $service  = 'CalculatorService';
-$registry = new JetConsulRegistry(array('uri' => $uri));
+$registry = new JetConsulRegistry(array('uri' => $consulUri));
 
 JetServiceManager::registerDefaultRegistry($registry, true);
 
