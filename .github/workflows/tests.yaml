@@ -34,7 +34,4 @@ jobs:
       - name: Run Test Cases
         run: |
           cp phpunit.xml.dist phpunit.xml
-          # composer test
-          vendor/bin/phpunit tests/RegistryTest.php -c phpunit.xml --colors=always
-          sleep 3
-          vendor/bin/phpunit tests/ClientTest.php -c phpunit.xml --colors=always
+          composer test

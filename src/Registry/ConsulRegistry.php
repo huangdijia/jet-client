@@ -72,8 +72,8 @@ class ConsulRegistry implements RegistryInterface
             $catalog = new Catalog(function () use ($loadBalancer) {
                 /** @var LoadBalancerInterface $loadBalancer */
                 $node = $loadBalancer->select();
-                $options = [];
 
+                $options = [];
                 $options['base_uri'] = $node->options['uri'];
                 $options['timeout'] = $node->options['timeout'] ?? 1;
 
@@ -99,10 +99,16 @@ class ConsulRegistry implements RegistryInterface
         return retry(count($loadBalancer->getNodes()), function () use ($loadBalancer, $service, $protocol) {
             $health = new Health(function () use ($loadBalancer) {
                 $node = $loadBalancer->select();
-                $options = $node->options ?? [];
 
-                $options['base_uri'] = $options['base_uri'] ?? sprintf('http://%s:%s', $node->host, $node->port);
-                $options['timeout'] = $options['timeout'] ?? 1;
+                $options = [];
+                $options['base_uri'] = $node->options['uri'];
+                $options['timeout'] = $node->options['timeout'] ?? 1;
+
+                if (! empty($node->options['token'])) {
+                    $options['headers'] = [
+                        'X-Consul-Token' => $node->options['token'],
+                    ];
+                }
 
                 return new Client($options);
             });
