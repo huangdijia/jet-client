@@ -55,4 +55,6 @@ foreach ($protocols as $i => $protocol) {
     }
 
     $agent->registerService($requestBody);
+
+    echo "{$protocol} registered.\n";
 }
