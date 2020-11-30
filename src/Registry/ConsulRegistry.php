@@ -43,6 +43,7 @@ class ConsulRegistry implements RegistryInterface
         $this->options = array_merge([
             'uri' => 'http://127.0.0.1:8500',
             'timeout' => 1,
+            'token' => '',
         ], $options);
     }
 
@@ -76,7 +77,7 @@ class ConsulRegistry implements RegistryInterface
                 $options['base_uri'] = $node->options['uri'];
                 $options['timeout'] = $node->options['timeout'] ?? 1;
 
-                if (isset($node->options['token'])) {
+                if (! empty($node->options['token'])) {
                     $options['headers'] = [
                         'X-Consul-Token' => $node->options['token'],
                     ];
