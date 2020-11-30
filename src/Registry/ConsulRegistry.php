@@ -40,10 +40,10 @@ class ConsulRegistry implements RegistryInterface
      */
     public function __construct(array $options = [])
     {
-        $options['timeout'] = $options['timeout'] ?? 1;
-        $options['uri'] = $options['uri'] ?? 'http://127.0.0.1:8500';
-
-        $this->options = $options;
+        $this->options = array_merge([
+            'uri' => 'http://127.0.0.1:8500',
+            'timeout' => 1,
+        ], $options);
     }
 
     public function setLoadBalancer(?LoadBalancerInterface $loadBalancer)
