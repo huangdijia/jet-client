@@ -54,7 +54,11 @@ foreach ($protocols as $i => $protocol) {
             break;
     }
 
-    $agent->registerService($requestBody);
+    try {
+        $agent->registerService($requestBody);
 
-    echo "{$requestBody['ID']} registered.\n";
+        echo "{$requestBody['ID']} registered.\n";
+    } catch (Throwable $e) {
+        echo "Registered failed, error:{$e->getMessage()}\n";
+    }
 }
