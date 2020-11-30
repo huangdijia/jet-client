@@ -9,7 +9,7 @@ class JetConsulClient
     public function __construct($options = array())
     {
         $options = array_merge(array(
-            'uri'     => '',
+            'uri'     => 'http://127.0.0.1:8500',
             'timeout' => 2,
             'headers' => array(), // array('X-Consul-Token' => 'your-token')
         ), $options);

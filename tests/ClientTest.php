@@ -4,28 +4,31 @@ require_once __DIR__ . '/../src/bootstrap.php';
 $configFile = is_file(__DIR__ . '/config.php') ? __DIR__ . '/config.php' : __DIR__ . '/config.php.dist';
 $configs    = include $configFile;
 
-$host = JetUtil::arrayGet($configs, 'consul.host', '127.0.0.1');
-$port = JetUtil::arrayGet($configs, 'consul.port', 8500);
+$uri             = JetUtil::arrayGet($configs, 'consul.uri', 'http://127.0.0.1:8500');
+$jsonrpcHttpHost = JetUtil::arrayGet($configs, 'jsonrpc.http.host', '127.0.0.1');
+$jsonrpcHttpPort = JetUtil::arrayGet($configs, 'jsonrpc.http.port', 9502);
+$jsonrpcTcpHost  = JetUtil::arrayGet($configs, 'jsonrpc.tcp.host', '127.0.0.1');
+$jsonrpcTcpPort  = JetUtil::arrayGet($configs, 'jsonrpc.tcp.port', 9503);
 
-echo sprintf("CONSUL_URI: http://%s:%s\n", $host, $port);
+echo sprintf("CONSUL_URI: %s\n", $uri);
 
 $service  = 'CalculatorService';
-$registry = new JetConsulRegistry($host, $port);
+$registry = new JetConsulRegistry(array('uri' => $uri));
 
 JetServiceManager::registerDefaultRegistry($registry, true);
 
 // JetServiceManager::register($service, array(
-// JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
-// JetServiceManager::TRANSPORTER => $registry->getTransporter($service),
-// JetServiceManager::REGISTRY => $registry,
+//     JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter($jsonrpcHttpHost, $jsonrpcHttpPort),
+//     JetServiceManager::TRANSPORTER => $registry->getTransporter($service),
+//     JetServiceManager::REGISTRY => $registry,
 // ));
 
 echo "Create with http transporter\n";
-$client = JetClientFactory::create($service, new JetCurlHttpTransporter('127.0.0.1', 9502));
+$client = JetClientFactory::create($service, new JetCurlHttpTransporter($jsonrpcHttpHost, $jsonrpcHttpPort));
 var_dump($client->add(rand(0, 100), rand(0, 100)));
 
 echo "Create with tcp transporter\n";
-$client = JetClientFactory::create($service, new JetStreamSocketTransporter('127.0.0.1', 9503));
+$client = JetClientFactory::create($service, new JetStreamSocketTransporter($jsonrpcTcpHost, $jsonrpcTcpPort));
 var_dump($client->add(rand(0, 100), rand(0, 100)));
 
 // echo "Create with jsonrpc-http protocol\n";
@@ -44,7 +47,9 @@ class Calculator extends JetFacade
 {
     protected static function getFacadeAccessor()
     {
-        return JetClientFactory::create('CalculatorService', new JetCurlHttpTransporter('127.0.0.1', 9502));
+        global $jsonrpcHttpHost, $jsonrpcHttpPort;
+
+        return JetClientFactory::create('CalculatorService', new JetCurlHttpTransporter($jsonrpcHttpHost, $jsonrpcHttpPort));
         // return 'CalculatorService';
     }
 }
@@ -60,7 +65,9 @@ class CalculatorService extends JetClient
 {
     public function __construct($service = 'CalculatorService', $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null)
     {
-        $transporter = new JetCurlHttpTransporter('127.0.0.1', 9502);
+        global $jsonrpcHttpHost, $jsonrpcHttpPort;
+
+        $transporter = new JetCurlHttpTransporter($jsonrpcHttpHost, $jsonrpcHttpPort);
 
         parent::__construct($service, $transporter, $packer, $dataFormatter, $pathGenerator);
     }

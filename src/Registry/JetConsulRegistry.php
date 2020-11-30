@@ -3,27 +3,21 @@
 class JetConsulRegistry implements JetRegistryInterface
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $host;
-    /**
-     * @var int
-     */
-    protected $port;
-    /**
-     * @var int
-     */
-    protected $timeout;
+    protected $options;
     /**
      * @var JetLoadBalancerInterface
      */
     protected $loadBalancer;
 
-    public function __construct($host = '127.0.0.1', $port = 8500, $timeout = 1)
+    public function __construct($options = array())
     {
-        $this->host    = $host;
-        $this->port    = $port;
-        $this->timeout = $timeout;
+        $this->options = array_merge(array(
+            'uri'     => 'http://127.0.0.1:8500',
+            'timeout' => 1,
+            'token'   => '',
+        ), $options);
     }
 
     public function setLoadBalancer($loadBalancer)
@@ -36,10 +30,7 @@ class JetConsulRegistry implements JetRegistryInterface
         if (!$this->loadBalancer) {
             $this->loadBalancer = new JetRoundRobinLoadBalancer();
             $this->loadBalancer->setNodes(array(
-                new JetLoadBalancerNode('', '', 1, array(
-                    'uri'     => sprintf('http://%s:%s', $this->host, $this->port),
-                    'timeout' => $this->timeout,
-                )),
+                new JetLoadBalancerNode('', 0, 1, $this->options),
             ));
         }
 
@@ -51,16 +42,19 @@ class JetConsulRegistry implements JetRegistryInterface
         $loadBalancer = $this->getLoadBalancer();
 
         return JetUtil::retry(count($loadBalancer->getNodes()), function () use ($loadBalancer) {
-            $node = $loadBalancer->select();
+            $node    = $loadBalancer->select();
+            $options = array();
 
-            if (!isset($node->options['uri'])) {
-                $node->options['uri'] = sprintf('http://%s:%s', $node->host, $node->port);
-            }
-            if (!isset($node->options['timeout'])) {
-                $node->options['timeout'] = 1;
+            $options['uri']     = isset($node->options['uri']) ? $node->options['uri'] : 'http://127.0.0.1:8500';
+            $options['timeout'] = isset($node->options['timeout']) ? $node->options['timeout'] : 1;
+
+            if (!empty($node->options['token'])) {
+                $options['headers'] = array(
+                    'X-Consul-Token' => $node->options['token'],
+                );
             }
 
-            $consulCatalog = new JetConsulCatalog($node->options);
+            $consulCatalog = new JetConsulCatalog($options);
 
             return JetUtil::with($consulCatalog->services()->throwIf()->json(), function ($services) {
                 return array_keys($services);
@@ -73,16 +67,19 @@ class JetConsulRegistry implements JetRegistryInterface
         $loadBalancer = $this->getLoadBalancer();
 
         return JetUtil::retry(count($loadBalancer->getNodes()), function () use ($loadBalancer, $service, $protocol) {
-            $consulNode = $loadBalancer->select();
+            $node = $loadBalancer->select();
+            $options = array();
 
-            if (!isset($consulNode->options['uri'])) {
-                $consulNode->options['uri'] = sprintf('http://%s:%s', $consulNode->host, $consulNode->port);
-            }
-            if (!isset($consulNode->options['timeout'])) {
-                $consulNode->options['timeout'] = 1;
+            $options['uri']     = isset($node->options['uri']) ? $node->options['uri'] : 'http://127.0.0.1:8500';
+            $options['timeout'] = isset($node->options['timeout']) ? $node->options['timeout'] : 1;
+
+            if (!empty($node->options['token'])) {
+                $options['headers'] = array(
+                    'X-Consul-Token' => $node->options['token'],
+                );
             }
 
-            $consulHealth = new JetConsulHealth($consulNode->options);
+            $consulHealth = new JetConsulHealth($options);
 
             return JetUtil::with($consulHealth->service($service)->throwIf()->json(), function ($serviceNodes) use ($protocol) {
                 /** @var array $serviceNodes */
