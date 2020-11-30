@@ -28,14 +28,14 @@ JetServiceManager::register('CalculatorService', [
     // register with transporter
     JetServiceManager::TRANSPORTER => new JetCurlHttpTransporter('127.0.0.1', 9502),
     // or register with registry
-    JetServiceManager::REGISTRY => new JetConsulRegistry('127.0.0.1', 8500),
+    JetServiceManager::REGISTRY => new JetConsulRegistry(array('uri' => 'http://127.0.0.1:8500')),
 ]);
 ~~~
 
 ### Auto register services by registry
 
 ~~~php
-$registry = new JetConsulRegistry($host, $port);
+$registry = new JetConsulRegistry(array('uri' => 'http://127.0.0.1:8500'));
 $registry->register('CalculatorService'); // register a service
 $registry->register(['CalculatorService', 'AnotherService']); // register some services
 $registry->register(); // register all service
@@ -44,7 +44,7 @@ $registry->register(); // register all service
 ### Register default registry
 
 ~~~php
-JetRegistryManager::register(JetRegistryManager::DEFAULT_REGISTRY, new new JetConsulRegistry($host, $port));
+JetRegistryManager::register(JetRegistryManager::DEFAULT_REGISTRY, new new JetConsulRegistry(array('uri' => 'http://127.0.0.1:8500')));
 ~~~
 
 ## Call RPC method
@@ -70,7 +70,7 @@ class CalculatorService extends JetClient
         $transporter = new JetCurlHttpTransporter('127.0.0.1', 9502);
 
         // Or get tranporter by registry
-        $registry    = new JetConsulRegistry('127.0.0.1', 8500);
+        $registry    = new JetConsulRegistry(array('uri' => 'http://127.0.0.1:8500'));
         $transporter = $registry->getTransporter($service);
 
         parent::__construct($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
