@@ -21,9 +21,7 @@ use Huangdijia\Jet\Transporter\StreamSocketTransporter;
  */
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    private $consulHost;
-
-    private $consulPort;
+    private $consulUri;
 
     private $consulTimeout;
 
@@ -43,8 +41,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     {
         parent::__construct($name, $data, $dataName);
 
-        $this->consulHost = $_ENV['CONSUL_HOST'] ?? '127.0.0.1';
-        $this->consulPort = (int) ($_ENV['CONSUL_PORT'] ?? 8500);
+        $this->consulUri = $_ENV['CONSUL_URI'] ?? 'http://127.0.0.1:8500';
         $this->consulTimeout = (int) ($_ENV['CONSUL_TIMEOUT'] ?? 2);
 
         $this->jsonrpcHost = $_ENV['JSONRPC_HOST'] ?? '127.0.0.1';
@@ -68,6 +65,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function createRegistry()
     {
-        return new ConsulRegistry($this->consulHost, $this->consulPort, $this->consulTimeout);
+        return new ConsulRegistry(['uri' => $this->consulUri, 'timeout' => $this->consulTimeout]);
     }
 }

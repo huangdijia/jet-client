@@ -19,9 +19,8 @@
         </whitelist>
     </filter>
     <php>
-        <env name="CONSUL_HOST" value="127.0.0.1" />
-        <env name="CONSUL_PORT" value="8500" />
-        <env name="CONSUL_TIMEOUT" value="2" />
+        <env name="CONSUL_URI" value="http://127.0.0.1:8500" />
+        <env name="CONSUL_TIMEOUT" value="1" />
         <env name="JSONRPC_HTTP_HOST" value="127.0.0.1" />
         <env name="JSONRPC_HTTP_PORT" value="9502" />
         <env name="JSONRPC_HTTP_TIMEOUT" value="2" />

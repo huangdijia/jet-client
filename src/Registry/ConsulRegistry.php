@@ -26,30 +26,24 @@ use RuntimeException;
 class ConsulRegistry implements RegistryInterface
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $host;
-
-    /**
-     * @var int
-     */
-    protected $port;
-
-    /**
-     * @var int
-     */
-    protected $timeout;
+    protected $options;
 
     /**
      * @var null|LoadBalancerInterface
      */
     protected $loadBalancer;
 
-    public function __construct(string $host = '127.0.0.1', int $port = 8500, int $timeout = 1)
+    /**
+     * @param array $options ['uri' => 'http://127.0.0.1:8500', 'timeout' => 1]
+     */
+    public function __construct(array $options = [])
     {
-        $this->host = $host;
-        $this->port = $port;
-        $this->timeout = $timeout;
+        $options['timeout'] = $options['timeout'] ?? 1;
+        $options['uri'] = $options['uri'] ?? 'http://127.0.0.1:8500';
+
+        $this->options = $options;
     }
 
     public function setLoadBalancer(?LoadBalancerInterface $loadBalancer)
@@ -62,10 +56,7 @@ class ConsulRegistry implements RegistryInterface
         if (! $this->loadBalancer) {
             $this->loadBalancer = new RoundRobin();
             $this->loadBalancer->setNodes([
-                new Node('', 0, 1, [
-                    'base_uri' => sprintf('http://%s:%s', $this->host, $this->port),
-                    'timeout' => $this->timeout,
-                ]),
+                new Node('', 0, 1, $this->options),
             ]);
         }
 
@@ -80,10 +71,16 @@ class ConsulRegistry implements RegistryInterface
             $catalog = new Catalog(function () use ($loadBalancer) {
                 /** @var LoadBalancerInterface $loadBalancer */
                 $node = $loadBalancer->select();
-                $options = $node->options;
+                $options = [];
 
-                $options['base_uri'] = $options['base_uri'] ?? sprintf('http://%s:%s', $node->host, $node->port);
-                $options['timeout'] = $options['timeout'] ?? 1;
+                $options['base_uri'] = $node->options['uri'];
+                $options['timeout'] = $node->options['timeout'] ?? 1;
+
+                if (isset($node->options['token'])) {
+                    $options['headers'] = [
+                        'X-Consul-Token' => $node->options['token'],
+                    ];
+                }
 
                 return new Client($options);
             });

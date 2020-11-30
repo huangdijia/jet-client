@@ -26,7 +26,7 @@ ServiceManager::register('CalculatorService', [
     // register with transporter
     ServiceManager::TRANSPORTER => new GuzzleHttpTransporter('127.0.0.1', 9502),
     // or register with registry
-    ServiceManager::REGISTRY => new ConsulRegistry('127.0.0.1', 8500),
+    ServiceManager::REGISTRY => new ConsulRegistry(['uri' => 'http://127.0.0.1:8500']),
 ]);
 ~~~
 
@@ -36,7 +36,7 @@ ServiceManager::register('CalculatorService', [
 use Huangdijia\Jet\ServiceManager;
 use Huangdijia\Jet\Registry\ConsulRegistry;
 
-$registry = new ConsulRegistry($host, $port);
+$registry = new ConsulRegistry(['uri' => 'http://127.0.0.1:8500']);
 $registry->register('CalculatorService'); // register a service
 $registry->register(['CalculatorService', 'CalculatorService2']); // register some services
 $registry->register(); // register all service
@@ -48,7 +48,7 @@ $registry->register(); // register all service
 use Huangdijia\Jet\RegistryManager;
 use Huangdijia\Jet\Registry\ConsulRegistry;
 
-RegistryManager::register(RegistryManager::DEFAULT, new new ConsulRegistry($host, $port));
+RegistryManager::register(RegistryManager::DEFAULT, new new ConsulRegistry(['uri' => $uri, 'timeout' => 1]));
 ~~~
 
 ## Call RPC method
@@ -80,7 +80,7 @@ class CalculatorService extends Client
         $transporter = new GuzzleHttpTransporter('127.0.0.1', 9502);
 
         // Or get tranporter by registry
-        $registry    = new ConsulRegistry('127.0.0.1', 8500);
+        $registry    = new ConsulRegistry(['uri' => 'http://127.0.0.1:8500']);
         $transporter = $registry->getTransporter($service);
 
         parent::__construct($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
