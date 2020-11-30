@@ -35,6 +35,6 @@ jobs:
         run: |
           cp phpunit.xml.dist phpunit.xml
           # composer test
-          phpunit tests/RegistryTest.php -c phpunit.xml --colors=always
+          vendor/bin/phpunit tests/RegistryTest.php -c phpunit.xml --colors=always
           sleep 3
-          phpunit tests/ClientTest.php -c phpunit.xml --colors=always
+          vendor/bin/phpunit tests/ClientTest.php -c phpunit.xml --colors=always
