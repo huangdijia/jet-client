@@ -110,7 +110,7 @@ class JetConsulRegistry implements JetRegistryInterface
         });
     }
 
-    public function getTransporter($service, $protocol = null)
+    public function getTransporter($service, $protocol = null, $timeout = 1)
     {
         $nodes = $this->getServiceNodes($service, $protocol);
 
@@ -120,12 +120,12 @@ class JetConsulRegistry implements JetRegistryInterface
         $node            = $serviceBalancer->select();
 
         if ($node->options['type'] == 'tcp') {
-            $transporter = new JetStreamSocketTransporter($node->host, $node->port);
+            $transporter = new JetStreamSocketTransporter($node->host, $node->port, $timeout);
             $serviceBalancer->setNodes(array_filter($nodes, function ($node) {
                 return $node->options['type'] == 'tcp';
             }));
         } else {
-            $transporter = new JetCurlHttpTransporter($node->host, $node->port);
+            $transporter = new JetCurlHttpTransporter($node->host, $node->port, $timeout);
             $serviceBalancer->setNodes(array_filter($nodes, function ($node) {
                 return $node->options['type'] == 'http';
             }));

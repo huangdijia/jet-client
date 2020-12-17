@@ -3,6 +3,27 @@
 class JetClientFactory
 {
     /**
+     * timeout
+     * @var int
+     */
+    protected static $timeout = 1;
+
+    /**
+     * Set timeout
+     * @param mixed $timeout 
+     * @return void 
+     */
+    public function setTimeout($timeout)
+    {
+        $timeout = (int) $timeout;
+
+        if ($timeout < 0) {
+            return;
+        }
+
+        self::$timeout = $timeout;
+    }
+    /**
      * Create a client
      *
      * @param string $service
@@ -54,7 +75,7 @@ class JetClientFactory
             }
 
             /** @var RegistryInterface $registry */
-            $transporter = $registry->getTransporter($service, $protocol);
+            $transporter = $registry->getTransporter($service, $protocol, self::$timeout);
         }
 
         if (!$transporter) {
@@ -110,7 +131,7 @@ class JetClientFactory
      */
     public static function createWithRegistry($service, $registry, $protocol = null, $packer = null, $dataFormatter = null, $pathGenerator = null, $tries = null)
     {
-        $transporter = $registry->getTransporter($service, $protocol);
+        $transporter = $registry->getTransporter($service, $protocol, self::$timeout);
 
         return new JetClient($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
     }

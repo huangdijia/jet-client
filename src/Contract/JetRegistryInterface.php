@@ -28,9 +28,10 @@ interface JetRegistryInterface
     /**
      * @param string $service
      * @param string|null $protocol
+     * @param int $timeout
      * @return JetTransporterInterface
      */
-    public function getTransporter($service, $protocol = null);
+    public function getTransporter($service, $protocol = null, $timeout  = 1);
 
     /**
      * @param array|string|null $service 
