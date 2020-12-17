@@ -142,22 +142,24 @@ class ConsulRegistry implements RegistryInterface
         });
     }
 
-    public function getTransporter(string $service, ?string $protocol = null)
+    public function getTransporter(string $service, ?string $protocol = null, int $timeout = 1)
     {
         $nodes = $this->getServiceNodes($service, $protocol);
 
-        throw_if(count($nodes) <= 0, new RuntimeException('Service nodes not found!'));
+        if (count($nodes) <= 0) {
+            throw new RuntimeException('Service nodes not found!');
+        }
 
         $serviceBalancer = new RoundRobin($nodes);
         $node = $serviceBalancer->select();
 
         if ($node->options['type'] == 'tcp') {
-            $transporter = new StreamSocketTransporter($node->host, $node->port);
+            $transporter = new StreamSocketTransporter($node->host, $node->port, $timeout);
             $serviceBalancer->setNodes(array_filter($nodes, function ($node) {
                 return $node->options['type'] == 'tcp';
             }));
         } else {
-            $transporter = new GuzzleHttpTransporter($node->host, $node->port);
+            $transporter = new GuzzleHttpTransporter($node->host, $node->port, ['timeout' => $timeout]);
             $serviceBalancer->setNodes(array_filter($nodes, function ($node) {
                 return $node->options['type'] == 'http';
             }));

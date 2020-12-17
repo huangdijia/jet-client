@@ -23,6 +23,24 @@ use InvalidArgumentException;
 class ClientFactory
 {
     /**
+     * timeout.
+     * @var int
+     */
+    protected static $timeout = 1;
+
+    /**
+     * Set timeout.
+     */
+    public static function setTimeout(int $timeout)
+    {
+        if ($timeout < 0) {
+            return;
+        }
+
+        self::$timeout = $timeout;
+    }
+
+    /**
      * Create a client.
      *
      * @param null|string|TransporterInterface $transporter transporter, protocol or null
@@ -70,7 +88,7 @@ class ClientFactory
             }
 
             /** @var RegistryInterface $registry */
-            $transporter = $registry->getTransporter($service, $protocol);
+            $transporter = $registry->getTransporter($service, $protocol, self::$timeout);
         }
 
         if (! $transporter) {
@@ -95,7 +113,7 @@ class ClientFactory
 
     public static function createWithRegistry(string $service, RegistryInterface $registry, ?string $protocol = null, ?PackerInterface $packer = null, ?DataFormatterInterface $dataFormatter = null, ?PathGeneratorInterface $pathGenerator = null, ?int $tries = null): Client
     {
-        $transporter = $registry->getTransporter($service, $protocol);
+        $transporter = $registry->getTransporter($service, $protocol, self::$timeout);
 
         return new Client($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
     }

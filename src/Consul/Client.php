@@ -47,7 +47,9 @@ class Client
             $clientFactory = $this->clientFactory;
             $client = $clientFactory($options);
 
-            throw_if(! $client instanceof ClientInterface, new ClientException(sprintf('The client factory should create a %s instance.', ClientInterface::class)));
+            if (! $client instanceof ClientInterface) {
+                throw new ClientException(sprintf('The client factory should create a %s instance.', ClientInterface::class));
+            }
 
             $response = $client->request($method, $url, $options);
         } catch (TransferException $e) {
@@ -60,7 +62,9 @@ class Client
             $message = sprintf('Something went wrong when calling consul (%s - %s).', $response->getStatusCode(), $response->getReasonPhrase());
             $message .= PHP_EOL . (string) $response->getBody();
 
-            throw_if($response->getStatusCode() >= 500, new ServerException(['message' => $message, 'code' => $response->getStatusCode()]));
+            if ($response->getStatusCode() >= 500) {
+                throw new ServerException(['message' => $message, 'code' => $response->getStatusCode()]);
+            }
 
             throw new ClientException($message, $response->getStatusCode());
         }

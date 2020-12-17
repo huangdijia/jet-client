@@ -96,10 +96,9 @@ class StreamSocketTransporter extends AbstractTransporter
             $node = $this;
         }
 
-        throw_if(
-            ! $node->host || ! $node->port,
-            new InvalidArgumentException(sprintf('Invalid host %s or port %s.', $node->host, $node->port))
-        );
+        if (! $node->host || ! $node->port) {
+            throw new InvalidArgumentException(sprintf('Invalid host %s or port %s.', $node->host, $node->port));
+        }
 
         return [$node->host, $node->port];
     }
@@ -122,7 +121,9 @@ class StreamSocketTransporter extends AbstractTransporter
 
         $client = stream_socket_client("tcp://{$host}:{$port}", $errno, $errstr, $this->timeout);
 
-        throw_if($client === false, new ConnectionException(sprintf('[%d] %s', $errno, $errstr)));
+        if ($client === false) {
+            throw new ConnectionException(sprintf('[%d] %s', $errno, $errstr));
+        }
 
         $this->client = $client;
         $this->isConnected = true;
