@@ -39,9 +39,23 @@ class JetStreamSocketTransporter extends AbstractJetTransporter
     }
 
     /**
-     * @return string
+     * @return string 
+     * @throws Exception 
      */
     public function recv()
+    {
+        try {
+            return $this->receive();
+        } catch (Exception $e) {
+            $this->close();
+            throw $e;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function receive()
     {
         $buf     = '';
         $timeout = 1000;
@@ -52,13 +66,20 @@ class JetStreamSocketTransporter extends AbstractJetTransporter
         // The maximum number of retries is 12, and 1000 microseconds is the minimum waiting time.
         // The waiting time is doubled each time until the server writes data to the buffer.
         // Usually, the data can be obtained within 1 microsecond.
-        return JetUtil::retry(12, function () use (&$buf, &$timeout, $client) {
+        $result = JetUtil::retry(12, function () use (&$buf, &$timeout, $client) {
             $read   = array($client);
             $write  = null;
             $except = null;
+
             while (stream_select($read, $write, $except, 0, $timeout)) {
                 foreach ($read as $r) {
-                    $buf .= fread($r, 8192);
+                    $res = fread($r, 8192);
+
+                    if (feof($r)) {
+                        return new JetExceptionThrower(new JetConnectionException('Connection was closed.'));
+                    }
+
+                    $buf .= $res;
                 }
             }
 
@@ -70,6 +91,12 @@ class JetStreamSocketTransporter extends AbstractJetTransporter
 
             return $buf;
         });
+
+        if ($result instanceof JetExceptionThrower) {
+            throw $result->getThrowable();
+        }
+
+        return $result;
     }
 
     /**
