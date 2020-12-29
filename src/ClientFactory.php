@@ -26,7 +26,7 @@ class ClientFactory
      * timeout.
      * @var int
      */
-    protected static $timeout = 1;
+    protected static $timeout = 5;
 
     /**
      * Set timeout.
@@ -50,15 +50,18 @@ class ClientFactory
     public static function create(string $service, $transporter = null, ?PackerInterface $packer = null, ?DataFormatterInterface $dataFormatter = null, ?PathGeneratorInterface $pathGenerator = null, ?int $tries = null): Client
     {
         $protocol = null;
+        $timeout = self::$timeout;
 
+        // create by transporter
         if ($transporter instanceof TransporterInterface) {
             return static::createWithTransporter(...func_get_args());
         }
 
-        // when $transporter is string
+        // when $transporter is string or int
         if (is_string($transporter)) {
-            $protocol = $transporter;
-            $transporter = null;
+            [$protocol, $transporter] = [$transporter, null];
+        } elseif (is_int($transporter)) {
+            [$timeout, $transporter] = [$transporter, null];
         }
 
         $metadatas = ServiceManager::get($service);
@@ -88,7 +91,7 @@ class ClientFactory
             }
 
             /** @var RegistryInterface $registry */
-            $transporter = $registry->getTransporter($service, $protocol, self::$timeout);
+            $transporter = $registry->getTransporter($service, $protocol, $timeout);
         }
 
         if (! $transporter) {
