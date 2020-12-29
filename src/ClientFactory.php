@@ -43,7 +43,7 @@ class ClientFactory
     /**
      * Create a client.
      *
-     * @param null|string|TransporterInterface $transporter transporter, protocol or null
+     * @param null|int|string|TransporterInterface $transporter transporter, protocol, timeout or null
      * @throws InvalidArgumentException
      * @throws Exception
      */
