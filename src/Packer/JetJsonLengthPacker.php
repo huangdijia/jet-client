@@ -15,10 +15,10 @@ class JetJsonLengthPacker implements JetPackerInterface
     /**
      * @var array
      */
-    protected $defaultOptions = [
+    protected $defaultOptions = array(
         'package_length_type' => 'N',
         'package_body_offset' => 4,
-    ];
+    );
 
     public function __construct($options = array())
     {
