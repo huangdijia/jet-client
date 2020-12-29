@@ -27,7 +27,7 @@ class JetClientFactory
      * Create a client
      *
      * @param string $service
-     * @param JetTransporterInterface|string|null $transporter
+     * @param JetTransporterInterface|string|int|null $transporter
      * @param JetPackerInterface|null $packer
      * @param JetDataFormatterInterface|null $dataFormatter
      * @param JetPathGeneratorInterface|null $pathGenerator
