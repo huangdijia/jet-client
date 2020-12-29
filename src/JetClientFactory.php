@@ -6,12 +6,12 @@ class JetClientFactory
      * timeout
      * @var int
      */
-    protected static $timeout = 1;
+    protected static $timeout = 5;
 
     /**
      * Set timeout
-     * @param mixed $timeout 
-     * @return void 
+     * @param mixed $timeout
+     * @return void
      */
     public function setTimeout($timeout)
     {
@@ -38,13 +38,18 @@ class JetClientFactory
     public static function create($service, $transporter = null, $packer = null, $dataFormatter = null, $pathGenerator = null, $tries = null)
     {
         $protocol = null;
+        $timeout  = self::$timeout;
 
+        // create by transporter
         if ($transporter instanceof JetTransporterInterface) {
             return static::createWithTransporter($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
         }
 
-        // when $transporter is string
-        if (is_string($transporter)) {
+        // when $transporter is number or string
+        if (is_numeric($transporter)) {
+            $timeout     = $transporter;
+            $transporter = null;
+        } elseif (is_string($transporter)) {
             $protocol    = $transporter;
             $transporter = null;
         }
@@ -75,7 +80,7 @@ class JetClientFactory
             }
 
             /** @var RegistryInterface $registry */
-            $transporter = $registry->getTransporter($service, $protocol, self::$timeout);
+            $transporter = $registry->getTransporter($service, $protocol, $timeout);
         }
 
         if (!$transporter) {
