@@ -57,11 +57,11 @@ class ClientFactory
             return static::createWithTransporter(...func_get_args());
         }
 
-        // when $transporter is string or int
-        if (is_string($transporter)) {
-            [$protocol, $transporter] = [$transporter, null];
-        } elseif (is_int($transporter)) {
+        // when $transporter is string or number
+        if (is_numeric($transporter)) {
             [$timeout, $transporter] = [$transporter, null];
+        } elseif (is_string($transporter)) {
+            [$protocol, $transporter] = [$transporter, null];
         }
 
         $metadatas = ServiceManager::get($service);
