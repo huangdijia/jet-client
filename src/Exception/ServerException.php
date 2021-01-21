@@ -22,8 +22,8 @@ class ServerException extends JetException
 
     public function __construct(array $error = [], Throwable $previous = null)
     {
-        $code = $error['data']['error'] ?? $error['code'] ?? 0;
-        $message = $error['data']['message'] ?? $error['message'] ?? 'Server Error';
+        $code = $error['code'] ?? 0;
+        $message = $error['message'] ?? 'Server Error';
 
         $this->error = $error;
 
