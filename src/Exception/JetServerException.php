@@ -14,8 +14,8 @@ class JetServerException extends JetException
      */
     public function __construct($error = array(), $previous = null)
     {
-        $code    = isset($error['code']) ? $error['code'] : 0;
-        $message = isset($error['message']) ? $error['message'] : 'Server Error';
+        $code    = JetUtil::arrayGet($error, 'data.code', JetUtil::arrayGet($error, 'code', 0));
+        $message = JetUtil::arrayGet($error, 'data.message', JetUtil::arrayGet($error, 'message', 'Server Error'));
 
         $this->error = $error;
 

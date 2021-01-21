@@ -96,7 +96,7 @@ class JetClient
                     return $data['result'];
                 }
 
-                throw new JetServerException(isset($data['error']) ? $data['error'] : 'Server error');
+                throw new JetServerException(isset($data['error']) ? $data['error'] : array());
             });
         });
 
