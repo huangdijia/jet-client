@@ -98,7 +98,7 @@ class Client
                     return $data['result'];
                 }
 
-                throw new ServerException($data['error'] ?? 'Server error');
+                throw new ServerException($data['error'] ?? []);
             });
         });
     }
