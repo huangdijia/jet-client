@@ -5,6 +5,8 @@
 [![Total Downloads](https://poser.pugx.org/huangdijia/jet-client/d/total.png)](https://packagist.org/packages/huangdijia/jet-client)
 [![GitHub license](https://img.shields.io/github/license/huangdijia/jet-client)](https://github.com/huangdijia/jet-client)
 
+New repository: https://github.com/friendsofhyperf/jet
+
 ## Installation
 
 ### Composer
