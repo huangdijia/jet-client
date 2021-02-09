@@ -44,7 +44,7 @@ $registry->register(); // register all service
 ### Register default registry
 
 ~~~php
-JetRegistryManager::register(JetRegistryManager::DEFAULT_REGISTRY, new new JetConsulRegistry(array('uri' => 'http://127.0.0.1:8500')));
+JetRegistryManager::register(JetRegistryManager::DEFAULT_REGISTRY, new JetConsulRegistry(array('uri' => 'http://127.0.0.1:8500')));
 ~~~
 
 ## Call RPC method
