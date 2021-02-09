@@ -50,7 +50,7 @@ $registry->register(); // register all service
 use Huangdijia\Jet\RegistryManager;
 use Huangdijia\Jet\Registry\ConsulRegistry;
 
-RegistryManager::register(RegistryManager::DEFAULT, new new ConsulRegistry(['uri' => $uri, 'timeout' => 1]));
+RegistryManager::register(RegistryManager::DEFAULT, new ConsulRegistry(['uri' => $uri, 'timeout' => 1]));
 ~~~
 
 ## Call RPC method
