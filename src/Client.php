@@ -49,7 +49,7 @@ class Client
     /**
      * @var int
      */
-    protected $tries;
+    protected $tries = 0;
 
     public function __construct(string $service, TransporterInterface $transporter, ?PackerInterface $packer = null, ?DataFormatterInterface $dataFormatter = null, ?PathGeneratorInterface $pathGenerator = null, ?int $tries = null)
     {
@@ -58,7 +58,9 @@ class Client
         $this->packer = $packer ?? new JsonEofPacker();
         $this->dataFormatter = $dataFormatter ?? new DataFormatter();
         $this->pathGenerator = $pathGenerator ?? new PathGenerator();
-        $this->tries = $tries ?? 1;
+        if ($tries) {
+            $this->tries = $tries;
+        }
     }
 
     /**
@@ -75,12 +77,12 @@ class Client
         $dataFormatter = $this->dataFormatter;
         $packer = $this->packer;
 
-        if ($this->transporter->getLoadBalancer()) {
-            $nodeCount = count($this->transporter->getLoadBalancer()->getNodes());
-            if ($nodeCount > $tries) {
-                $tries = $nodeCount;
-            }
-        }
+        // if ($this->transporter->getLoadBalancer()) {
+        //     $nodeCount = count($this->transporter->getLoadBalancer()->getNodes());
+        //     if ($nodeCount > $tries) {
+        //         $tries = $nodeCount;
+        //     }
+        // }
 
         return retry($tries, function () use ($transporter, $dataFormatter, $packer, $path, $arguments) {
             $data = $dataFormatter->formatRequest([$path, $arguments, uniqid()]);

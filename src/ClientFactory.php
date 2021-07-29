@@ -101,7 +101,7 @@ class ClientFactory
         $packer = $packer ?? $metadatas[ServiceManager::PACKER] ?? null;
         $dataFormatter = $dataFormatter ?? $metadatas[ServiceManager::DATA_FORMATTER] ?? null;
         $pathGenerator = $pathGenerator ?? $metadatas[ServiceManager::PATH_GENERATOR] ?? null;
-        $tries = $tries ?? $metadatas[ServiceManager::TRIES] ?? 1;
+        $tries = $tries ?? $metadatas[ServiceManager::TRIES] ?? 0;
 
         return static::createWithTransporter($service, $transporter, $packer, $dataFormatter, $pathGenerator, $tries);
     }
