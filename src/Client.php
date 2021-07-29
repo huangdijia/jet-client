@@ -94,7 +94,7 @@ class Client
             }
 
             return with($packer->unpack($ret), function ($data) {
-                if (array_key_exists('result', $data)) {
+                if (isset($data['result'])) {
                     return $data['result'];
                 }
 
