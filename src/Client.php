@@ -73,38 +73,31 @@ class Client
     {
         $tries = $this->tries;
         $path = $this->pathGenerator->generate($this->service, $name);
-        $transporter = $this->transporter;
-        $dataFormatter = $this->dataFormatter;
-        $packer = $this->packer;
 
-        // if ($this->transporter->getLoadBalancer()) {
-        //     $nodeCount = count($this->transporter->getLoadBalancer()->getNodes());
-        //     if ($nodeCount > $tries) {
-        //         $tries = $nodeCount;
-        //     }
-        // }
+        if ($this->transporter->getLoadBalancer()) {
+            $nodeNum = count($this->transporter->getLoadBalancer()->getNodes());
+            if ($nodeNum > $tries) {
+                $tries = $nodeNum;
+            }
+        }
 
-        return retry($tries, function () use ($transporter, $dataFormatter, $packer, $path, $arguments) {
-            $data = $dataFormatter->formatRequest([$path, $arguments, uniqid()]);
+        return retry($tries, function () use ($path, $arguments) {
+            $data = $this->dataFormatter->formatRequest([$path, $arguments, uniqid()]);
 
-            $transporter->send($packer->pack($data));
+            $this->transporter->send($this->packer->pack($data));
 
-            $ret = $transporter->recv();
+            $ret = $this->transporter->recv();
 
             if (! is_string($ret)) {
                 throw new RecvFailedException('Recv failed');
             }
 
-            return with($packer->unpack($ret), function ($data) use ($ret) {
-                if (! is_array($data)) {
-                    throw new ServerException(['message' => $ret]);
-                }
-
+            return with($this->packer->unpack($ret), function ($data) use ($ret) {
                 if (isset($data['result'])) {
                     return $data['result'];
                 }
 
-                throw new ServerException($data['error'] ?? []);
+                throw new ServerException($data['error'] ?? ['code' => -1, 'message' => $ret]);
             });
         });
     }
