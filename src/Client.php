@@ -93,7 +93,11 @@ class Client
                 throw new RecvFailedException('Recv failed');
             }
 
-            return with($packer->unpack($ret), function ($data) {
+            return with($packer->unpack($ret), function ($data, $ret) {
+                if (! is_array($data)) {
+                    throw new ServerException(['message' => $ret]);
+                }
+
                 if (isset($data['result'])) {
                     return $data['result'];
                 }
