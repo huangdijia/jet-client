@@ -91,7 +91,7 @@ class JetClient
 
             JetUtil::throwIf(!is_string($ret), new JetRecvFailedException('Recv failed'));
 
-            return JetUtil::with($packer->unpack($ret), function ($data, $ret) {
+            return JetUtil::with($packer->unpack($ret), function ($data) use ($ret) {
                 if (!is_array($data)) {
                     throw new JetServerException(array('message' => $ret));
                 }
